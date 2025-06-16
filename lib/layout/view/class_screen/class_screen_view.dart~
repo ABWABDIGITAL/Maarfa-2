@@ -171,29 +171,29 @@ class _ClassScreenViewState extends State<ClassScreenView> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Row(
               children: [
-                MasterButton(
-                  onPressed: () {
-                    Get.to(() => CourseFilterScreen(
-                          type: 'lesson',
-                          title: widget.name,
-                          yearId: widget.yearId,
-                          id: widget.stageId,
-                          filter: widget.filterData,
-                        ));
-                  },
-                  buttonText: tr("filter"),
-                  sidePadding: 0,
-                  buttonHeight: 55,
-                  buttonWidth: screenWidth / 2,
-                  buttonColor: white,
-                  buttonRadius: 0,
-                  borderColor: mainColor,
-                  buttonStyle: TextStyles.subTitleStyle
-                      .copyWith(color: mainColor, fontWeight: FontWeight.w700),
-                  icon: filter,
-                  iconColor: mainColor,
-                  iconSize: 20,
-                ),
+                // MasterButton(
+                //   onPressed: () {
+                //     Get.to(() => CourseFilterScreen(
+                //           type: 'lesson',
+                //           title: widget.name,
+                //           yearId: widget.yearId,
+                //           id: widget.stageId,
+                //           filter: widget.filterData,
+                //         ));
+                //   },
+                //   buttonText: tr("filter"),
+                //   sidePadding: 0,
+                //   buttonHeight: 55,
+                //   buttonWidth: screenWidth / 2,
+                //   buttonColor: white,
+                //   buttonRadius: 0,
+                //   borderColor: mainColor,
+                //   buttonStyle: TextStyles.subTitleStyle
+                //       .copyWith(color: mainColor, fontWeight: FontWeight.w700),
+                //   icon: filter,
+                //   iconColor: mainColor,
+                //   iconSize: 20,
+                // ),
                 const Space(boxWidth: 15),
                 MasterButton(
                   onPressed: () => showSortAction(
