@@ -110,7 +110,7 @@ class _GradViewState extends State<GradView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.lessonData);
+    // print(widget.lessonData);
     final minPrice = int.tryParse(widget.lessonData
                 .firstWhere((e) => e.key == "individual_price_min")
                 .value ??

@@ -34,7 +34,7 @@ class CardContact extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.03),
+            color: Colors.grey.withValues(alpha: 0.03),
           ),
         ],
       ),

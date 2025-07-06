@@ -20,7 +20,7 @@ class DayCard extends StatelessWidget {
               height: 35.h,
               width: 100.w,
               decoration: BoxDecoration(
-                color: mainColor.withOpacity(0.1),
+                color: mainColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(18.r),
                 border: Border.all(
                   color: mainColor,

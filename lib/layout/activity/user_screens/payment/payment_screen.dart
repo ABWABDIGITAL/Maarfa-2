@@ -24,7 +24,8 @@ class PaymentScreen extends StatelessWidget {
         child: Scaffold(
           appBar: DefaultAppBar(title: "", isBack: true),
           body: InAppWebView(
-            initialUrlRequest: URLRequest(url: WebUri.uri(Uri.parse(paymentUrl))),
+            initialUrlRequest:
+                URLRequest(url: WebUri.uri(Uri.parse(paymentUrl))),
             onLoadStop: (con, uri) async {
               // if (payMethodID == 4) {
               //   con.scrollTo(x: 370, y: 0);

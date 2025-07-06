@@ -136,7 +136,7 @@ class UserCubit extends Cubit<UserState> {
       // secureColor = mainColor;
     } else {
       isOld = true;
-      // secureColor = hintColor.withOpacity(0.5);
+      // secureColor = hintColor.withValues(alpha:0.5);
     }
     emit(ChangeOldState());
   }
@@ -147,7 +147,7 @@ class UserCubit extends Cubit<UserState> {
       // secureColor = mainColor;
     } else {
       isPassword = true;
-      // secureColor = hintColor.withOpacity(0.5);
+      // secureColor = hintColor.withValues(alpha:0.5);
     }
     emit(ChangePasswordState());
   }

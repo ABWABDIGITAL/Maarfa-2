@@ -8,7 +8,6 @@ import '../../../model/common/courses/course_details/course_details_model.dart';
 import '../../../res/value/color/color.dart';
 import '../../../res/value/dimenssion/dimenssions.dart';
 import '../../../res/value/style/textstyles.dart';
-import '../../../widget/side_padding/side_padding.dart';
 import '../../activity/user_screens/specification/specification_screen.dart';
 
 class SpecificationCard extends StatefulWidget {
@@ -145,7 +144,7 @@ class _SpecificationCardState extends State<SpecificationCard>
                 color: Colors.transparent,
                 elevation: _isHovered ? _elevationAnimation.value : 2.0,
                 borderRadius: BorderRadius.circular(12.r),
-                shadowColor: theme.shadowColor.withOpacity(0.1),
+                shadowColor: theme.shadowColor.withValues(alpha:0.1),
                 child: InkWell(
                   onTap: _handleTap,
                   onTapDown: _handleTapDown,
@@ -154,8 +153,8 @@ class _SpecificationCardState extends State<SpecificationCard>
                   onHover: _handleHover,
                   onFocusChange: _handleFocusChange,
                   borderRadius: BorderRadius.circular(12.r),
-                  splashColor: theme.primaryColor.withOpacity(0.1),
-                  highlightColor: theme.primaryColor.withOpacity(0.05),
+                  splashColor: theme.primaryColor.withValues(alpha:0.1),
+                  highlightColor: theme.primaryColor.withValues(alpha:0.05),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     height: 88.h,
@@ -174,14 +173,14 @@ class _SpecificationCardState extends State<SpecificationCard>
 
   BoxDecoration _buildCardDecoration(ThemeData theme) {
     return BoxDecoration(
-      color: widget.isEnabled ? courseTypeColor : courseTypeColor.withOpacity(0.5),
+      color: widget.isEnabled ? courseTypeColor : courseTypeColor.withValues(alpha:0.5),
       borderRadius: BorderRadius.circular(12.r),
       border: Border.all(
         color: _isFocused
-            ? theme.primaryColor.withOpacity(0.8)
+            ? theme.primaryColor.withValues(alpha:0.8)
             : _isHovered
-            ? theme.primaryColor.withOpacity(0.3)
-            : textfieldColor.withOpacity(0.3),
+            ? theme.primaryColor.withValues(alpha:0.3)
+            : textfieldColor.withValues(alpha:0.3),
         width: _isFocused ? 2.0 : 1.0,
       ),
       gradient: _isHovered ? LinearGradient(
@@ -189,7 +188,7 @@ class _SpecificationCardState extends State<SpecificationCard>
         end: Alignment.bottomRight,
         colors: [
           courseTypeColor,
-          courseTypeColor.withOpacity(0.95),
+          courseTypeColor.withValues(alpha:0.95),
         ],
       ) : null,
     );
@@ -306,7 +305,7 @@ class _SpecificationCardState extends State<SpecificationCard>
             style: TextStyles.hintStyle.copyWith(
               color: widget.isEnabled
                   ? (_isHovered ? Colors.black87 : grey)
-                  : grey.withOpacity(0.5),
+                  : grey.withValues(alpha:0.5),
               fontSize: 13.sp,
               fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w500,
               height: 1.3,

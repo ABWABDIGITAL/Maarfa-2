@@ -7,7 +7,6 @@ import 'package:my_academy/widget/space/space.dart';
 
 import '../../../../bloc/add_request/add_request_cubit.dart';
 import '../../../../widget/buttons/master_load/master_load_button.dart';
-import '../../../../widget/request_lesson/request_lesson_details_card.dart';
 import '../../../card_view/reserved_appointments_card/reserved_appointments_card.dart';
 
 class RequestLessonScreen extends StatelessWidget {

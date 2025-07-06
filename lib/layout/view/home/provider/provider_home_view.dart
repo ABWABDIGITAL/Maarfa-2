@@ -139,7 +139,7 @@ class _ProviderHomeViewState extends State<ProviderHomeView> {
                               image: emptyCurrent,
                               width: screenWidth,
                               height: 170.h,
-                              color: mainColor.withOpacity(0.3),
+                              color: mainColor.withValues(alpha: 0.3),
                             )
                           : GridView.builder(
                               shrinkWrap: true,
@@ -170,7 +170,7 @@ class _ProviderHomeViewState extends State<ProviderHomeView> {
                               image: emptyCurrent,
                               width: screenWidth,
                               height: 170.h,
-                              color: mainColor.withOpacity(0.3),
+                              color: mainColor.withValues(alpha: 0.3),
                             )
                           : ListView.builder(
                               itemCount: data.data.lessons!.length,

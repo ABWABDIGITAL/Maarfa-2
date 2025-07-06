@@ -128,7 +128,7 @@ class HomeProfileCacheView extends StatelessWidget {
                 scale: 0.9,
                 pagination: SwiperPagination(
                     builder: DotSwiperPaginationBuilder(
-                        color: mainColor.withOpacity(0.1),
+                        color: mainColor.withValues(alpha: 0.1),
                         activeColor: mainColor)),
               ),
             ),

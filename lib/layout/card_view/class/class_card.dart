@@ -125,8 +125,8 @@ import '../../../res/value/style/textstyles.dart';
 //                 boxShadow: [
 //                   BoxShadow(
 //                     color: widget.isActive
-//                         ? mainColor.withOpacity(0.15)
-//                         : Colors.grey.withOpacity(0.1),
+//                         ? mainColor.withValues(alpha:0.15)
+//                         : Colors.grey.withValues(alpha:0.1),
 //                     blurRadius: 12.r,
 //                     offset: Offset(0, 4.h),
 //                     spreadRadius: 0,
@@ -140,8 +140,8 @@ import '../../../res/value/style/textstyles.dart';
 //                   duration: const Duration(milliseconds: 200),
 //                   decoration: BoxDecoration(
 //                     color: widget.isActive
-//                         ? mainColor.withOpacity(_opacityAnimation.value)
-//                         : Colors.grey.withOpacity(0.05),
+//                         ? mainColor.withValues(alpha:_opacityAnimation.value)
+//                         : Colors.grey.withValues(alpha:0.05),
 //                     borderRadius: BorderRadius.circular(16.r),
 //                   ),
 //                   child: widget.isActive
@@ -174,7 +174,7 @@ import '../../../res/value/style/textstyles.dart';
 //             Container(
 //               padding: EdgeInsets.all(8.w),
 //               decoration: BoxDecoration(
-//                 color: mainColor.withOpacity(0.1),
+//                 color: mainColor.withValues(alpha:0.1),
 //                 shape: BoxShape.circle,
 //               ),
 //               child: Icon(
@@ -208,14 +208,14 @@ import '../../../res/value/style/textstyles.dart';
 //                   Icon(
 //                     Icons.people_outline,
 //                     size: 12.sp,
-//                     color: mainColor.withOpacity(0.7),
+//                     color: mainColor.withValues(alpha:0.7),
 //                   ),
 //                   SizedBox(width: 4.w),
 //                   Text(
 //                     '${widget.studentCount} students',
 //                     style: TextStyle(
 //                       fontSize: 10.sp,
-//                       color: mainColor.withOpacity(0.7),
+//                       color: mainColor.withValues(alpha:0.7),
 //                       fontWeight: FontWeight.w400,
 //                     ),
 //                   ),
@@ -233,7 +233,7 @@ import '../../../res/value/style/textstyles.dart';
 //       padding: EdgeInsets.all(12.w),
 //       decoration: BoxDecoration(
 //         border: Border.all(
-//           color: Colors.grey.withOpacity(0.3),
+//           color: Colors.grey.withValues(alpha:0.3),
 //           width: 1.w,
 //         ),
 //         borderRadius: BorderRadius.circular(16.r),
@@ -246,7 +246,7 @@ import '../../../res/value/style/textstyles.dart';
 //           Container(
 //             padding: EdgeInsets.all(8.w),
 //             decoration: BoxDecoration(
-//               color: Colors.grey.withOpacity(0.1),
+//               color: Colors.grey.withValues(alpha:0.1),
 //               shape: BoxShape.circle,
 //             ),
 //             child: Icon(
@@ -278,7 +278,7 @@ import '../../../res/value/style/textstyles.dart';
 //             'Coming Soon',
 //             style: TextStyle(
 //               fontSize: 10.sp,
-//               color: Colors.grey.withOpacity(0.7),
+//               color: Colors.grey.withValues(alpha:0.7),
 //               fontWeight: FontWeight.w400,
 //               fontStyle: FontStyle.italic,
 //             ),
@@ -374,7 +374,7 @@ class _ClassCardState extends State<ClassCard>
     HapticFeedback.lightImpact();
 
     Get.to(
-          () => ClassScreen(
+      () => ClassScreen(
         id: widget.id,
         stageId: widget.stageId,
         name: widget.name,
@@ -405,8 +405,8 @@ class _ClassCardState extends State<ClassCard>
                 boxShadow: [
                   BoxShadow(
                     color: widget.isActive
-                        ? mainColor.withOpacity(0.15)
-                        : Colors.grey.withOpacity(0.1),
+                        ? mainColor.withValues(alpha: 0.15)
+                        : Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 12.r,
                     offset: Offset(0, 4.h),
                     spreadRadius: 0,
@@ -420,8 +420,8 @@ class _ClassCardState extends State<ClassCard>
                   duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
                     color: widget.isActive
-                        ? mainColor.withOpacity(_opacityAnimation.value)
-                        : Colors.grey.withOpacity(0.05),
+                        ? mainColor.withValues(alpha: _opacityAnimation.value)
+                        : Colors.grey.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: widget.isActive
@@ -444,7 +444,7 @@ class _ClassCardState extends State<ClassCard>
       dashPattern: [8, 4],
       radius: Radius.circular(16.r),
       padding: EdgeInsets.all(8.w), // Reduced padding
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -455,7 +455,7 @@ class _ClassCardState extends State<ClassCard>
             Container(
               padding: EdgeInsets.all(6.w), // Reduced padding
               decoration: BoxDecoration(
-                color: mainColor.withOpacity(0.1),
+                color: mainColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -468,7 +468,8 @@ class _ClassCardState extends State<ClassCard>
             SizedBox(height: 6.h), // Reduced spacing
 
             // Class name
-            Flexible( // Added Flexible to prevent overflow
+            Flexible(
+              // Added Flexible to prevent overflow
               child: Text(
                 widget.name,
                 style: TextStyles.subTitleStyle.copyWith(
@@ -485,7 +486,8 @@ class _ClassCardState extends State<ClassCard>
             // Student count (if provided)
             if (widget.studentCount != null) ...[
               SizedBox(height: 3.h), // Reduced spacing
-              Flexible( // Added Flexible
+              Flexible(
+                // Added Flexible
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -493,7 +495,7 @@ class _ClassCardState extends State<ClassCard>
                     Icon(
                       Icons.people_outline,
                       size: 11.sp, // Smaller icon
-                      color: mainColor.withOpacity(0.7),
+                      color: mainColor.withValues(alpha: 0.7),
                     ),
                     SizedBox(width: 3.w),
                     Flexible(
@@ -501,7 +503,7 @@ class _ClassCardState extends State<ClassCard>
                         '${widget.studentCount} students',
                         style: TextStyle(
                           fontSize: 9.sp, // Smaller font
-                          color: mainColor.withOpacity(0.7),
+                          color: mainColor.withValues(alpha: 0.7),
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -522,7 +524,7 @@ class _ClassCardState extends State<ClassCard>
       padding: EdgeInsets.all(8.w), // Reduced padding
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.withOpacity(0.3),
+          color: Colors.grey.withValues(alpha: 0.3),
           width: 1.w,
         ),
         borderRadius: BorderRadius.circular(16.r),
@@ -536,7 +538,7 @@ class _ClassCardState extends State<ClassCard>
           Container(
             padding: EdgeInsets.all(6.w), // Reduced padding
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -549,7 +551,8 @@ class _ClassCardState extends State<ClassCard>
           SizedBox(height: 6.h), // Reduced spacing
 
           // Class name (grayed out)
-          Flexible( // Added Flexible to prevent overflow
+          Flexible(
+            // Added Flexible to prevent overflow
             child: Text(
               widget.name,
               style: TextStyles.subTitleStyle.copyWith(
@@ -570,7 +573,7 @@ class _ClassCardState extends State<ClassCard>
             'Coming Soon',
             style: TextStyle(
               fontSize: 9.sp, // Smaller font
-              color: Colors.grey.withOpacity(0.7),
+              color: Colors.grey.withValues(alpha: 0.7),
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.italic,
             ),
@@ -617,7 +620,7 @@ class _ClassCardState extends State<ClassCard>
 //         child: Container(
 //           height: 75.h,
 //           width: (screenWidth - 80.w) / 2,
-//           color: mainColor.withOpacity(0.1),
+//           color: mainColor.withValues(alpha:0.1),
 //           child: DottedBorder(
 //             borderType: BorderType.RRect,
 //             color: mainColor,

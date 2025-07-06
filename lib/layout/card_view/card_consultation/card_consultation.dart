@@ -40,7 +40,7 @@ class ConsultationCard extends StatelessWidget {
                 width: 70,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: smallTextColor.withOpacity(0.1),
+                  color: smallTextColor.withValues(alpha: 0.1),
                   border: Border.all(
                     color: smallTextColor,
                   ),

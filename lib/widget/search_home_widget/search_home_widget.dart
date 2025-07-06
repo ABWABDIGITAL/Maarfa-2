@@ -124,7 +124,7 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
     // Add haptic feedback for better UX
     // HapticFeedback.lightImpact(); // Uncomment if you want haptic feedback
     Get.to(
-          () => const SearchScreen(),
+      () => const SearchScreen(),
       transition: Transition.fadeIn,
       duration: const Duration(milliseconds: 300),
     );
@@ -151,14 +151,15 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(_isPressed ? 0.05 : 0.08),
+                      color: Colors.black
+                          .withValues(alpha: _isPressed ? 0.05 : 0.08),
                       blurRadius: _isPressed ? 8 : 12,
                       offset: Offset(0, _isPressed ? 2 : 4),
                       spreadRadius: 0,
                     ),
                     // Inner shadow for depth
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       blurRadius: 1,
                       offset: const Offset(0, 1),
                       spreadRadius: 0,
@@ -166,8 +167,8 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                   ],
                   border: Border.all(
                     color: _isPressed
-                        ? accentColor.withOpacity(0.3)
-                        : Colors.grey.withOpacity(0.1),
+                        ? accentColor.withValues(alpha: 0.3)
+                        : Colors.grey.withValues(alpha: 0.1),
                     width: 1,
                   ),
                 ),
@@ -188,9 +189,8 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                           //   fit: BoxFit.contain,
                           //   color: Colors.grey[600],
                           // ),
-                          child: SvgPicture.asset(
-                            'assets/images/search_icon.svg'
-                          ),
+                          child:
+                              SvgPicture.asset('assets/images/search_icon.svg'),
                         );
                       },
                     ),
@@ -199,7 +199,7 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                     Expanded(
                       child: Text(
                         tr("search_courses"),
-                        style: TextStyles.hintStyle?.copyWith(
+                        style: TextStyles.hintStyle.copyWith(
                           fontSize: 14.sp,
                           color: Colors.grey[600],
                           fontWeight: FontWeight.w800,
@@ -218,8 +218,8 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            accentColor.withOpacity(0.9),
-                            accentColor.withOpacity(0.8),
+                            accentColor.withValues(alpha: 0.9),
+                            accentColor.withValues(alpha: 0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.only(
@@ -228,7 +228,7 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: accentColor.withOpacity(0.3),
+                            color: accentColor.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -248,7 +248,8 @@ class _SearchHomeWidgetState extends State<SearchHomeWidget>
                           child: Center(
                             child: TweenAnimationBuilder<double>(
                               duration: const Duration(milliseconds: 300),
-                              tween: Tween(begin: 0.0, end: _isPressed ? 1.0 : 0.0),
+                              tween: Tween(
+                                  begin: 0.0, end: _isPressed ? 1.0 : 0.0),
                               builder: (context, value, child) {
                                 return Transform.scale(
                                   scale: 1.0 + (value * 0.1),

@@ -98,7 +98,7 @@ class EducationalStagesCubit extends Cubit<EducationalStagesState> {
 
     educationalStagesRepository.getEducationalStages().then((value) async {
       String? token = await prefService.getValue("token");
-      print("token $token");
+      // print("token $token");
       if (token != "0") {
         educationalStagesRepository.getLessonsPrices().then((value2) {
           emit(EducationalStagesLoadedState(

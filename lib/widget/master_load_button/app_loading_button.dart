@@ -176,7 +176,8 @@ class AppLoadingButtonState extends State<AppLoadingButton>
           style: TextButton.styleFrom(
             foregroundColor: widget.color,
             minimumSize: Size(_squeezeAnimation.value, widget.height),
-            disabledForegroundColor: widget.disabledColor!.withOpacity(0.38),
+            disabledForegroundColor:
+                widget.disabledColor!.withValues(alpha: 0.38),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),
             ),

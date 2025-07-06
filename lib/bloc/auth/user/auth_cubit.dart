@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -329,7 +330,7 @@ class AuthUserCubit extends Cubit<AuthState> {
       // secureColor = mainColor;
     } else {
       isPassword = true;
-      // secureColor = hintColor.withOpacity(0.5);
+      // secureColor = hintColor.withValues(alpha:0.5);
     }
     emit(ChangePasswordState());
   }

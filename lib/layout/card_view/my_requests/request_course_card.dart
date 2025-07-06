@@ -59,7 +59,7 @@ class RequestCourseCard extends StatelessWidget {
             // height: 110.h,
             // decoration: BoxDecoration(
             //   color:
-            //   finishPercent == 1 ? inProgressColor.withOpacity(0.1) : white,
+            //   finishPercent == 1 ? inProgressColor.withValues(alpha:0.1) : white,
             borderRadius: BorderRadius.circular(5.r),
             border: Border.all(
               color:
@@ -100,7 +100,7 @@ class RequestCourseCard extends StatelessWidget {
                           width: 55.w,
                           height: 25.h,
                           decoration: BoxDecoration(
-                              color: black.withOpacity(0.6),
+                              color: black.withValues(alpha: 0.6),
                               borderRadius: BorderRadius.circular(5.r)),
                           child: Center(
                               child: Text(attendance,

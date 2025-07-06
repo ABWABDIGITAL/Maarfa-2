@@ -39,13 +39,13 @@ class RequestSubjectCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: Colors.grey.withOpacity(0.12),
+          color: Colors.grey.withValues(alpha: 0.12),
           width: 1,
         ),
       ),
@@ -99,7 +99,7 @@ class RequestSubjectCard extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: mainColor.withOpacity(0.3),
+                color: mainColor.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -122,10 +122,10 @@ class RequestSubjectCard extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           decoration: BoxDecoration(
-            color: mainColor.withOpacity(0.1),
+            color: mainColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: mainColor.withOpacity(0.3),
+              color: mainColor.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -166,7 +166,7 @@ class RequestSubjectCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(4.w),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Icon(
@@ -196,7 +196,7 @@ class RequestSubjectCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(4.w),
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
+                color: Colors.green.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Icon(
@@ -225,7 +225,7 @@ class RequestSubjectCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.grey.withOpacity(0.15),
+            color: Colors.grey.withValues(alpha: 0.15),
             width: 1,
           ),
         ),
@@ -236,10 +236,10 @@ class RequestSubjectCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: Colors.blue.withOpacity(0.3),
+                color: Colors.blue.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -269,10 +269,10 @@ class RequestSubjectCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
-              color: _getStatusColor().withOpacity(0.1),
+              color: _getStatusColor().withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: _getStatusColor().withOpacity(0.3),
+                color: _getStatusColor().withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -312,7 +312,7 @@ class RequestSubjectCard extends StatelessWidget {
                 backgroundColor: _getActionButtonColor(),
                 foregroundColor: Colors.white,
                 elevation: 2,
-                shadowColor: _getActionButtonColor().withOpacity(0.3),
+                shadowColor: _getActionButtonColor().withValues(alpha: 0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r),
                 ),

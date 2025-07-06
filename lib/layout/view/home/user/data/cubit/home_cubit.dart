@@ -1,19 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-import 'package:my_academy/layout/activity/user_screens/home/home_screen.dart';
 import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_best_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_specializations_data_model.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_teacher_details_data_model.dart';
-import 'package:my_academy/layout/view/home/user/teacher_details/booking_confirmation_dialog.dart';
 import 'package:my_academy/service/network/dio/dio_service.dart';
-
-import '../../../../../../model/common/search/search_db_response.dart';
 
 //
 // // class HomeCubit extends Cubit<HomeState> {
@@ -211,8 +204,8 @@ class Home2Cubit extends Cubit<Home2State> {
         emit(GetAllBestTeachersErrorState(errorMessage: error));
       }, (data) {
         bestTeacherDataModel = GetAllBestTeacherDataModel.fromJson(data);
-        print('Full response: $data');
-        print('Parsed provider: ${bestTeacherDataModel?.data?.providers}');
+        // print('Full response: $data');
+        // print('Parsed provider: ${bestTeacherDataModel?.data?.providers}');
 
         if (bestTeacherDataModel?.data?.providers != null) {
           // provider is a single object, so wrap it into a list
@@ -382,7 +375,6 @@ class Home2Cubit extends Cubit<Home2State> {
               duration: Duration(seconds: 3),
             ),
           );
-
 
           emit(MakeBookErrorState(
               errorMessage: data['message'] ?? 'Booking failed'));

@@ -34,7 +34,7 @@ class EmptyScreen extends StatelessWidget {
   //           Image.asset(image,
   //               height: height / 2,
   //               fit: BoxFit.contain,
-  //               color: color ?? mainColor.withOpacity(0.1)),
+  //               color: color ?? mainColor.withValues(alpha:0.1)),
   //           Space(
   //             boxHeight: 30.h,
   //           ),
@@ -59,7 +59,7 @@ class EmptyScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           // boxShadow: [
           //   BoxShadow(
-          //     color: Colors.grey.withOpacity(0.03),
+          //     color: Colors.grey.withValues(alpha:0.03),
           //     blurRadius: 6,
           //     offset: const Offset(0, 2),
           //   ),
@@ -75,7 +75,7 @@ class EmptyScreen extends StatelessWidget {
                   image,
                   height: height / 2,
                   fit: BoxFit.contain,
-                  color: color ?? grey.withOpacity(0.1),
+                  color: color ?? grey.withValues(alpha: 0.1),
                 ),
               ),
               Space(boxHeight: 30.h),

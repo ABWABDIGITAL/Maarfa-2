@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
+
+import '../../../bloc/bookmark/bookmark_cubit.dart';
 import '../../../bloc/lessons/lessons_cubit.dart' as lessons;
-import '../../../bloc/bookmark/bookmark_cubit.dart';
-import '../../../bloc/bookmark/bookmark_cubit.dart';
 import '../../../bloc/lessons/lessons_cubit.dart';
 import '../../../model/common/subjects/subjects_model.dart';
 import '../../../res/drawable/icon/icons.dart';
@@ -135,8 +135,11 @@ class _ClassScreenViewState extends State<ClassScreenView> {
               child: BlocConsumer<LessonsCubit, LessonsState>(
                 listener: (context, state) {
                   if (state is lessons.RemoveBookmarkState) {
-                    print('remove');
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainScreen()), (route) => false);
+                    // print('remove');
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                        (route) => false);
                   }
                 },
                 builder: (context, state) {
@@ -148,7 +151,8 @@ class _ClassScreenViewState extends State<ClassScreenView> {
                       onTap: () {
                         bloc.bookmark(index);
                         BlocProvider.of<BookmarkCubit>(context).addToBookMark(
-                            id: bloc.lessonsModel[index].id!, type: 'lesson',
+                          id: bloc.lessonsModel[index].id!,
+                          type: 'lesson',
                         );
                       },
                       isBlue: bloc.bookmarkList[index],

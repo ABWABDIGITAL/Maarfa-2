@@ -63,7 +63,7 @@ class TimerWidget extends StatelessWidget {
                               tr("resend"),
                               style: TextStyles.hintStyle.copyWith(
                                   color: bloc.start > 0
-                                      ? secColor.withOpacity(0.1)
+                                      ? secColor.withValues(alpha: 0.1)
                                       : secColor),
                             ),
                           ),
@@ -71,7 +71,7 @@ class TimerWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 5, horizontal: 30),
                       decoration: BoxDecoration(
-                        color: timerColor.withOpacity(0.5),
+                        color: timerColor.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(

@@ -86,9 +86,9 @@ void main() async {
   final result = await prefService.getBool("has_bank_account");
 
   result.fold((failure) => print("Error: $failure"), (value) {
-    print("has_bank_account: $value");
+    // print("has_bank_account: $value");
     hasBankAccount = value;
-    print("hasBankAccount: $hasBankAccount");
+    // print("hasBankAccount: $hasBankAccount");
   });
 
   runApp(

@@ -37,7 +37,9 @@ class SubscribeCourseCard extends StatelessWidget {
         width: screenWidth,
         height: 130.h,
         decoration: BoxDecoration(
-          color: finishPercent == 1 ? inProgressColor.withOpacity(0.1) : white,
+          color: finishPercent == 1
+              ? inProgressColor.withValues(alpha: 0.1)
+              : white,
           borderRadius: BorderRadius.circular(5.r),
           border: Border.all(
             color: finishPercent == 1 ? inProgressBorderColor : textfieldColor,
@@ -72,7 +74,7 @@ class SubscribeCourseCard extends StatelessWidget {
                             width: 55.w,
                             height: 25.h,
                             decoration: BoxDecoration(
-                                color: black.withOpacity(0.6),
+                                color: black.withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(5.r)),
                             child: Center(
                                 child: Text(status,
@@ -142,7 +144,7 @@ class SubscribeCourseCard extends StatelessWidget {
                       //     LinearPercentIndicator(
                       //       backgroundColor: finishPercent == 1
                       //           ? inProgressColor
-                      //           : mainColor.withOpacity(0.1),
+                      //           : mainColor.withValues(alpha:0.1),
                       //       progressColor: finishPercent == 1
                       //           ? inProgressColor
                       //           : mainColor,

@@ -136,7 +136,7 @@ import '../../../card_view/provider_subject/provider_subject_card.dart';
 //                           image: emptyCurrent,
 //                           width: screenWidth,
 //                           height: 170.h,
-//                           color: mainColor.withOpacity(0.3),
+//                           color: mainColor.withValues(alpha:0.3),
 //                         )
 //                       : CustomList(
 //                           listHeight: 10000000000000,
@@ -164,7 +164,7 @@ import '../../../card_view/provider_subject/provider_subject_card.dart';
 //                           image: emptyCurrent,
 //                           width: screenWidth,
 //                           height: 170.h,
-//                           color: mainColor.withOpacity(0.3),
+//                           color: mainColor.withValues(alpha:0.3),
 //                         )
 //                       : CustomList(
 //                           listHeight: 10000000000000,
@@ -276,7 +276,7 @@ class HomeCacheView extends StatelessWidget {
                   //         image: emptyCurrent,
                   //         width: screenWidth,
                   //         height: 170.h,
-                  //         color: mainColor.withOpacity(0.3),
+                  //         color: mainColor.withValues(alpha:0.3),
                   //       )
                   //     : Column(
                   //         children: List.generate(
@@ -294,7 +294,7 @@ class HomeCacheView extends StatelessWidget {
                           image: emptyCurrent,
                           width: screenWidth,
                           height: 170.h,
-                          color: mainColor.withOpacity(0.3),
+                          color: mainColor.withValues(alpha: 0.3),
                         )
                       : GridView.builder(
                           shrinkWrap: true,
@@ -323,7 +323,7 @@ class HomeCacheView extends StatelessWidget {
                           image: emptyCurrent,
                           width: screenWidth,
                           height: 170.h,
-                          color: mainColor.withOpacity(0.3),
+                          color: mainColor.withValues(alpha: 0.3),
                         )
                       : ListView.builder(
                           itemCount: data.data.lessons!.length,

@@ -291,8 +291,7 @@ class ContentCubit extends Cubit<ContentState> {
           ? endTimeOfDay.format(Get.context!)
           : "${endTimeOfDay.hour.toString().padLeft(2, '0')}:${endTimeOfDay.minute.toString().padLeft(2, '0')}";
 
-      print(startTime);
-      print(endTime);
+    
     }
 
     emit(ChooseStartTimeState());

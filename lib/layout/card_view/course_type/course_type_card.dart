@@ -22,7 +22,8 @@ class CourseTypeCard extends StatelessWidget {
       child: Container(
         height: 35.h,
         decoration: BoxDecoration(
-          color: isSelected ? mainColor.withOpacity(0.1) : courseTypeColor,
+          color:
+              isSelected ? mainColor.withValues(alpha: 0.1) : courseTypeColor,
           border: Border.all(color: isSelected ? mainColor : textfieldColor),
           borderRadius: BorderRadius.circular(20.r),
         ),

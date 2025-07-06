@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_academy/model/common/courses/course_details/course_details_model.dart';
 import 'package:my_academy/widget/toast/toast.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+
 import '../../model/provider/home/home_db_response.dart';
 import '../../model/user/groups_courses/groups_courses_model.dart';
 import '../../repository/user/add_request/add_request_repository.dart';
@@ -92,13 +93,12 @@ class AddRequestCubit extends Cubit<AddRequestState> {
     emit(IsSelectedChipState());
   }
 
-  validateRequest({
-    required int lessonId,
-    required String type,
-    required dynamic lessonDetails,
-    required BuildContext context,
-    bool? isHome = false
-  }) async {
+  validateRequest(
+      {required int lessonId,
+      required String type,
+      required dynamic lessonDetails,
+      required BuildContext context,
+      bool? isHome = false}) async {
     if (times.isEmpty) {
       //Todo: add to lang files
       //authController.reset();
@@ -111,7 +111,8 @@ class AddRequestCubit extends Cubit<AddRequestState> {
             type: type,
             times: times,
             lessonDetails: lessonDetails,
-        isHome: isHome, context: context,
+            isHome: isHome,
+            context: context,
           )
           .whenComplete(() => authController.reset());
     }

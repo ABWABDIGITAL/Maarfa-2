@@ -20,7 +20,7 @@ class SkillsCard extends StatelessWidget {
           child: Container(
             height: 35.h,
             decoration: BoxDecoration(
-                color: profileIconCardColor.withOpacity(0.5),
+                color: profileIconCardColor.withValues(alpha: 0.5),
                 border: Border.all(color: mainColor),
                 borderRadius: BorderRadius.circular(20.r)),
             child: SidePadding(

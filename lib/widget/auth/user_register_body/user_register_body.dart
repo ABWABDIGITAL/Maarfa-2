@@ -151,8 +151,8 @@ class _UserRegisterBodyState extends State<UserRegisterBody> {
                                                   style: TextStyles.appBarStyle
                                                       .copyWith(
                                                           color: mainColor
-                                                              .withOpacity(
-                                                                  .5))),
+                                                              .withValues(
+                                                                  alpha: .5))),
                                             ),
                                           ),
                                         ],
@@ -191,7 +191,7 @@ class _UserRegisterBodyState extends State<UserRegisterBody> {
                       //               Text(
                       //                 tr("gender"),
                       //                 style: TextStyles.appBarStyle
-                      //                     .copyWith(color: mainColor.withOpacity(.7)),
+                      //                     .copyWith(color: mainColor.withValues(alpha:.7)),
                       //               ),
                       //             ],
                       //           ),

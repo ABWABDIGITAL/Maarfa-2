@@ -8,11 +8,11 @@ class GetAllSpecializationsDataModel {
 
   GetAllSpecializationsDataModel(
       {this.success,
-        this.errorCode,
-        this.status,
-        this.notificationsCount,
-        this.messages,
-        this.data});
+      this.errorCode,
+      this.status,
+      this.notificationsCount,
+      this.messages,
+      this.data});
 
   GetAllSpecializationsDataModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -23,18 +23,18 @@ class GetAllSpecializationsDataModel {
     if (json['data'] != null) {
       data = <SpecializationData>[];
       json['data'].forEach((v) {
-        data!.add(new SpecializationData.fromJson(v));
+        data!.add(SpecializationData.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['errorCode'] = this.errorCode;
-    data['status'] = this.status;
-    data['notificationsCount'] = this.notificationsCount;
-    data['messages'] = this.messages;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['errorCode'] = errorCode;
+    data['status'] = status;
+    data['notificationsCount'] = notificationsCount;
+    data['messages'] = messages;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -56,10 +56,10 @@ class SpecializationData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['image'] = this.image;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['image'] = image;
     return data;
   }
 }

@@ -2,30 +2,29 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_teacher_details_data_model.dart';
-import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ProfessionalBookingBottomSheet extends StatefulWidget {
   final TeacherDetailsData teacher;
   final Function(String date, String timeFrom, String timeTo, String type)
-  onConfirm;
+      onConfirm;
 
   const ProfessionalBookingBottomSheet({
-    Key? key,
+    super.key,
     required this.teacher,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   State<ProfessionalBookingBottomSheet> createState() =>
       _ProfessionalBookingBottomSheetState();
 
   static void show(
-      BuildContext context,
-      TeacherDetailsData teacher,
-      Function(String date, String timeFrom, String timeTo, String type)
-      onConfirm,
-      ) {
+    BuildContext context,
+    TeacherDetailsData teacher,
+    Function(String date, String timeFrom, String timeTo, String type)
+        onConfirm,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -61,7 +60,6 @@ class _ProfessionalBookingBottomSheetState
     DateTime.now().add(Duration(days: 3)),
     DateTime.now().add(Duration(days: 7)),
   ];
-
 
   @override
   void initState() {
@@ -172,13 +170,15 @@ class _ProfessionalBookingBottomSheetState
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                color: _selectedStartTime != null ? Colors.blue[600]! : Colors.grey[300]!,
+                color: _selectedStartTime != null
+                    ? Colors.blue[600]!
+                    : Colors.grey[300]!,
                 width: 1.5,
               ),
               borderRadius: BorderRadius.circular(8.r),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -188,7 +188,9 @@ class _ProfessionalBookingBottomSheetState
               children: [
                 Icon(
                   Icons.access_time,
-                  color: _selectedStartTime != null ? Colors.blue[600] : Colors.grey[500],
+                  color: _selectedStartTime != null
+                      ? Colors.blue[600]
+                      : Colors.grey[500],
                   size: 20.sp,
                 ),
                 SizedBox(width: 12.w),
@@ -400,8 +402,8 @@ class _ProfessionalBookingBottomSheetState
                 SizedBox(height: 4.h),
                 Text(
                   widget.teacher.provider?.specializations
-                      ?.map((s) => s.name)
-                      .join(', ') ??
+                          ?.map((s) => s.name)
+                          .join(', ') ??
                       'Teacher',
                   style: TextStyle(
                     fontSize: 14.sp,
@@ -528,8 +530,8 @@ class _ProfessionalBookingBottomSheetState
         Row(
           children: [
             Expanded(
-              child:
-              _buildTypeOption('lesson', Icons.school, 'lessonee'.tr(), '60 min'),
+              child: _buildTypeOption(
+                  'lesson', Icons.school, 'lessonee'.tr(), '60 min'),
             ),
             SizedBox(width: 12.w),
             Expanded(
@@ -593,7 +595,7 @@ class _ProfessionalBookingBottomSheetState
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -675,8 +677,7 @@ class _ProfessionalBookingBottomSheetState
           ),
           SizedBox(width: 12.w),
           Text(
-            'selectedDate'.tr() +
-                ': ${DateFormat('EEEE, MMM dd, yyyy').format(_selectedDay!)}',
+            '${'selectedDate'.tr()}: ${DateFormat('EEEE, MMM dd, yyyy').format(_selectedDay!)}',
             style: TextStyle(
               color: Colors.blue[700],
               fontSize: 14.sp,
@@ -760,7 +761,7 @@ class _ProfessionalBookingBottomSheetState
                 Text(
                   DateFormat('EEEE').format(_selectedDay!),
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 14.sp,
                   ),
                 ),
@@ -846,12 +847,12 @@ class _ProfessionalBookingBottomSheetState
           borderRadius: BorderRadius.circular(8.r),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: Colors.blue[600]!.withOpacity(0.3),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ]
+                  BoxShadow(
+                    color: Colors.blue[600]!.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ]
               : null,
         ),
         child: Text(
@@ -904,11 +905,11 @@ class _ProfessionalBookingBottomSheetState
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  print('Confirm booking');
-                  print(formatDate(_selectedDay.toString()));
-                  print(_fromTime);
-                  print(_toTime);
-                  print(_selectedType);
+                  // print('Confirm booking');
+                  // print(formatDate(_selectedDay.toString()));
+                  // print(_fromTime);
+                  // print(_toTime);
+                  // print(_selectedType);
                   canConfirm ? _confirmBooking() : null;
                 },
                 // onPressed: canConfirm ? _confirmBooking : null,
@@ -976,11 +977,11 @@ class _ProfessionalBookingBottomSheetState
   }
 
   static void show(
-      BuildContext context,
-      TeacherDetailsData teacher,
-      Function(String date, String timeFrom, String timeTo, String type)
-      onConfirm,
-      ) {
+    BuildContext context,
+    TeacherDetailsData teacher,
+    Function(String date, String timeFrom, String timeTo, String type)
+        onConfirm,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

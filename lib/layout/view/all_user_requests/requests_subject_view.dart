@@ -61,10 +61,10 @@ Widget requestsLessonView(
           Container(
             padding: EdgeInsets.all(24.w),
             decoration: BoxDecoration(
-              color: mainColor.withOpacity(0.05),
+              color: mainColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: mainColor.withOpacity(0.1),
+                color: mainColor.withValues(alpha: 0.1),
                 width: 2,
               ),
             ),
@@ -75,7 +75,7 @@ Widget requestsLessonView(
                   image: emptyCurrent,
                   width: screenWidth * 0.6,
                   height: 200.h,
-                  color: mainColor.withOpacity(0.3),
+                  color: mainColor.withValues(alpha: 0.3),
                 ),
                 Space(boxHeight: 16.h),
                 Text(
@@ -174,7 +174,7 @@ Widget _buildHeaderSection(List<RequestModel> data) {
       borderRadius: BorderRadius.circular(16.r),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black.withValues(alpha: 0.05),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -203,7 +203,7 @@ Widget _buildHeaderSection(List<RequestModel> data) {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               decoration: BoxDecoration(
-                color: mainColor.withOpacity(0.1),
+                color: mainColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
@@ -247,7 +247,7 @@ Widget _buildStatusStat(String label, int count, Color color) {
         width: 40.w,
         height: 40.h,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Center(
@@ -333,7 +333,7 @@ String _getStatusText(int? status) {
 //                 image: emptyCurrent,
 //                 width: screenWidth,
 //                 height: 300.h,
-//                 color: mainColor.withOpacity(0.3),
+//                 color: mainColor.withValues(alpha:0.3),
 //               ),
 //             ],
 //           ),

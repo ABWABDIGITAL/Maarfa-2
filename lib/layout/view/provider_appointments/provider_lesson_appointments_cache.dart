@@ -8,6 +8,7 @@ import 'package:my_academy/model/common/lessons/lesson_model.dart';
 import 'package:my_academy/res/value/dimenssion/dimenssions.dart';
 import 'package:my_academy/widget/master_list/custom_list.dart';
 import 'package:my_academy/widget/space/space.dart';
+
 import '../../../../widget/loader/loader.dart';
 import '../../../res/drawable/image/images.dart';
 import '../../../res/value/color/color.dart';
@@ -83,7 +84,7 @@ class ProviderAppointmentsSubjectCacheView extends StatelessWidget {
                                 image: emptyCurrent,
                                 width: screenWidth,
                                 height: screenHeight / 3,
-                                color: mainColor.withOpacity(0.3),
+                                color: mainColor.withValues(alpha: 0.3),
                               ),
                             ],
                           ),

@@ -8,11 +8,11 @@ class GetAllBestTeacherDataModel {
 
   GetAllBestTeacherDataModel(
       {this.success,
-        this.errorCode,
-        this.status,
-        this.notificationsCount,
-        this.messages,
-        this.data});
+      this.errorCode,
+      this.status,
+      this.notificationsCount,
+      this.messages,
+      this.data});
 
   GetAllBestTeacherDataModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -20,16 +20,16 @@ class GetAllBestTeacherDataModel {
     status = json['status'];
     notificationsCount = json['notificationsCount'];
     messages = json['messages'];
-    data = json['data'] != null ? new Dataaaa.fromJson(json['data']) : null;
+    data = json['data'] != null ? Dataaaa.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['errorCode'] = this.errorCode;
-    data['status'] = this.status;
-    data['notificationsCount'] = this.notificationsCount;
-    data['messages'] = this.messages;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['errorCode'] = errorCode;
+    data['status'] = status;
+    data['notificationsCount'] = notificationsCount;
+    data['messages'] = messages;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -46,15 +46,15 @@ class Dataaaa {
     if (json['providers'] != null) {
       providers = <ProvidersMM>[];
       json['providers'].forEach((v) {
-        providers!.add(new ProvidersMM.fromJson(v));
+        providers!.add(ProvidersMM.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.providers != null) {
-      data['providers'] = this.providers!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (providers != null) {
+      data['providers'] = providers!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -73,14 +73,14 @@ class ProvidersMM {
 
   ProvidersMM(
       {this.id,
-        this.title,
-        this.degree,
-        this.firstName,
-        this.lastName,
-        this.specialization,
-        this.rate,
-        this.rateCount,
-        this.imagePath});
+      this.title,
+      this.degree,
+      this.firstName,
+      this.lastName,
+      this.specialization,
+      this.rate,
+      this.rateCount,
+      this.imagePath});
 
   ProvidersMM.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -95,16 +95,16 @@ class ProvidersMM {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['degree'] = this.degree;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['specialization'] = this.specialization;
-    data['rate'] = this.rate;
-    data['rate_count'] = this.rateCount;
-    data['image_path'] = this.imagePath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['degree'] = degree;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['specialization'] = specialization;
+    data['rate'] = rate;
+    data['rate_count'] = rateCount;
+    data['image_path'] = imagePath;
     return data;
   }
 }

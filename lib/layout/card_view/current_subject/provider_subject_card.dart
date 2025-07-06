@@ -81,7 +81,7 @@ class SubjectCardScreen extends StatelessWidget {
                           height: 30.h,
                           width: 70.w,
                           decoration: BoxDecoration(
-                            color: inProgressColor.withOpacity(0.1),
+                            color: inProgressColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: inProgressColor,

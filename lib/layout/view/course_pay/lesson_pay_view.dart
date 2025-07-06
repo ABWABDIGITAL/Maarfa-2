@@ -124,7 +124,7 @@ class LessonPayView extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    // colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.8), BlendMode.modulate,)
+                                    // colorFilter: ColorFilter.mode(Colors.white.withValues(alpha:0.8), BlendMode.modulate,)
                                     Row(
                                       children: [
                                         Radio(
@@ -241,7 +241,7 @@ class LessonPayView extends StatelessWidget {
                         ? const SizedBox()
                         : MasterButton(
                             borderColor: transparent,
-                            buttonColor: circleColor.withOpacity(0.2),
+                            buttonColor: circleColor.withValues(alpha: 0.2),
                             buttonStyle: TextStyles.appBarStyle
                                 .copyWith(color: circleColor),
                             buttonText: tr("cancel"),

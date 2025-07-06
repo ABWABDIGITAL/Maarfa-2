@@ -298,7 +298,7 @@
 //                       MasterButton(
 //                           sidePadding: 15,
 //                           borderColor: transparent,
-//                           buttonColor: circleColor.withOpacity(0.1),
+//                           buttonColor: circleColor.withValues(alpha:0.1),
 //                           buttonStyle: TextStyles.appBarStyle
 //                               .copyWith(color: circleColor),
 //                           onPressed: () => deleteAlert(
@@ -426,7 +426,7 @@ class LessonDetailsContent extends StatelessWidget {
               border: Border.all(color: Colors.white, width: 3.w),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 10,
                   spreadRadius: 2,
                 ),

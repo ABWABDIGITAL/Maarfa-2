@@ -79,7 +79,7 @@ class BankAccount extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: mainColor.withOpacity(0.1),
+                          color: mainColor.withValues(alpha: 0.1),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -189,7 +189,7 @@ class BankAccount extends StatelessWidget {
                                 height: 200.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  color: mainColor.withOpacity(0.1),
+                                  color: mainColor.withValues(alpha: 0.1),
                                 ),
                                 child: bankData != null
                                     ? SidePadding(

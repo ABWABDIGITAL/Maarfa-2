@@ -57,7 +57,7 @@ class _CourseCard3State extends State<CourseCard3> {
         Container(
           width: screenWidth,
           // height: 500.h,
-          color: textfieldColor.withOpacity(0.1),
+          color: textfieldColor.withValues(alpha: 0.1),
           child: Column(
             children: [
               Stack(
@@ -65,7 +65,7 @@ class _CourseCard3State extends State<CourseCard3> {
                 children: [
                   Container(
                     width: screenWidth,
-                    color: black.withOpacity(0.1),
+                    color: black.withValues(alpha: 0.1),
                     child: CachedImage(
                       imageUrl: widget.courseDetailsModel.image!,
                       width: screenWidth,

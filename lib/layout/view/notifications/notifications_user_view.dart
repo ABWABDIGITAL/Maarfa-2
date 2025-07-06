@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/bloc/notifications/notifications_cubit.dart';
 import 'package:my_academy/model/user/notification_user/notification_user_model.dart';
 import 'package:my_academy/repository/common/notifications/notifications_repository.dart';
+
 import '../../../res/drawable/image/images.dart';
 import '../../../res/value/dimenssion/dimenssions.dart';
 import '../../../widget/error/page/error_page.dart';
@@ -57,7 +58,7 @@ class NotificationsUserView extends StatelessWidget {
                   image: notifications,
                   width: screenWidth,
                   height: 300.h,
-                  // color: mainColor.withOpacity(0.3),
+                  // color: mainColor.withValues(alpha:0.3),
                 ),
               ],
             ),

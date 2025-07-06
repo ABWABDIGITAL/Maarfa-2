@@ -147,13 +147,13 @@ class _RightHomeCardState extends State<RightHomeCard>
                               : Alignment.centerLeft,
                           colors: [
                             primaryColor,
-                            primaryColor.withOpacity(0.85),
+                            primaryColor.withValues(alpha: 0.85),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(20.r),
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withOpacity(0.3),
+                            color: primaryColor.withValues(alpha: 0.3),
                             blurRadius: _isPressed
                                 ? 8
                                 : _isHovered
@@ -169,13 +169,13 @@ class _RightHomeCardState extends State<RightHomeCard>
                             spreadRadius: _isPressed ? -2 : 0,
                           ),
                           BoxShadow(
-                            color: Colors.white.withOpacity(0.1),
+                            color: Colors.white.withValues(alpha: 0.1),
                             blurRadius: 1,
                             offset: const Offset(0, 1),
                           ),
                         ],
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           width: 1.5,
                         ),
                       ),
@@ -193,7 +193,7 @@ class _RightHomeCardState extends State<RightHomeCard>
                                         : Alignment.centerLeft,
                                     radius: 1.2,
                                     colors: [
-                                      Colors.white.withOpacity(0.1),
+                                      Colors.white.withValues(alpha: 0.1),
                                       Colors.transparent,
                                     ],
                                   ),
@@ -235,7 +235,7 @@ class _RightHomeCardState extends State<RightHomeCard>
                                       end: const Alignment(1.0, 0.0),
                                       colors: [
                                         Colors.transparent,
-                                        Colors.white.withOpacity(0.1),
+                                        Colors.white.withValues(alpha: 0.1),
                                         Colors.transparent,
                                       ],
                                       stops: const [0.0, 0.5, 1.0],
@@ -271,7 +271,7 @@ class _RightHomeCardState extends State<RightHomeCard>
               borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -326,7 +326,7 @@ class _RightHomeCardState extends State<RightHomeCard>
                     height: 1.3,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         offset: const Offset(0, 1),
                         blurRadius: 2,
                       ),
@@ -354,7 +354,7 @@ class _RightHomeCardState extends State<RightHomeCard>
                 child: Text(
                   widget.subTitle,
                   style: TextStyles.hintStyle.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 13.sp,
                     height: 1.4,
                     fontWeight: FontWeight.w400,
@@ -396,7 +396,7 @@ class _RightHomeCardState extends State<RightHomeCard>
           backgroundColor: Colors.white,
           foregroundColor: secondaryColor,
           elevation: _isHovered ? 8 : 4,
-          shadowColor: Colors.black.withOpacity(0.3),
+          shadowColor: Colors.black.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25.r),
           ),
@@ -579,13 +579,13 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                               : Alignment.centerRight,
 //                           colors: [
 //                             primaryColor,
-//                             primaryColor.withOpacity(0.85),
+//                             primaryColor.withValues(alpha:0.85),
 //                           ],
 //                         ),
 //                         borderRadius: BorderRadius.circular(20.r),
 //                         boxShadow: [
 //                           BoxShadow(
-//                             color: primaryColor.withOpacity(0.3),
+//                             color: primaryColor.withValues(alpha:0.3),
 //                             blurRadius: _isPressed
 //                                 ? 8
 //                                 : _isHovered
@@ -601,13 +601,13 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                             spreadRadius: _isPressed ? -2 : 0,
 //                           ),
 //                           BoxShadow(
-//                             color: Colors.white.withOpacity(0.1),
+//                             color: Colors.white.withValues(alpha:0.1),
 //                             blurRadius: 1,
 //                             offset: const Offset(0, 1),
 //                           ),
 //                         ],
 //                         border: Border.all(
-//                           color: Colors.white.withOpacity(0.2),
+//                           color: Colors.white.withValues(alpha:0.2),
 //                           width: 1.5,
 //                         ),
 //                       ),
@@ -625,7 +625,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                                         : Alignment.centerRight,
 //                                     radius: 1.2,
 //                                     colors: [
-//                                       Colors.white.withOpacity(0.1),
+//                                       Colors.white.withValues(alpha:0.1),
 //                                       Colors.transparent,
 //                                     ],
 //                                   ),
@@ -669,7 +669,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                                       end: const Alignment(1.0, 0.0),
 //                                       colors: [
 //                                         Colors.transparent,
-//                                         Colors.white.withOpacity(0.1),
+//                                         Colors.white.withValues(alpha:0.1),
 //                                         Colors.transparent,
 //                                       ],
 //                                       stops: const [0.0, 0.5, 1.0],
@@ -705,7 +705,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //               borderRadius: BorderRadius.circular(16.r),
 //               boxShadow: [
 //                 BoxShadow(
-//                   color: Colors.black.withOpacity(0.1),
+//                   color: Colors.black.withValues(alpha:0.1),
 //                   blurRadius: 10,
 //                   offset: const Offset(0, 5),
 //                 ),
@@ -760,7 +760,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                     height: 1.3,
 //                     shadows: [
 //                       Shadow(
-//                         color: Colors.black.withOpacity(0.3),
+//                         color: Colors.black.withValues(alpha:0.3),
 //                         offset: const Offset(0, 1),
 //                         blurRadius: 2,
 //                       ),
@@ -788,7 +788,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //                 child: Text(
 //                   widget.subTitle,
 //                   style: TextStyles.hintStyle.copyWith(
-//                     color: Colors.white.withOpacity(0.9),
+//                     color: Colors.white.withValues(alpha:0.9),
 //                     fontSize: 13.sp,
 //                     height: 1.4,
 //                     fontWeight: FontWeight.w400,
@@ -830,7 +830,7 @@ class _RightHomeCardState extends State<RightHomeCard>
 //           backgroundColor: Colors.white,
 //           foregroundColor: secondaryColor,
 //           elevation: _isHovered ? 8 : 4,
-//           shadowColor: Colors.black.withOpacity(0.3),
+//           shadowColor: Colors.black.withValues(alpha:0.3),
 //           shape: RoundedRectangleBorder(
 //             borderRadius: BorderRadius.circular(25.r),
 //           ),
@@ -1054,8 +1054,8 @@ class _LeftHomeCardState extends State<LeftHomeCard>
                         setState(() => _isFocused = focused);
                       },
                       borderRadius: BorderRadius.circular(24.r),
-                      splashColor: Colors.white.withOpacity(0.1),
-                      highlightColor: Colors.white.withOpacity(0.05),
+                      splashColor: Colors.white.withValues(alpha: 0.1),
+                      highlightColor: Colors.white.withValues(alpha: 0.05),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeOutCubic,
@@ -1089,33 +1089,35 @@ class _LeftHomeCardState extends State<LeftHomeCard>
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: widget.isEnabled ? [
-          primaryColor,
-          primaryColor.withOpacity(0.8),
-        ] : [
-          primaryColor.withOpacity(0.5),
-          primaryColor.withOpacity(0.3),
-        ],
+        colors: widget.isEnabled
+            ? [
+                primaryColor,
+                primaryColor.withValues(alpha: 0.8),
+              ]
+            : [
+                primaryColor.withValues(alpha: 0.5),
+                primaryColor.withValues(alpha: 0.3),
+              ],
       ),
       borderRadius: BorderRadius.circular(24.r),
       boxShadow: [
         BoxShadow(
-          color: primaryColor.withOpacity(widget.isEnabled ? 0.25 : 0.1),
+          color: primaryColor.withValues(alpha: widget.isEnabled ? 0.25 : 0.1),
           blurRadius: _isPressed ? 8 : (_isHovered ? 24 : 16),
           offset: Offset(0, _isPressed ? 2 : (_isHovered ? 12 : 8)),
           spreadRadius: _isPressed ? -2 : 0,
         ),
         // Inner highlight
         BoxShadow(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           blurRadius: 1,
           offset: const Offset(0, 1),
         ),
       ],
       border: Border.all(
         color: _isFocused
-            ? Colors.white.withOpacity(0.6)
-            : Colors.white.withOpacity(0.2),
+            ? Colors.white.withValues(alpha: 0.6)
+            : Colors.white.withValues(alpha: 0.2),
         width: _isFocused ? 2.0 : 1.0,
       ),
     );
@@ -1129,7 +1131,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
             center: isRTL ? Alignment.centerLeft : Alignment.centerRight,
             radius: 1.5,
             colors: [
-              Colors.white.withOpacity(0.08),
+              Colors.white.withValues(alpha: 0.08),
               Colors.transparent,
             ],
           ),
@@ -1175,7 +1177,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -1202,7 +1204,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.1),
+                            Colors.black.withValues(alpha: 0.1),
                           ],
                         ),
                       ),
@@ -1255,7 +1257,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
             children: [
               Icon(
                 widget.leadingIcon,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 size: 20.sp,
               ),
               SizedBox(width: 8.w),
@@ -1277,7 +1279,9 @@ class _LeftHomeCardState extends State<LeftHomeCard>
     return AnimatedDefaultTextStyle(
       duration: const Duration(milliseconds: 200),
       style: TextStyle(
-        color: widget.isEnabled ? Colors.white : Colors.white.withOpacity(0.6),
+        color: widget.isEnabled
+            ? Colors.white
+            : Colors.white.withValues(alpha: 0.6),
         fontSize: 18.sp,
         fontWeight: FontWeight.w700,
         height: 1.2,
@@ -1296,8 +1300,8 @@ class _LeftHomeCardState extends State<LeftHomeCard>
       duration: const Duration(milliseconds: 200),
       style: TextStyle(
         color: widget.isEnabled
-            ? Colors.white.withOpacity(0.85)
-            : Colors.white.withOpacity(0.5),
+            ? Colors.white.withValues(alpha: 0.85)
+            : Colors.white.withValues(alpha: 0.5),
         fontSize: 14.sp,
         height: 1.4,
         fontWeight: FontWeight.w400,
@@ -1319,10 +1323,10 @@ class _LeftHomeCardState extends State<LeftHomeCard>
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: secondaryColor,
-          disabledBackgroundColor: Colors.white.withOpacity(0.5),
-          disabledForegroundColor: secondaryColor.withOpacity(0.5),
+          disabledBackgroundColor: Colors.white.withValues(alpha: 0.5),
+          disabledForegroundColor: secondaryColor.withValues(alpha: 0.5),
           elevation: _isHovered && widget.isEnabled ? 8 : 4,
-          shadowColor: Colors.black.withOpacity(0.2),
+          shadowColor: Colors.black.withValues(alpha: 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
           ),
@@ -1386,7 +1390,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.r),
           border: Border.all(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             width: 2.0,
           ),
         ),
@@ -1399,7 +1403,7 @@ class _LeftHomeCardState extends State<LeftHomeCard>
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.r),
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withValues(alpha: 0.3),
         ),
       ),
     );
@@ -1479,8 +1483,8 @@ class _LeftHomeCardState extends State<LeftHomeCard>
 //                               onPressed: onTap,
 //                               buttonText: buttonText,
 //                               buttonRadius: 50.r,
-//                               buttonColor: white.withOpacity(0.9),
-//                               borderColor: white.withOpacity(0.9),
+//                               buttonColor: white.withValues(alpha:0.9),
+//                               borderColor: white.withValues(alpha:0.9),
 //                               sidePadding: 0,
 //                               buttonWidth: 165.w,
 //                               buttonHeight: 65.h,
@@ -1577,8 +1581,8 @@ class _LeftHomeCardState extends State<LeftHomeCard>
 //                               child: MasterButton(
 //                                   onPressed: onTap,
 //                                   buttonText: buttonText,
-//                                   borderColor: white.withOpacity(0.9),
-//                                   buttonColor: white.withOpacity(0.9),
+//                                   borderColor: white.withValues(alpha:0.9),
+//                                   buttonColor: white.withValues(alpha:0.9),
 //                                   buttonRadius: 50.r,
 //                                   sidePadding: 0,
 //                                   buttonWidth: 165.w,

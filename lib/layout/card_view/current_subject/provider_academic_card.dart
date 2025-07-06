@@ -27,7 +27,7 @@ class SubjectAcademinScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.03),
+                color: Colors.grey.withValues(alpha: 0.03),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -89,7 +89,7 @@ class SubjectAcademinScreen extends StatelessWidget {
                             height: 30.h,
                             width: 70.w,
                             decoration: BoxDecoration(
-                              color: inProgressColor.withOpacity(0.1),
+                              color: inProgressColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: inProgressColor,

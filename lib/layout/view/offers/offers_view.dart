@@ -5,14 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../bloc/home/home_cubit.dart';
 import '../../../repository/provider/home/home_repository.dart';
 import '../../../res/value/color/color.dart';
-import '../../../res/value/dimenssion/dimenssions.dart';
 import '../../../res/value/style/textstyles.dart';
 import '../../../widget/error/page/error_page.dart';
 import '../../../widget/image_handler/image_from_network/network_image.dart';
 import '../../../widget/loader/loader.dart';
-import '../../../widget/master_list/custom_list.dart';
-import '../../../widget/side_padding/side_padding.dart';
-import '../../../widget/space/space.dart';
 
 class OffersView extends StatelessWidget {
   const OffersView({super.key});
@@ -21,7 +17,7 @@ class OffersView extends StatelessWidget {
   Widget build(final BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-      HomeCubit(HomeRepository())..getOffers(),
+          HomeCubit(HomeRepository())..getOffers(),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -63,7 +59,7 @@ class OffersView extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.h),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -124,7 +120,7 @@ class OffersView extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(0.1),
+                  Colors.black.withValues(alpha: 0.1),
                 ],
               ),
             ),
@@ -207,7 +203,7 @@ class OffersView extends StatelessWidget {
 
   void _handleOfferTap(BuildContext context, dynamic offer) {
     // Implement navigation or action when offer is tapped
-    print('Offer tapped: ${offer?.name}');
+    // print('Offer tapped: ${offer?.name}');
 
     // Example: Show a snackbar with feedback
     ScaffoldMessenger.of(context).showSnackBar(

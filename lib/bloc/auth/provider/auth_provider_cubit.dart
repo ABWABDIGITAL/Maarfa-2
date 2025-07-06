@@ -256,7 +256,7 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
       // secureColor = mainColor;
     } else {
       isPassword = true;
-      // secureColor = hintColor.withOpacity(0.5);
+      // secureColor = hintColor.withValues(alpha:0.5);
     }
     emit(ChangePasswordState());
   }
@@ -267,7 +267,7 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
       // confirmColor = mainColor;
     } else {
       isConfirm = true;
-      // confirmColor = hintColor.withOpacity(0.5);
+      // confirmColor = hintColor.withValues(alpha:0.5);
     }
     emit(ChangeConfirmState());
   }

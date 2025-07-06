@@ -21,7 +21,7 @@
 //         decoration: BoxDecoration(
 //           borderRadius: BorderRadius.circular(5.r),
 //           border: Border.all(color: white),
-//           color: white.withOpacity(0.1),
+//           color: white.withValues(alpha:0.1),
 //         ),
 //         child: const Center(
 //             child: Icon(Icons.notifications_none_outlined,

@@ -51,7 +51,7 @@ class BookingConfirmationDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        Container(
+        SizedBox(
           width: double.infinity,
           child: TextButton(
             onPressed: onConfirm,

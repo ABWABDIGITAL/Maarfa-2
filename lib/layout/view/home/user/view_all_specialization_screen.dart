@@ -7,12 +7,12 @@
 // import 'package:my_academy/layout/view/home/user/view_all_teachers.dart';
 //
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
 import 'package:my_academy/layout/view/home/user/view_all_teachers.dart';
 
@@ -23,10 +23,12 @@ class ViewAllSpecializationScreen extends StatefulWidget {
   const ViewAllSpecializationScreen({super.key});
 
   @override
-  State<ViewAllSpecializationScreen> createState() => _ViewAllSpecializationScreenState();
+  State<ViewAllSpecializationScreen> createState() =>
+      _ViewAllSpecializationScreenState();
 }
 
-class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScreen> {
+class _ViewAllSpecializationScreenState
+    extends State<ViewAllSpecializationScreen> {
   @override
   void initState() {
     super.initState();
@@ -65,12 +67,13 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
           //   return _buildSpecializationsGrid(specializations);
           // }
           // return _buildLoadingState();
-         return state is GetAllSpecializationsLoadingState
+          return state is GetAllSpecializationsLoadingState
               ? const Center(child: CircularProgressIndicator())
               : state is GetAllSpecializationsErrorState
                   ? _buildErrorState(state.errorMessage)
                   : state is GetAllSpecializationsSuccessState
-                      ? _buildSpecializationsGrid(context.read<Home2Cubit>().allSpecializations)
+                      ? _buildSpecializationsGrid(
+                          context.read<Home2Cubit>().allSpecializations)
                       : const Center(child: CircularProgressIndicator());
         },
       ),
@@ -103,7 +106,7 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.error_outline, size: 48.w, color: Colors.red),
@@ -122,7 +125,8 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
             ),
             SizedBox(height: 24.h),
             ElevatedButton(
-              onPressed: () => context.read<Home2Cubit>().getAllSpecializations(),
+              onPressed: () =>
+                  context.read<Home2Cubit>().getAllSpecializations(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -151,7 +155,8 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
                 color: Colors.grey[300],
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.school_outlined, size: 48.w, color: Colors.black54),
+              child: Icon(Icons.school_outlined,
+                  size: 48.w, color: Colors.black54),
             ),
             SizedBox(height: 24.h),
             Text(
@@ -236,7 +241,7 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
   //         borderRadius: BorderRadius.circular(16.r),
   //         boxShadow: [
   //           BoxShadow(
-  //             color: Colors.black.withOpacity(0.05),
+  //             color: Colors.black.withValues(alpha:0.05),
   //             blurRadius: 10,
   //             offset: const Offset(0, 2),
   //           ),
@@ -251,7 +256,7 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
   //               margin: EdgeInsets.all(12.w),
   //               decoration: BoxDecoration(
   //                 borderRadius: BorderRadius.circular(12.r),
-  //                 color: Colors.blue.withOpacity(0.1),
+  //                 color: Colors.blue.withValues(alpha:0.1),
   //               ),
   //               child: ClipRRect(
   //                 borderRadius: BorderRadius.circular(12.r),
@@ -382,8 +387,9 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
                 mainAxisSpacing: 16.h,
               ),
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                  return _buildSpecializationCard(specializations[index], index);
+                (context, index) {
+                  return _buildSpecializationCard(
+                      specializations[index], index);
                 },
                 childCount: specializations.length,
               ),
@@ -397,7 +403,8 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
     );
   }
 
-  Widget _buildSpecializationCard(SpecializationData specialization, int index) {
+  Widget _buildSpecializationCard(
+      SpecializationData specialization, int index) {
     // Define gradient colors for variety
     final List<List<Color>> gradients = [
       [const Color(0xFF667eea), const Color(0xFF764ba2)],
@@ -415,13 +422,13 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: gradientColors[0].withOpacity(0.1),
+            color: gradientColors[0].withValues(alpha: 0.1),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -437,11 +444,13 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
             Navigator.push(
               context,
               PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => ViewAllTeachers(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ViewAllTeachers(
                   selectedSpecializationId: specialization.id!,
                   specializationName: specialization.name ?? 'Teachers',
                 ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
                   return SlideTransition(
                     position: Tween<Offset>(
                       begin: const Offset(1.0, 0.0),
@@ -463,7 +472,7 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
               color: Colors.white,
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 width: 1,
               ),
             ),
@@ -505,13 +514,16 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
                         // Content
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16.r),
-                          child: specialization.image != null && specialization.image!.isNotEmpty
+                          child: specialization.image != null &&
+                                  specialization.image!.isNotEmpty
                               ? CachedNetworkImage(
-                            imageUrl: specialization.image!,
-                            fit: BoxFit.cover,
-                            placeholder: (_, __) => _buildImagePlaceholder(gradientColors),
-                            errorWidget: (_, __, ___) => _buildImagePlaceholder(gradientColors),
-                          )
+                                  imageUrl: specialization.image!,
+                                  fit: BoxFit.cover,
+                                  placeholder: (_, __) =>
+                                      _buildImagePlaceholder(gradientColors),
+                                  errorWidget: (_, __, ___) =>
+                                      _buildImagePlaceholder(gradientColors),
+                                )
                               : _buildImagePlaceholder(gradientColors),
                         ),
                       ],
@@ -545,9 +557,10 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w, vertical: 4.h),
                               decoration: BoxDecoration(
-                                color: gradientColors[0].withOpacity(0.1),
+                                color: gradientColors[0].withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Row(
@@ -600,14 +613,14 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
             Icon(
               Icons.school_outlined,
               size: 32.w,
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
             SizedBox(height: 4.h),
             Container(
               width: 24.w,
               height: 2.h,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(1.r),
               ),
             ),
@@ -619,7 +632,6 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
 
 // Custom painter for background pattern
 
-
   void _onSpecializationTap(SpecializationData specialization) {
     if (specialization.id != null) {
       showDialog(
@@ -628,13 +640,15 @@ class _ViewAllSpecializationScreenState extends State<ViewAllSpecializationScree
         builder: (_) => Center(
           child: Container(
             padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12.r)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(12.r)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CircularProgressIndicator(),
                 SizedBox(height: 16.h),
-                Text('loading_teachers'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('loading_teachers'.tr(),
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -662,7 +676,7 @@ class _PatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 

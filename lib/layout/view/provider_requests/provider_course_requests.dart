@@ -77,7 +77,7 @@ class ProviderRequestsCourseView extends StatelessWidget {
                         image: emptyCurrent,
                         width: screenWidth,
                         height: screenHeight / 3,
-                        color: mainColor.withOpacity(0.3),
+                        color: mainColor.withValues(alpha: 0.3),
                       ),
                     ],
                   ),

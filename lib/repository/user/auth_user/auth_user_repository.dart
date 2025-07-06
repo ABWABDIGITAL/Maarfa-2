@@ -57,17 +57,17 @@ class AuthUserRepository {
                 prefService.setValue('profile', json.encode(r["data"]["user"]));
                 showToast(tr('welcome'));
                 updateFCMToken();
-                print(
-                    " print checke ${r["data"]["user"]["bank_account"] == null}");
+                // print(
+                //     " print checke ${r["data"]["user"]["bank_account"] == null}");
                 prefService.setBool("has_bank_account",
                     r["data"]["user"]["bank_account"] != null ? true : false);
 
                 final result = await prefService.getBool("has_bank_account");
 
                 result.fold((failure) => print("Error: $failure"), (value) {
-                  print("has_bank_account: $value");
+                  // print("has_bank_account: $value");
                   hasBankAccount = value;
-                  print("hasBankAccount: $hasBankAccount");
+                  // print("hasBankAccount: $hasBankAccount");
                 });
 
                 Get.offAll(() => const ProviderMainScreen());
@@ -94,10 +94,10 @@ class AuthUserRepository {
                 // Save user id here
                 prefService.setValue(
                     'user_id', r["data"]["user"]["id"].toString());
-                print('================');
-                // print(r["data"]["user"]["id"].toString());
-                print(await prefService.getValue('user_id'));
-                print('================');
+                // print('================');
+                // // print(r["data"]["user"]["id"].toString());
+                // print(await prefService.getValue('user_id'));
+                // print('================');
 
                 showToast(tr('welcome'));
                 Get.offAll(

@@ -83,7 +83,7 @@ class SubscribeSubjectCard extends StatelessWidget {
                               width: 55.w,
                               height: 25.h,
                               decoration: BoxDecoration(
-                                  color: black.withOpacity(0.6),
+                                  color: black.withValues(alpha: 0.6),
                                   borderRadius: BorderRadius.circular(5.r)),
                               child: Center(
                                   child: Text(status,

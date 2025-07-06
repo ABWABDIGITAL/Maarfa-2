@@ -23,7 +23,7 @@
 //       child: Container(
 //         width: screenWidth,
 //         decoration: BoxDecoration(
-//             color: profileBorderCardColor.withOpacity(0.1),
+//             color: profileBorderCardColor.withValues(alpha:0.1),
 //             borderRadius: BorderRadius.circular(5.r),
 //             border: Border.all(color: profileBorderCardColor)),
 //         child: Padding(
@@ -154,7 +154,7 @@ class ProviderSubjectCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: profileBorderCardColor.withOpacity(0.15),
+              color: profileBorderCardColor.withValues(alpha: 0.15),
               offset: Offset(0, 2),
               blurRadius: 6,
             ),

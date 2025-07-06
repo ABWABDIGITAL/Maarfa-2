@@ -51,7 +51,7 @@ class SubjectCard extends StatelessWidget {
                     width: screenWidth,
                     height: 180.h,
                     decoration: BoxDecoration(
-                        color: textfieldColor.withOpacity(0.1),
+                        color: textfieldColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(5.r)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -163,7 +163,7 @@ class SubjectCard extends StatelessWidget {
                                   onPressed: onTap
                                   // context.read<LessonsCubit>().getLessons(
                                   //     yearId: yearId, stageId: stageId);
-                          ,
+                                  ,
                                   icon: Image.asset(
                                       isBlue ? blueBookmarkIcon : bookmarkIcon,
                                       height: 35,

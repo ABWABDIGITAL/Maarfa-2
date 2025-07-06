@@ -97,7 +97,7 @@ class SpecializationCubit extends Cubit<SpecializationState> {
 
     specializationsRepository.getSpecializations().then((value) async {
       String? token = await prefService.getValue("token");
-      print("token $token");
+      // print("token $token");
       if (token != "0") {
         await specializationsRepository.getLessonsPrices().then((value2) {
           emit(SpecializationLoadedState(

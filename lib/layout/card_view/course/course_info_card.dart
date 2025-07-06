@@ -29,7 +29,7 @@ class CourseInfoCard extends StatelessWidget {
     return Container(
       width: screenWidth,
       height: 425.h,
-      color: textfieldColor.withOpacity(0.1),
+      color: textfieldColor.withValues(alpha: 0.1),
       child: Column(
         children: [
           Stack(
@@ -178,7 +178,7 @@ class CourseInfoCard extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
                 Text(
-                  data.provider?.rate.toString()??'',
+                  data.provider?.rate.toString() ?? '',
                   style: TextStyles.subTitleStyle.copyWith(
                       color: Colors.yellow, fontWeight: FontWeight.w700),
                 ),

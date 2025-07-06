@@ -86,7 +86,8 @@ class SearchTextfield extends StatelessWidget {
               child: Container(
                 height: 55.h,
                 width: 55.w,
-                decoration: BoxDecoration(color: secColor.withOpacity(0.1)),
+                decoration:
+                    BoxDecoration(color: secColor.withValues(alpha: 0.1)),
                 child: Center(
                     child:
                         Image.asset(filter, height: 20.h, fit: BoxFit.contain)),

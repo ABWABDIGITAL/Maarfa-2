@@ -64,7 +64,7 @@ class SubscribeSubjectView extends StatelessWidget {
                 children: [
                   Container(
                     width: screenWidth,
-                    color: textfieldColor.withOpacity(0.2),
+                    color: textfieldColor.withValues(alpha: 0.2),
                     child: Column(
                       children: [
                         data.liveSubscription.isEmpty
@@ -149,7 +149,7 @@ class SubscribeSubjectView extends StatelessWidget {
                                 image: emptyCurrent,
                                 width: screenWidth,
                                 height: 300.h,
-                                color: mainColor.withOpacity(0.3),
+                                color: mainColor.withValues(alpha: 0.3),
                               ),
                             ],
                           ),

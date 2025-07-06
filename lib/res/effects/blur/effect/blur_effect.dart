@@ -29,13 +29,14 @@ class BlurEffect extends StatelessWidget {
         height: boxHeight,
         width: boxWidth ?? screenWidth,
         decoration: BoxDecoration(
-          color: black.withOpacity(0.08),
+          color: black.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(radius == null ? 4.r : radius!.r),
-          border: Border.all(color: radiusColor ?? white.withOpacity(0.5)),
+          border:
+              Border.all(color: radiusColor ?? white.withValues(alpha: 0.5)),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 25.0, sigmaY: -10.0),
-          child: Container(color: black.withOpacity(0.08), child: child),
+          child: Container(color: black.withValues(alpha: 0.08), child: child),
         ),
       ),
     );

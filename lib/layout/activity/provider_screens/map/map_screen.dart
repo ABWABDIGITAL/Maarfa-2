@@ -144,7 +144,7 @@ class MapScreen extends StatelessWidget {
                               width: 38,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: white.withOpacity(0.9),
+                                  color: white.withValues(alpha: 0.9),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                                 child: Material(

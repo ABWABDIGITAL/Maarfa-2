@@ -32,7 +32,7 @@ class SubscribersItems extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: mainColor.withOpacity(.5)),
+                      color: mainColor.withValues(alpha: .5)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

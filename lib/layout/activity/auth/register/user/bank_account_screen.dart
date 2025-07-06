@@ -72,7 +72,7 @@
 //                 Container(
 //                   width: screenWidth,
 //                   height: 200,
-//                   color: mainColor.withOpacity(0.1),
+//                   color: mainColor.withValues(alpha:0.1),
 //                   child: Column(
 //                     crossAxisAlignment: CrossAxisAlignment.center,
 //                     mainAxisAlignment: MainAxisAlignment.center,

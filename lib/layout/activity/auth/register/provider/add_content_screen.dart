@@ -50,8 +50,8 @@ class AddContentScreen extends StatelessWidget {
             MasterButton(
               onPressed: () {},
               buttonText: tr("add_table"),
-              buttonColor: mainColor.withOpacity(0.1),
-              borderColor: mainColor.withOpacity(0.1),
+              buttonColor: mainColor.withValues(alpha: 0.1),
+              borderColor: mainColor.withValues(alpha: 0.1),
               // buttonStyle: TextStyles.appBarStyle.copyWith(color: mainColor),
             ),
             const Space(

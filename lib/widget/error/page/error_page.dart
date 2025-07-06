@@ -22,7 +22,7 @@ class ErrorPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(Icons.warning_rounded,
-                size: 130.h, color: mainColor.withOpacity(0.4)),
+                size: 130.h, color: mainColor.withValues(alpha: 0.4)),
             const Space(
               boxHeight: 10,
             ),

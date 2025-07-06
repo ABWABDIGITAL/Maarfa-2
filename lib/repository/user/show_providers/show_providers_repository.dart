@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+
 // import 'package:social_share/social_share.dart';
 
 import '../../../layout/activity/user_screens/trainer/trainer_screen.dart';

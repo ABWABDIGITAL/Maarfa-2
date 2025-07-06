@@ -1,19 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:my_academy/layout/view/home/user/all_teachers.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_cubit.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_best_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
 import 'package:my_academy/layout/view/home/user/view_all_specialization_screen.dart';
-import 'package:my_academy/layout/view/home/user/view_all_teachers.dart';
-import 'package:my_academy/model/common/search/search_db_response.dart';
 import 'package:my_academy/widget/headers/home/home_header.dart';
 
 import '../../../../bloc/cities/cities_cubit.dart';
@@ -36,7 +31,6 @@ import '../../../activity/user_screens/offers/offers_screen.dart';
 import '../../../card_view/current_subject/current_subject_card.dart';
 import '../../../card_view/home/home_card.dart';
 import '../../home/user/user_home_cache_view.dart';
-import 'data/models/get_teacher_details_data_model.dart';
 
 class UserHomeView extends StatefulWidget {
   const UserHomeView({super.key});
@@ -58,31 +52,31 @@ class _UserHomeViewState extends State<UserHomeView> {
   @override
   Widget build(final BuildContext context) {
     return BlocProvider(
-  create: (context) => Home2Cubit()..getAllBestTeachers(),
-  child: BlocProvider(
-        create: (BuildContext context) =>
-            HomeCubit(HomeRepository())..getClientHome(),
-        child: BlocConsumer<HomeCubit, HomeState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return BlocBuilder<HomeCubit, HomeState>(
-                  builder: (context, state) {
-                if (state is SliderLoadedState) {
-                  final data = (state).data;
-                  return profileView(
-                    context,
-                    data,
-                  );
+      create: (context) => Home2Cubit()..getAllBestTeachers(),
+      child: BlocProvider(
+          create: (BuildContext context) =>
+              HomeCubit(HomeRepository())..getClientHome(),
+          child: BlocConsumer<HomeCubit, HomeState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                return BlocBuilder<HomeCubit, HomeState>(
+                    builder: (context, state) {
+                  if (state is SliderLoadedState) {
+                    final data = (state).data;
+                    return profileView(
+                      context,
+                      data,
+                    );
 
-                  // return CurrentSubjectCard(isLive: userCurrentAction.item, type: userCurrentAction.type??"", courseTitle: userCurrentAction.item.title, name: name, price: price, id: id);
-                } else if (state is SliderErrorState) {
-                  return const ErrorPage();
-                } else {
-                  return const UserHomeCacheView();
-                }
-              });
-            })),
-);
+                    // return CurrentSubjectCard(isLive: userCurrentAction.item, type: userCurrentAction.type??"", courseTitle: userCurrentAction.item.title, name: name, price: price, id: id);
+                  } else if (state is SliderErrorState) {
+                    return const ErrorPage();
+                  } else {
+                    return const UserHomeCacheView();
+                  }
+                });
+              })),
+    );
   }
 
   profileView(context, data) {
@@ -215,7 +209,7 @@ class _UserHomeViewState extends State<UserHomeView> {
                       pagination: SwiperPagination(
                         margin: const EdgeInsets.only(bottom: 8),
                         builder: DotSwiperPaginationBuilder(
-                          color: mainColor.withOpacity(0.2),
+                          color: mainColor.withValues(alpha: 0.2),
                           activeColor: accentColor,
                           size: 6.0,
                           activeSize: 8.0,
@@ -232,7 +226,7 @@ class _UserHomeViewState extends State<UserHomeView> {
                               borderRadius: BorderRadius.circular(16.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withValues(alpha: 0.05),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -369,7 +363,7 @@ class _UserHomeViewState extends State<UserHomeView> {
                   //     pagination: SwiperPagination(
                   //       margin: const EdgeInsets.only(bottom: 5),
                   //       builder: DotSwiperPaginationBuilder(
-                  //           color: mainColor.withOpacity(0.1),
+                  //           color: mainColor.withValues(alpha:0.1),
                   //           activeColor: accentColor),
                   //     ),
                   //   ),
@@ -451,9 +445,9 @@ class _UserHomeViewState extends State<UserHomeView> {
               }
 
               final cubit = context.read<Home2Cubit>();
-              print('--------------------------');
-              print(cubit.bestTeachers);
-              print('--------------------------');
+              // print('--------------------------');
+              // print(cubit.bestTeachers);
+              // print('--------------------------');
 
               return BestTeachersCard(
                 teachers: cubit.bestTeachers,
@@ -463,7 +457,11 @@ class _UserHomeViewState extends State<UserHomeView> {
                 },
                 onTeacherTap: (teacher) {
                   // Navigate to teacher details screen
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherDetailsScreen(teacherId: teacher.id.toString())));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TeacherDetailsScreen(
+                              teacherId: teacher.id.toString())));
                 },
               );
             },
@@ -523,7 +521,7 @@ class _UserHomeViewState extends State<UserHomeView> {
 //                 borderRadius: BorderRadius.circular(16.r),
 //                 boxShadow: [
 //                   BoxShadow(
-//                     color: Colors.black.withOpacity(0.05),
+//                     color: Colors.black.withValues(alpha:0.05),
 //                     blurRadius: 8,
 //                     offset: const Offset(0, 4),
 //                   ),
@@ -586,7 +584,6 @@ class _UserHomeViewState extends State<UserHomeView> {
 //   }
 // }
 
-
 class BestTeachersCard extends StatelessWidget {
   final List<ProvidersMM> teachers;
   final VoidCallback? onSeeAll;
@@ -622,9 +619,9 @@ class BestTeachersCard extends StatelessWidget {
           child: Text(
             tr("best_teachers"),
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
           ),
         ),
         if (onSeeAll != null)
@@ -739,7 +736,7 @@ class BestTeachersCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -775,14 +772,14 @@ class BestTeachersCard extends StatelessWidget {
             // Teacher Image
             teacher.imagePath != null && teacher.imagePath!.isNotEmpty
                 ? Image.network(
-              teacher.imagePath!,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.fill,
-              errorBuilder: (context, error, stackTrace) {
-                return _buildAvatarFallback(teacher, cardWidth);
-              },
-            )
+                    teacher.imagePath!,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _buildAvatarFallback(teacher, cardWidth);
+                    },
+                  )
                 : _buildAvatarFallback(teacher, cardWidth),
 
             // Rating Badge
@@ -791,9 +788,10 @@ class BestTeachersCard extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -896,7 +894,8 @@ class BestTeachersCard extends StatelessWidget {
             SizedBox(height: cardWidth * 0.03),
 
             // Specialization
-            if (teacher.specialization != null && teacher.specialization!.isNotEmpty)
+            if (teacher.specialization != null &&
+                teacher.specialization!.isNotEmpty)
               Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: cardWidth * 0.035,
@@ -1097,7 +1096,7 @@ class BestTeachersCard extends StatelessWidget {
 //               borderRadius: BorderRadius.circular(16),
 //               boxShadow: [
 //                 BoxShadow(
-//                   color: Colors.black.withOpacity(0.08),
+//                   color: Colors.black.withValues(alpha:0.08),
 //                   blurRadius: 12,
 //                   offset: const Offset(0, 4),
 //                 ),
@@ -1148,7 +1147,7 @@ class BestTeachersCard extends StatelessWidget {
 //                 child: Container(
 //                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
 //                   decoration: BoxDecoration(
-//                     color: Colors.black.withOpacity(0.7),
+//                     color: Colors.black.withValues(alpha:0.7),
 //                     borderRadius: BorderRadius.circular(12),
 //                   ),
 //                   child: Row(

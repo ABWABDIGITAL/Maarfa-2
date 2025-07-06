@@ -113,13 +113,13 @@ class NotificationsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
         border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
+          color: Colors.grey.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -136,7 +136,7 @@ class NotificationsCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: _getNotificationColor().withOpacity(0.1),
+                    color: _getNotificationColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(
@@ -164,7 +164,7 @@ class NotificationsCard extends StatelessWidget {
                       Text(
                         data.text ?? "",
                         style: TextStyles.contentStyle.copyWith(
-                          color: txtColor.withOpacity(0.8),
+                          color: txtColor.withValues(alpha: 0.8),
                           height: 1.4,
                         ),
                       ),
@@ -223,8 +223,8 @@ class NotificationsCard extends StatelessWidget {
                         child: OutlinedButton(
                           onPressed: _viewDetails,
                           style: OutlinedButton.styleFrom(
-                            side:
-                                BorderSide(color: Colors.grey.withOpacity(0.3)),
+                            side: BorderSide(
+                                color: Colors.grey.withValues(alpha: 0.3)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.r),
                             ),
@@ -282,7 +282,7 @@ class NotificationsCard extends StatelessWidget {
   Color _getStatusColor() {
     // You can implement read/unread status here
     // For now, using notification color with reduced opacity
-    return _getNotificationColor().withOpacity(0.6);
+    return _getNotificationColor().withValues(alpha: 0.6);
   }
 
   String _getNotificationTitle() {
@@ -452,7 +452,7 @@ class NotificationsCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey[50],
                 borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
               ),
               child: Column(
                 children: [
@@ -478,7 +478,8 @@ class NotificationsCard extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                      side:
+                          BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.r),
                       ),

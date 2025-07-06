@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/bloc/all_requests/all_requests_cubit.dart';
 import 'package:my_academy/repository/user/all_requests/all_requests_repository.dart';
+
 import '../../../model/user/lesson_requests/lesson_requests_model.dart';
 import '../../../res/drawable/image/images.dart';
 import '../../../res/value/color/color.dart';
@@ -61,7 +62,7 @@ requestsLessonView(
                 image: emptyCurrent,
                 width: screenWidth,
                 height: 300.h,
-                color: mainColor.withOpacity(0.3),
+                color: mainColor.withValues(alpha: 0.3),
               ),
             ],
           ),

@@ -51,7 +51,7 @@ class SubjectCard extends StatelessWidget {
                     width: screenWidth,
                     height: 180.h,
                     decoration: BoxDecoration(
-                        color: textfieldColor.withOpacity(0.1),
+                        color: textfieldColor.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(5.r)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -7,7 +7,6 @@ import 'package:my_academy/widget/toast/toast.dart';
 import '../../layout/activity/user_screens/class/class_screen.dart';
 import '../../layout/activity/user_screens/specification/specification_screen.dart';
 import '../../model/common/courses/course_details/course_details_model.dart';
-import '../../model/common/specializations/specializations_model.dart';
 import '../../repository/common/specializations/specializations_repository.dart';
 
 part 'filter_state.dart';

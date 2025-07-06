@@ -6,18 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
 import 'package:my_academy/layout/view/home/user/view_all_specialization_screen.dart';
 
-import '../../../../model/common/search/search_db_response.dart';
 import 'data/cubit/home_cubit.dart';
 import 'data/cubit/home_state.dart';
 
 class ViewAllTeachers extends StatefulWidget {
-  ViewAllTeachers({
+  const ViewAllTeachers({
     super.key,
     required this.selectedSpecializationId,
     required this.specializationName,
@@ -65,8 +62,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
 
     // Load more teachers
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200 &&
-        widget.selectedSpecializationId != null) {
+        _scrollController.position.maxScrollExtent - 200) {
       _homeCubit.loadMoreTeachers(
           specialityId: widget.selectedSpecializationId);
     }
@@ -117,7 +113,8 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey[700], size: 20.w),
+          icon: Icon(Icons.arrow_back_ios_new,
+              color: Colors.grey[700], size: 20.w),
           // onPressed: () => Navigator.pop(context),
           onPressed: () {
             Navigator.pop(context);
@@ -144,7 +141,9 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
             builder: (context, state) {
               final teacherCount = _homeCubit.allTeachers.length;
               return Text(
-                teacherCount > 0 ? '$teacherCount ${'available_teacher'.tr()}' : '',
+                teacherCount > 0
+                    ? '$teacherCount ${'available_teacher'.tr()}'
+                    : '',
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 12.sp,
@@ -194,7 +193,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
             padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                (context, index) {
                   if (index == teachers.length) {
                     return _buildLoadMoreIndicator();
                   }
@@ -446,12 +445,12 @@ class TeacherCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -485,7 +484,7 @@ class TeacherCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -495,13 +494,13 @@ class TeacherCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         child: teacher.imagePath != null && teacher.imagePath!.isNotEmpty
             ? CachedNetworkImage(
-          imageUrl: teacher.imagePath!,
-          width: 64.w,
-          height: 64.h,
-          fit: BoxFit.cover,
-          placeholder: (_, __) => _buildAvatarPlaceholder(),
-          errorWidget: (_, __, ___) => _buildDefaultAvatar(),
-        )
+                imageUrl: teacher.imagePath!,
+                width: 64.w,
+                height: 64.h,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => _buildAvatarPlaceholder(),
+                errorWidget: (_, __, ___) => _buildDefaultAvatar(),
+              )
             : _buildDefaultAvatar(),
       ),
     );
@@ -545,7 +544,8 @@ class TeacherCard extends StatelessWidget {
   }
 
   Widget _buildTeacherInfo() {
-    final fullName = '${teacher.firstName ?? ''} ${teacher.lastName ?? ''}'.trim();
+    final fullName =
+        '${teacher.firstName ?? ''} ${teacher.lastName ?? ''}'.trim();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -561,7 +561,6 @@ class TeacherCard extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-
         if (teacher.title != null && teacher.title!.isNotEmpty) ...[
           SizedBox(height: 4.h),
           Text(
@@ -575,9 +574,7 @@ class TeacherCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ],
-
         SizedBox(height: 8.h),
-
         Row(
           children: [
             if (teacher.rate != null) ...[
@@ -609,7 +606,6 @@ class TeacherCard extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
             ],
-
             if (teacher.rateCount != null && teacher.rateCount! > 0) ...[
               Text(
                 '(${teacher.rateCount} ${'reviews'.tr()})',
@@ -640,7 +636,6 @@ class TeacherCard extends StatelessWidget {
     );
   }
 }
-
 
 // class ViewAllTeachers extends StatefulWidget {
 //   ViewAllTeachers(

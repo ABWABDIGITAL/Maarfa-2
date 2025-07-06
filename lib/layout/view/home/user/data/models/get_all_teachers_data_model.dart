@@ -8,11 +8,11 @@ class GetAllTeachersDataModel {
 
   GetAllTeachersDataModel(
       {this.success,
-        this.errorCode,
-        this.status,
-        this.notificationsCount,
-        this.messages,
-        this.data});
+      this.errorCode,
+      this.status,
+      this.notificationsCount,
+      this.messages,
+      this.data});
 
   GetAllTeachersDataModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -20,16 +20,16 @@ class GetAllTeachersDataModel {
     status = json['status'];
     notificationsCount = json['notificationsCount'];
     messages = json['messages'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['errorCode'] = this.errorCode;
-    data['status'] = this.status;
-    data['notificationsCount'] = this.notificationsCount;
-    data['messages'] = this.messages;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['errorCode'] = errorCode;
+    data['status'] = status;
+    data['notificationsCount'] = notificationsCount;
+    data['messages'] = messages;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -45,23 +45,23 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     specialization = json['specialization'] != null
-        ? new Specialization.fromJson(json['specialization'])
+        ? Specialization.fromJson(json['specialization'])
         : null;
     if (json['providers'] != null) {
       providers = <Providers>[];
       json['providers'].forEach((v) {
-        providers!.add(new Providers.fromJson(v));
+        providers!.add(Providers.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.specialization != null) {
-      data['specialization'] = this.specialization!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (specialization != null) {
+      data['specialization'] = specialization!.toJson();
     }
-    if (this.providers != null) {
-      data['providers'] = this.providers!.map((v) => v.toJson()).toList();
+    if (providers != null) {
+      data['providers'] = providers!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -81,10 +81,10 @@ class Specialization {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['image'] = this.image;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['image'] = image;
     return data;
   }
 }
@@ -101,13 +101,13 @@ class Providers {
 
   Providers(
       {this.id,
-        this.title,
-        this.degree,
-        this.firstName,
-        this.lastName,
-        this.rate,
-        this.rateCount,
-        this.imagePath});
+      this.title,
+      this.degree,
+      this.firstName,
+      this.lastName,
+      this.rate,
+      this.rateCount,
+      this.imagePath});
 
   Providers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -121,15 +121,15 @@ class Providers {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['degree'] = this.degree;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['rate'] = this.rate;
-    data['rate_count'] = this.rateCount;
-    data['image_path'] = this.imagePath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['degree'] = degree;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['rate'] = rate;
+    data['rate_count'] = rateCount;
+    data['image_path'] = imagePath;
     return data;
   }
 }

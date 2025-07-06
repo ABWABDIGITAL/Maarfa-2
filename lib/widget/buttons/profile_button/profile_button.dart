@@ -16,7 +16,7 @@ class ProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 20.0,
-      shadowColor: borderColor.withOpacity(0.15),
+      shadowColor: borderColor.withValues(alpha: 0.15),
       child: InkWell(
         onTap: onTap,
         child: Stack(

@@ -178,7 +178,7 @@ class ProviderCourseDetailsView extends StatelessWidget {
                         // const Space(boxHeight: 20),
                         // MasterButton(
                         //     borderColor: transparent,
-                        //     buttonColor: mainColor.withOpacity(0.1),
+                        //     buttonColor: mainColor.withValues(alpha:0.1),
                         //     buttonStyle: TextStyles.appBarStyle
                         //         .copyWith(color: mainColor),
                         //     onPressed: () {},
@@ -187,7 +187,7 @@ class ProviderCourseDetailsView extends StatelessWidget {
                         const Space(boxHeight: 20),
                         MasterButton(
                             borderColor: transparent,
-                            buttonColor: circleColor.withOpacity(0.1),
+                            buttonColor: circleColor.withValues(alpha: 0.1),
                             buttonStyle: TextStyles.appBarStyle
                                 .copyWith(color: circleColor),
                             onPressed: () => deleteAlert(

@@ -30,17 +30,16 @@ class SearchView extends StatelessWidget {
               ),
               Icon(
                 Icons.search_off_rounded,
-                color: mainColor.withOpacity(0.5),
+                color: mainColor.withValues(alpha: 0.5),
                 size: 150.h,
               ),
               Text(tr("no_search"),
                   style: TextStyles.appBarStyle
-                      .copyWith(color: mainColor.withOpacity(0.5))),
+                      .copyWith(color: mainColor.withValues(alpha: 0.5))),
             ],
           );
         } else if (state is SearchLoadingState) {
           return const Loading();
-
         } else if (state is SearchErrorState) {
           return Text(state.error);
         } else {
@@ -55,12 +54,12 @@ class SearchView extends StatelessWidget {
                     ),
                     Icon(
                       Icons.search_off_rounded,
-                      color: mainColor.withOpacity(0.5),
+                      color: mainColor.withValues(alpha: 0.5),
                       size: 150.h,
                     ),
                     Text(tr("no_result"),
                         style: TextStyles.appBarStyle
-                            .copyWith(color: mainColor.withOpacity(0.5))),
+                            .copyWith(color: mainColor.withValues(alpha: 0.5))),
                   ],
                 )
               : SearchResult(data: success.data);
