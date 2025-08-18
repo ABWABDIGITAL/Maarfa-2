@@ -25,6 +25,7 @@ class CoursePayView extends StatelessWidget {
   final int id;
   final List<PaymentMethodModel>? paymentMethod;
   final bool isRequest;
+
   const CoursePayView({
     super.key,
     required this.id,
@@ -53,6 +54,7 @@ class CoursePayView extends StatelessWidget {
   }
 
   coursePayView(context, data) {
+    final TextEditingController couponController = TextEditingController();
     // String total = (double.parse(data.course.price.replaceAll(",", "")) *
     //         double.parse(data.course.numberOfHours!.toString()))
     // .toString();
@@ -73,7 +75,11 @@ class CoursePayView extends StatelessWidget {
                     const Divider(
                       thickness: 1,
                     ),
+
                     // const DiscountCodeCard(),
+                    const Space(
+                      boxHeight: 20,
+                    ),
                     const Space(
                       boxHeight: 30,
                     ),
@@ -210,14 +216,35 @@ class CoursePayView extends StatelessWidget {
                     ),
                     data.status != 2
                         ? const SizedBox()
-                        : MasterLoadButton(
-                            buttonController: bloc.payController,
-                            buttonText:
-                                "${tr("pay")} (${data.course.priceWithTax} ${tr("sar")})",
-                            onPressed: () {
-                              bloc.pay(id: id, context: context, coupon: bloc.couponT!);
-                              // , wallet: false);
-                              // Get.to(const BookingStatus());
+                        : BlocBuilder<PayCubit, PayState>(
+                            builder: (context, state) {
+                              final cubit =
+                              context.read<PayCubit>();
+
+                              final priceText = state is MakeCouponSuccessState
+                                  ? bloc.finalP.toString()
+                                  : data.course!.priceWithoutTax!;
+
+                              print('--------');
+                              print(state is MakeCouponSuccessState);
+                              print(priceText);
+                              print('--------');
+
+                              return MasterLoadButton(
+                                buttonController: bloc.payController,
+                                // buttonText:
+                                buttonText: "${tr("pay")} ($priceText ${tr("sar")})t",
+
+                                    // "${tr("pay")} (${data.course.priceWithTax} ${tr("sar")})",
+                                onPressed: () {
+                                  bloc.pay(
+                                      id: id,
+                                      context: context,
+                                      coupon: bloc.couponT ?? "");
+                                  // , wallet: false);
+                                  // Get.to(const BookingStatus());
+                                },
+                              );
                             },
                           ),
                     const Space(

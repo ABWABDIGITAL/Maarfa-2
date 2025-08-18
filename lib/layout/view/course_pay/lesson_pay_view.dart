@@ -22,7 +22,7 @@ import '../../../widget/request_lesson/request_lesson_details_card.dart';
 import '../../../widget/side_padding/side_padding.dart';
 import '../../../widget/space/space.dart';
 
-class LessonPayView extends StatelessWidget {
+class LessonPayView extends StatefulWidget {
   final int id;
   final List<PaymentMethodModel>? paymentMethod;
   final bool isRequest;
@@ -35,9 +35,15 @@ class LessonPayView extends StatelessWidget {
   });
 
   @override
+  State<LessonPayView> createState() => _LessonPayViewState();
+}
+
+class _LessonPayViewState extends State<LessonPayView> {
+  final TextEditingController couponController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-          create: (BuildContext context) => PayCubit()..getPay(id),
+          create: (BuildContext context) => PayCubit()..getPay(widget.id),
           child: BlocConsumer<PayCubit, PayState>(
               listener: (context, state) {},
               builder: (context, state) {
@@ -83,6 +89,7 @@ class LessonPayView extends StatelessWidget {
                     const Space(
                       boxHeight: 30,
                     ),
+
                     data.status != 2
                         ? const SizedBox()
                         : Column(
@@ -167,20 +174,20 @@ class LessonPayView extends StatelessWidget {
                         ? const SizedBox()
                         : CustomList(
                             listHeight: 10000000000,
-                            count: paymentMethod!.length,
+                            count: widget.paymentMethod!.length,
                             child: (context, index) => Row(
                               children: [
                                 Radio<int>(
                                   value: index,
                                   groupValue: bloc.payment,
                                   onChanged: (int? v) => bloc.setPaymentMethod(
-                                      v!, paymentMethod![index].id!),
+                                      v!, widget.paymentMethod![index].id!),
                                 ),
                                 Opacity(
                                     opacity: bloc.payment == index ? 1 : 0.3,
                                     child: CachedImage(
                                       imageUrl:
-                                          paymentMethod![index].image ?? "",
+                                          widget.paymentMethod![index].image ?? "",
                                       width: 40.w,
                                       height: 40.h,
                                       fit: BoxFit.contain,
@@ -241,9 +248,9 @@ class LessonPayView extends StatelessWidget {
 
                             return MasterLoadButton(
                                 buttonController: bloc.payController,
-                                buttonText: "${tr("pay")} ($priceText ${tr("sar")})",
+                                buttonText: "${tr("pay")} ($priceText ${tr("sar")})t",
                                 onPressed: () {
-                                  bloc.pay(id: id, context: context, coupon: bloc.couponT!);
+                                  bloc.pay(id: widget.id, context: context, coupon: bloc.couponT!);
                                 },
                             );
                           },
