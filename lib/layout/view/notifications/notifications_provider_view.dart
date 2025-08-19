@@ -67,7 +67,7 @@ class NotificationsProviderView extends StatelessWidget {
           )
         : CustomList(
             child: (context, index) =>
-                NotificationsCard(data: data.notifications[index]),
+                NotificationsCard(data: data.notifications[index], isInProvider: true,),
             axis: Axis.vertical,
             listHeight: screenHeight,
             count: data.notifications.length,

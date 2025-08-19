@@ -102,7 +102,10 @@ import '../../activity/user_screens/request/course_pay/pay_screen.dart';
 
 class NotificationsCard extends StatelessWidget {
   final NotificationModel data;
-  const NotificationsCard({super.key, required this.data});
+  final bool? isInProvider;
+
+  const NotificationsCard(
+      {super.key, required this.data, this.isInProvider = false});
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +199,43 @@ class NotificationsCard extends StatelessWidget {
                 ),
               ],
             ),
+
+            Space(boxHeight: 16.h),
+
+            // Divider
+            Divider(
+              color: Colors.grey.withValues(alpha: 0.1),
+              thickness: 1,
+            ),
+
+            // Space(boxHeight: 16.h),
+
+            // Notification Accept or Decline Button
+            // if (_isCustomLessonRequest()) ...[
+            //   Row(
+            //     children: [
+            //       // Accept Button
+            //       Expanded(
+            //         child: MasterButton(
+            //           buttonText: tr("accept"),
+            //           buttonColor: _getNotificationColor(),
+            //           borderColor: _getNotificationColor(),
+            //           onPressed: _acceptRequest,
+            //         ),
+            //       ),
+            //       Space(boxWidth: 12.w),
+            //       // Decline Button
+            //       Expanded(
+            //         child: MasterButton(
+            //           buttonText: tr("decline"),
+            //           buttonColor: Colors.red[500],
+            //           borderColor: Colors.red[500],
+            //           onPressed: _declineRequest,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ],
 
             // Action button (if applicable)
             if (_hasAction()) ...[
@@ -570,5 +610,46 @@ class NotificationsCard extends StatelessWidget {
       default:
         return tr("general_notification");
     }
+  }
+
+  bool _isCustomLessonRequest() {
+    // Check if this is a custom lesson request notification
+    return data.type == "YouHaveNewRequest.Lesson" && isInProvider == true;
+  }
+
+  void _acceptRequest() {
+    // Handle accept request logic here
+    print("Accepting lesson request with ID: ${data.objectId}");
+
+    // You can add your API call here to accept the request
+    // Example:
+    // NotificationService.acceptLessonRequest(data.objectId);
+
+    // Show success message
+    Get.snackbar(
+      tr("success"),
+      tr("request_accepted_successfully"),
+      backgroundColor: Colors.green[100],
+      colorText: Colors.green[800],
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  void _declineRequest() {
+    // Handle decline request logic here
+    print("Declining lesson request with ID: ${data.objectId}");
+
+    // You can add your API call here to decline the request
+    // Example:
+    // NotificationService.declineLessonRequest(data.objectId);
+
+    // Show decline message
+    Get.snackbar(
+      tr("declined"),
+      tr("request_declined_successfully"),
+      backgroundColor: Colors.red[100],
+      colorText: Colors.red[800],
+      snackPosition: SnackPosition.TOP,
+    );
   }
 }
