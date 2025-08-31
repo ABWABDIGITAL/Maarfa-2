@@ -464,7 +464,9 @@
     "available_times": "الأوقات المتاحة" , 
     "wallet_name": "اسم المحفظة",
     "wallet_number": "رقم المحفظة", 
-    "edit_wallet": "تعديل المحفظة"
+    "edit_wallet": "تعديل المحفظة", 
+    "add_wallet":"اضافة محفظه"
+
   
     
 }

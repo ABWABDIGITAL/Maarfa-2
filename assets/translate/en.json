@@ -459,5 +459,6 @@
   "available_times": "Available Times",
   "wallet_name": "Wallet Name",
   "wallet_number": "Wallet Number" , 
-  "edit_wallet":"Edit Wallet"
+  "edit_wallet":"Edit Wallet" , 
+  "add_wallet":"Add Wallet"
 }
