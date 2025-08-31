@@ -856,7 +856,7 @@ class BestTeachersCard extends StatelessWidget {
     final nameFontSize = (cardWidth * 0.06).clamp(16.0, 20.0);
     final titleFontSize = (cardWidth * 0.04).clamp(12.0, 14.0);
     final specializationFontSize = (cardWidth * 0.035).clamp(11.0, 13.0);
-    final ratingFontSize = (cardWidth * 0.045).clamp(13.0, 15.0);
+    // final ratingFontSize = (cardWidth * 0.045).clamp(13.0, 15.0);
 
     return Expanded(
       child: Padding(

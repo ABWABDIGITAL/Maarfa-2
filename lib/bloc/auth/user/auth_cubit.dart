@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:my_academy/layout/activity/provider_screens/main/main_screen.dart';
-import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
-import 'package:my_academy/model/guest/guest_data_model.dart';
-import 'package:my_academy/service/network/dio/dio_service.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
@@ -392,7 +387,6 @@ class AuthUserCubit extends Cubit<AuthState> {
     }
     emit(LoginState());
   }
-
 
   // Future<void> guestLogin(bool isUser, BuildContext context) async {
   //   emit(GuestLoadingState());

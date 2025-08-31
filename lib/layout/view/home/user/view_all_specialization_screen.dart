@@ -142,39 +142,39 @@ class _ViewAllSpecializationScreenState
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.school_outlined,
-                  size: 48.w, color: Colors.black54),
-            ),
-            SizedBox(height: 24.h),
-            Text(
-              'no_specializations_found'.tr(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'specializations_will_appear_here'.tr(),
-              style: TextStyle(color: Colors.black54),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildEmptyState() {
+  //   return Center(
+  //     child: Padding(
+  //       padding: EdgeInsets.all(24.w),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Container(
+  //             padding: EdgeInsets.all(20.w),
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[300],
+  //               shape: BoxShape.circle,
+  //             ),
+  //             child: Icon(Icons.school_outlined,
+  //                 size: 48.w, color: Colors.black54),
+  //           ),
+  //           SizedBox(height: 24.h),
+  //           Text(
+  //             'no_specializations_found'.tr(),
+  //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
+  //             textAlign: TextAlign.center,
+  //           ),
+  //           SizedBox(height: 8.h),
+  //           Text(
+  //             'specializations_will_appear_here'.tr(),
+  //             style: TextStyle(color: Colors.black54),
+  //             textAlign: TextAlign.center,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Widget _buildSpecializationsGrid(List<SpecializationData> specializations) {
   //   return RefreshIndicator(

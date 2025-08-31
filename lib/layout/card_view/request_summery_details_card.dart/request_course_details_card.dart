@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -140,7 +139,7 @@ class _RequstCourseDetailsCardState extends State<RequstCourseDetailsCard> {
                   ),
                 ),
                 SizedBox(width: 12),
-                Container(
+                SizedBox(
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
@@ -157,7 +156,8 @@ class _RequstCourseDetailsCardState extends State<RequstCourseDetailsCard> {
                           lessonId: widget.courseDetailsModel!.id.toString(),
                           coupon: couponController.text,
                         );
-                        cubit.finalP = cubit.couponResponseDataModel!.data!.finalPrice!;
+                        cubit.finalP =
+                            cubit.couponResponseDataModel!.data!.finalPrice!;
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -360,96 +360,101 @@ class _RequstCourseDetailsCardState extends State<RequstCourseDetailsCard> {
               boxHeight: 10,
             ),
 
-            state is MakeCouponSuccessState ?
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'قيمة الخصم',
-                      // tr("priceWithoutTax"),
-                      style: TextStyles.appBarStyle
-                          .copyWith(color: secColor, fontSize: 14.sp),
-                    ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
+            state is MakeCouponSuccessState
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Flexible(
-                            child: Text(
-                              cubit.couponResponseDataModel!.data!.discountValue!.toString(),
-                              style: TextStyles.hintStyle.copyWith(
-                                  color: secColor,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const Space(
-                            boxWidth: 4,
-                          ),
                           Text(
-                            tr("sar"),
-                            style: TextStyles.hintStyle.copyWith(color: secColor),
+                            'قيمة الخصم',
+                            // tr("priceWithoutTax"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: secColor, fontSize: 14.sp),
+                          ),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    cubit.couponResponseDataModel!.data!
+                                        .discountValue!
+                                        .toString(),
+                                    style: TextStyles.hintStyle.copyWith(
+                                        color: secColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const Space(
+                                  boxWidth: 4,
+                                ),
+                                Text(
+                                  tr("sar"),
+                                  style: TextStyles.hintStyle
+                                      .copyWith(color: secColor),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
+                      const Space(
+                        boxHeight: 12,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
 
-                const Space(
-                  boxHeight: 12,
-                ),
-              ],
-            ) : const SizedBox.shrink(),
-
-
-            state is MakeCouponSuccessState ?
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'السعر بعد الحصم',
-                      // tr("priceWithoutTax"),
-                      style: TextStyles.appBarStyle
-                          .copyWith(color: secColor, fontSize: 14.sp),
-                    ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
+            state is MakeCouponSuccessState
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Flexible(
-                            child: Text(
-                              cubit.couponResponseDataModel!.data!.finalPrice!.toString(),
-                              style: TextStyles.hintStyle.copyWith(
-                                  color: secColor,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const Space(
-                            boxWidth: 4,
-                          ),
                           Text(
-                            tr("sar"),
-                            style: TextStyles.hintStyle.copyWith(color: secColor),
+                            'السعر بعد الحصم',
+                            // tr("priceWithoutTax"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: secColor, fontSize: 14.sp),
+                          ),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    cubit.couponResponseDataModel!.data!
+                                        .finalPrice!
+                                        .toString(),
+                                    style: TextStyles.hintStyle.copyWith(
+                                        color: secColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const Space(
+                                  boxWidth: 4,
+                                ),
+                                Text(
+                                  tr("sar"),
+                                  style: TextStyles.hintStyle
+                                      .copyWith(color: secColor),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-
-                const Space(
-                  boxHeight: 12,
-                ),
-              ],
-            ) : const SizedBox.shrink(),
+                      const Space(
+                        boxHeight: 12,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
           ],
         );
       },

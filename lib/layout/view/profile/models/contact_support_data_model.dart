@@ -11,15 +11,15 @@ class ContactSupportDataModel {
     if (json['data'] != null) {
       data = <QuestionData>[];
       json['data'].forEach((v) {
-        data!.add(new QuestionData.fromJson(v));
+        data!.add(QuestionData.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['Static_Message'] = this.staticMessage;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['Static_Message'] = staticMessage;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -45,12 +45,12 @@ class QuestionData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['question'] = this.question;
-    data['answer'] = this.answer;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['question'] = question;
+    data['answer'] = answer;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

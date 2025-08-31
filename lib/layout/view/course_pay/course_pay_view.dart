@@ -54,7 +54,7 @@ class CoursePayView extends StatelessWidget {
   }
 
   coursePayView(context, data) {
-    final TextEditingController couponController = TextEditingController();
+    // final TextEditingController couponController = TextEditingController();
     // String total = (double.parse(data.course.price.replaceAll(",", "")) *
     //         double.parse(data.course.numberOfHours!.toString()))
     // .toString();
@@ -218,17 +218,17 @@ class CoursePayView extends StatelessWidget {
                         ? const SizedBox()
                         : BlocBuilder<PayCubit, PayState>(
                             builder: (context, state) {
-                              final cubit =
-                              context.read<PayCubit>();
+                              // final cubit =
+                              // context.read<PayCubit>();
 
                               final priceText = state is MakeCouponSuccessState
                                   ? bloc.finalP.toString()
                                   : data.course!.priceWithoutTax!;
 
-                              print('--------');
-                              print(state is MakeCouponSuccessState);
-                              print(priceText);
-                              print('--------');
+                              // print('--------');
+                              // print(state is MakeCouponSuccessState);
+                              // print(priceText);
+                              // print('--------');
 
                               return MasterLoadButton(
                                 buttonController: bloc.payController,

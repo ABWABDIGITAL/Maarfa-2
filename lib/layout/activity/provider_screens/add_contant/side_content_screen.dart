@@ -49,7 +49,7 @@ class SideContentScreen extends StatelessWidget {
                           //             : Colors.transparent,
                           //         width: 2,
                           //       ),
-                          //     ),
+                           //     ),
                           //     duration: const Duration(milliseconds: 300),
                           //     child: Image.asset(
                           //       "assets/images/group_course.jpeg",
@@ -78,8 +78,8 @@ class SideContentScreen extends StatelessWidget {
                           //       height: 200.h,
                           //       fit: BoxFit.fill,
                           //     ),
-                          //   ),
-                          // ),
+                        //   ),
+                        // ),
 
                           GestureDetector(
                             onTap: () => bloc.selectContent(1),

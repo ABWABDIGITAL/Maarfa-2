@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_academy/model/common/courses/course_details/course_details_model.dart';
-import 'package:my_academy/widget/toast/toast.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../model/provider/home/home_db_response.dart';

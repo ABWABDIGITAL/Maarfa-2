@@ -2,8 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:my_academy/layout/activity/provider_screens/main/main_screen.dart';
-import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/model/guest/guest_data_model.dart';
 import 'package:my_academy/service/network/dio/dio_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -141,7 +139,7 @@ class IntroCubit extends Cubit<IntroState> {
 
       // Handle the response using Either from dartz
       return response.fold(
-            (failure) {
+        (failure) {
           // Failure case
           debugPrint('Failure: $failure');
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -150,18 +148,20 @@ class IntroCubit extends Cubit<IntroState> {
           ));
           emit(GuestErrorState(failure.toString()));
         },
-            (data) {
+        (data) {
           // Success case
           guestData = GuestDataModel.fromJson(data);
 
           if (guestData.status == true && guestData.data?.guestToken != null) {
             // Save guest token and isGuest to shared preferences
             SharedPreferences.getInstance().then((prefs) {
-              prefs.setString('token', guestData.data!.guestToken!.replaceAll(RegExp(r'\s+'), ''));
+              prefs.setString('token',
+                  guestData.data!.guestToken!.replaceAll(RegExp(r'\s+'), ''));
               prefs.setBool('isGuest', guestData.data!.isGuestMode ?? true);
             });
 
-            debugPrint('Guest Token: ${guestData.data!.guestToken!.replaceAll(RegExp(r'\s+'), '')}');
+            debugPrint(
+                'Guest Token: ${guestData.data!.guestToken!.replaceAll(RegExp(r'\s+'), '')}');
             debugPrint('Is Guest Mode: ${guestData.data!.isGuestMode}');
 
             // Show success SnackBar

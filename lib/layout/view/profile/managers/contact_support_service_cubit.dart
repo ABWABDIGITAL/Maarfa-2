@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:my_academy/layout/view/profile/models/contact_support_data_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:my_academy/service/network/dio/dio_service.dart';
 
 part 'contact_support_service_state.dart';
@@ -43,22 +39,22 @@ class ContactSupportServiceCubit extends Cubit<ContactSupportServiceState> {
     try {
       final response = await DioService().get('/client/support');
 
-      print('Response: $response');
-      print('Response type: ${response.runtimeType}');
+      // print('Response: $response');
+      // print('Response type: ${response.runtimeType}');
 
       // Handle Either type response
       response.fold(
-            (error) {
+        (error) {
           // Left side - error case
-          print('API Error: $error');
+          // print('API Error: $error');
           emit(GetAllContactSupportServiceErrorState(
             errorMessage: error.toString(),
           ));
         },
-            (success) {
+        (success) {
           // Right side - success case
-          print('API Success: $success');
-          print('Success data type: ${success.runtimeType}');
+          // print('API Success: $success');
+          // print('Success data type: ${success.runtimeType}');
 
           try {
             Map<String, dynamic> jsonData;
@@ -72,25 +68,25 @@ class ContactSupportServiceCubit extends Cubit<ContactSupportServiceState> {
               throw Exception('Unexpected response format');
             }
 
-            print('JSON Data: $jsonData');
-            print('Static Message: ${jsonData['Static_Message']}');
-            print('Data: ${jsonData['data']}');
+            // print('JSON Data: $jsonData');
+            // print('Static Message: ${jsonData['Static_Message']}');
+            // print('Data: ${jsonData['data']}');
 
             // Try to parse the model
             try {
               supportData = ContactSupportDataModel.fromJson(jsonData);
-              print('Model parsed successfully');
-              print('Static Message from model: ${supportData!.staticMessage}');
-              print('Data from model: ${supportData!.data}');
+              // print('Model parsed successfully');
+              // print('Static Message from model: ${supportData!.staticMessage}');
+              // print('Data from model: ${supportData!.data}');
 
               emit(GetAllContactSupportServiceSuccessState(
                   staticMessage: supportData!.staticMessage!,
                   data: supportData!.data!));
             } catch (modelError) {
-              print('Model parsing error: $modelError');
 
               // Fallback: Parse manually if model fails
-              final staticMessage = jsonData['Static_Message'] as String? ?? 'Hello! How can I help you?';
+              final staticMessage = jsonData['Static_Message'] as String? ??
+                  'Hello! How can I help you?';
               final dataList = jsonData['data'] as List<dynamic>? ?? [];
 
               // Convert to QuestionData objects manually
@@ -105,11 +101,9 @@ class ContactSupportServiceCubit extends Cubit<ContactSupportServiceState> {
               }).toList();
 
               emit(GetAllContactSupportServiceSuccessState(
-                  staticMessage: staticMessage,
-                  data: questions));
+                  staticMessage: staticMessage, data: questions));
             }
           } catch (parseError) {
-            print('Parse error: $parseError');
             emit(GetAllContactSupportServiceErrorState(
               errorMessage: parseError.toString(),
             ));
@@ -117,10 +111,10 @@ class ContactSupportServiceCubit extends Cubit<ContactSupportServiceState> {
         },
       );
     } catch (e) {
-      print('General error: $e');
-      print('Error type: ${e.runtimeType}');
+
       emit(GetAllContactSupportServiceErrorState(
         errorMessage: e.toString(),
       ));
     }
-  }}
+  }
+}

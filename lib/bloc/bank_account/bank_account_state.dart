@@ -16,3 +16,4 @@ class ChangeCityState extends BankAccountState {}
 class ChooseCityState extends BankAccountState {}
 
 class RequestPayState extends BankAccountState {}
+class SelectPayment extends BankAccountState {}

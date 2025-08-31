@@ -8,11 +8,11 @@ class CouponResponseDataModel {
 
   CouponResponseDataModel(
       {this.success,
-        this.errorCode,
-        this.status,
-        this.notificationsCount,
-        this.messages,
-        this.data});
+      this.errorCode,
+      this.status,
+      this.notificationsCount,
+      this.messages,
+      this.data});
 
   CouponResponseDataModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -20,16 +20,16 @@ class CouponResponseDataModel {
     status = json['status'];
     notificationsCount = json['notificationsCount'];
     messages = json['messages'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['errorCode'] = this.errorCode;
-    data['status'] = this.status;
-    data['notificationsCount'] = this.notificationsCount;
-    data['messages'] = this.messages;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['errorCode'] = errorCode;
+    data['status'] = status;
+    data['notificationsCount'] = notificationsCount;
+    data['messages'] = messages;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -38,9 +38,9 @@ class CouponResponseDataModel {
 }
 
 class Data {
-  dynamic? originalPrice;
-  dynamic? discountValue;
-  dynamic? finalPrice;
+  dynamic originalPrice;
+  dynamic discountValue;
+  dynamic finalPrice;
   String? coupon;
 
   Data({this.originalPrice, this.discountValue, this.finalPrice});
@@ -53,11 +53,11 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['original_price'] = this.originalPrice;
-    data['discount_value'] = this.discountValue;
-    data['final_price'] = this.finalPrice;
-    data['coupon_code'] = this.coupon;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['original_price'] = originalPrice;
+    data['discount_value'] = discountValue;
+    data['final_price'] = finalPrice;
+    data['coupon_code'] = coupon;
     return data;
   }
 }

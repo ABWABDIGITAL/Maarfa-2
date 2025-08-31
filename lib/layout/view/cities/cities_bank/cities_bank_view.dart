@@ -51,30 +51,61 @@ class CitiesBankView extends StatelessWidget {
                 sidePadding: 30,
                 child: ListView(
                   children: [
-                    MasterTextField(
-                      controller: bloc.swiftCode,
-                      hintText: "SWIFT Code",
-                      errorText: bloc.validators[0],
-                      onChanged: (val) => bloc.validate(val, 0),
+                    PaymentOption(
+                      title: tr("bank_account"),
+                      selected: bloc.isBankAcount,
+                      onTap: () => bloc.selectWallet(true),
                     ),
-                    const Space(
-                      boxHeight: 15,
+                    SizedBox(height: 20),
+                    PaymentOption(
+                      title: tr("wallet"),
+                      selected: !bloc.isBankAcount,
+                      onTap: () => bloc.selectWallet(false),
                     ),
-                    MasterTextField(
-                      controller: bloc.bankName,
-                      hintText: tr("bank_name"),
-                      errorText: bloc.validators[1],
-                      onChanged: (val) => bloc.validate(val, 1),
-                    ),
-                    const Space(
-                      boxHeight: 15,
-                    ),
-                    MasterTextField(
-                      controller: bloc.iban,
-                      hintText: tr("IBAN"),
-                      errorText: bloc.validators[2],
-                      onChanged: (val) => bloc.validate(val, 2),
-                    ),
+                    SizedBox(height: 20),
+                    if (bloc.isBankAcount) ...[
+                      MasterTextField(
+                        controller: bloc.swiftCode,
+                        hintText: "SWIFT Code",
+                        errorText: bloc.validators[0],
+                        onChanged: (val) => bloc.validate(val, 0),
+                      ),
+                      const Space(
+                        boxHeight: 15,
+                      ),
+                      MasterTextField(
+                        controller: bloc.bankName,
+                        hintText: tr("bank_name"),
+                        errorText: bloc.validators[1],
+                        onChanged: (val) => bloc.validate(val, 1),
+                      ),
+                      const Space(
+                        boxHeight: 15,
+                      ),
+                      MasterTextField(
+                        controller: bloc.iban,
+                        hintText: tr("IBAN"),
+                        errorText: bloc.validators[2],
+                        onChanged: (val) => bloc.validate(val, 2),
+                      ),
+                    ] else ...[
+                      MasterTextField(
+                        controller: bloc.walletName,
+                        keyboardType: TextInputType.number,
+                        hintText: tr("wallet_name"),
+                        errorText: bloc.validators[0],
+                        onChanged: (val) => bloc.validate(val, 0),
+                      ),
+                      const Space(
+                        boxHeight: 15,
+                      ),
+                      MasterTextField(
+                        controller: bloc.walletNumber,
+                        hintText: tr("wallet_number"),
+                        errorText: bloc.validators[1],
+                        onChanged: (val) => bloc.validate(val, 1),
+                      ),
+                    ],
                     const Space(
                       boxHeight: 15,
                     ),
@@ -113,5 +144,81 @@ class CitiesBankView extends StatelessWidget {
                 ),
               );
             }));
+  }
+}
+
+class PaymentOption extends StatelessWidget {
+  final String title;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const PaymentOption({
+    super.key,
+    required this.title,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        padding: EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: selected ? lightColor : white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: selected ? mainColor : borderColor,
+            width: selected ? 2 : 1,
+          ),
+          boxShadow: [
+            if (selected)
+              BoxShadow(
+                color: mainColor.withValues(alpha: 0.15),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected
+                    ? secColor.withValues(alpha: 0.1)
+                    : greyColor.withValues(alpha: 0.1),
+              ),
+              child: Icon(
+                title.toLowerCase().contains('bank') || title.contains("بنك")
+                    ? Icons.account_balance
+                    : Icons.account_balance_wallet,
+                color: selected ? mainColor : darkGrey,
+                size: 28,
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: selected ? primaryText : darkGrey,
+                ),
+              ),
+            ),
+            if (selected)
+              Icon(
+                Icons.check_circle,
+                color: mainColor,
+                size: 24,
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

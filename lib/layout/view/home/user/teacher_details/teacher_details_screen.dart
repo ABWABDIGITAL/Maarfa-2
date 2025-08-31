@@ -2046,9 +2046,9 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
       teacherId: teacher.provider!.id.toString(),
       context: context,
     );
-    print('-------------');
-    print(date);
-    print('-------------');
+    // print('-------------');
+    // print(date);
+    // print('-------------');
 
     // print("date is ======== $date");
     // print("timeFrom $timeFrom");

@@ -45,7 +45,6 @@ class PayCubit extends Cubit<PayState> {
         },
       );
       response.fold((error) {
-        print(error);
         emit(MakeCouponErrorState());
       }, (data) {
         couponResponseDataModel = CouponResponseDataModel.fromJson(data);
@@ -55,7 +54,6 @@ class PayCubit extends Cubit<PayState> {
             couponResponseDataModel: couponResponseDataModel!));
       });
     } catch (e) {
-      print(e);
       emit(MakeCouponErrorState());
     }
   }

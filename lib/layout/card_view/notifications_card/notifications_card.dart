@@ -619,7 +619,7 @@ class NotificationsCard extends StatelessWidget {
 
   void _acceptRequest() {
     // Handle accept request logic here
-    print("Accepting lesson request with ID: ${data.objectId}");
+    // print("Accepting lesson request with ID: ${data.objectId}");
 
     // You can add your API call here to accept the request
     // Example:
@@ -637,7 +637,7 @@ class NotificationsCard extends StatelessWidget {
 
   void _declineRequest() {
     // Handle decline request logic here
-    print("Declining lesson request with ID: ${data.objectId}");
+    // print("Declining lesson request with ID: ${data.objectId}");
 
     // You can add your API call here to decline the request
     // Example:

@@ -31,7 +31,6 @@
     "emailAddress": "البريد الإلكتروني",
     "no_email": "لا يوجد بريد اكتروني",
     "ratee": "تقييم",
-    "students": "طلاب",
     "coursess": "دروس",
     "teacher": "مدرس",
     "specialized_in": "متخصص ومتمرس في",
@@ -462,7 +461,10 @@
     "price_range_error": "السعر يجب أن يكون بين {0} و {1} ر.س" , 
     "hourly_price_between": "السعر بالساعة بين",
     "about_trainer": "عن المدرب",
-    "available_times": "الأوقات المتاحة"
+    "available_times": "الأوقات المتاحة" , 
+    "wallet_name": "اسم المحفظة",
+    "wallet_number": "رقم المحفظة", 
+    "edit_wallet": "تعديل المحفظة"
   
     
 }

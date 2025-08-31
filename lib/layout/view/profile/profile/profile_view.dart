@@ -26,7 +26,6 @@ import '../../../activity/provider_screens/account_data/account_data_screen.dart
 import '../../../activity/provider_screens/account_data/edit_account_information_screen.dart';
 import '../../../activity/provider_screens/bank_account/bank_account_screen.dart';
 import '../../../activity/static/about_us/about_us_screen.dart';
-import '../../../activity/static/contact_us/contact_us_screen.dart';
 import '../../../activity/static/privacy/privacy_screen.dart';
 import '../../../activity/static/terms_conditions/terms_conditions_screen.dart';
 import '../../../activity/user_screens/wallet/wallet_screen.dart';
@@ -191,15 +190,16 @@ class _ProfileViewState extends State<ProfileView> {
                           image: contactusMore,
                           onTap: () {
                             Get.to(() => BlocProvider(
-                              create: (context) => ContactSupportServiceCubit()..getAllSupportData(),
-                              child: const ContactSupportServiceScreen(),
-                            ));
+                                  create: (context) =>
+                                      ContactSupportServiceCubit()
+                                        ..getAllSupportData(),
+                                  child: const ContactSupportServiceScreen(),
+                                ));
                           }),
                       ProfileButton(
                           title: tr("chatting"),
                           image: contactusMore,
-                          onTap: () {
-                          }),
+                          onTap: () {}),
                       ProfileButton(
                           title: tr("contact_us"),
                           image: contactusMore,
@@ -214,12 +214,11 @@ class _ProfileViewState extends State<ProfileView> {
                           title: tr("language"),
                           image: languageMore,
                           onTap: () => bloc.changeLocale(context)),
-
-
                       FutureBuilder<Either<Failure, bool>>(
                         future: SharedPrefService().getBool('isGuest'),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             debugPrint('--------');
                             debugPrint('Loading isGuest...');
                             debugPrint('--------');
@@ -232,37 +231,38 @@ class _ProfileViewState extends State<ProfileView> {
                           }
 
                           return snapshot.data!.fold(
-                                (failure) {
+                            (failure) {
                               debugPrint('--------');
                               debugPrint('Failed to get isGuest: $failure');
                               debugPrint('--------');
                               return Container();
                             },
-                                (isGuest) {
+                            (isGuest) {
                               debugPrint('--------');
                               debugPrint('isGuest: $isGuest');
                               debugPrint('--------');
                               return isGuest
                                   ? Container()
                                   : context
-                                  .read<ShowDeleteAndPaymnetCubit>()
-                                  .showDeleteAccount
-                                ?
-                                ProfileButton(
-                                    title: tr("delete_account"),
-                                    image: deleteMore,
-                                    onTap: () => deleteAlert(deleteTap: () {
-                                      bloc.deleteAccount();
-                                    })) : Container();
+                                          .read<ShowDeleteAndPaymnetCubit>()
+                                          .showDeleteAccount
+                                      ? ProfileButton(
+                                          title: tr("delete_account"),
+                                          image: deleteMore,
+                                          onTap: () =>
+                                              deleteAlert(deleteTap: () {
+                                                bloc.deleteAccount();
+                                              }))
+                                      : Container();
                             },
                           );
                         },
                       ),
-
                       FutureBuilder<Either<Failure, bool>>(
                         future: SharedPrefService().getBool('isGuest'),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             debugPrint('--------');
                             debugPrint('Loading isGuest...');
                             debugPrint('--------');
@@ -275,29 +275,27 @@ class _ProfileViewState extends State<ProfileView> {
                           }
 
                           return snapshot.data!.fold(
-                                (failure) {
+                            (failure) {
                               debugPrint('--------');
                               debugPrint('Failed to get isGuest: $failure');
                               debugPrint('--------');
                               return Container();
                             },
-                                (isGuest) {
+                            (isGuest) {
                               debugPrint('--------');
                               debugPrint('isGuest: $isGuest');
                               debugPrint('--------');
                               return isGuest
                                   ? Container()
                                   : ProfileButton(
-                                  title: tr("logout"),
-                                  image: logoutMore,
-                                  isLogout: true,
-                                  onTap: () => bloc.logout());
+                                      title: tr("logout"),
+                                      image: logoutMore,
+                                      isLogout: true,
+                                      onTap: () => bloc.logout());
                             },
                           );
                         },
                       ),
-
-
                       const SizedBox(
                         height: 70,
                       ),

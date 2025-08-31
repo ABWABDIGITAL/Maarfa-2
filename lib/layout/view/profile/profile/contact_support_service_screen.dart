@@ -151,7 +151,8 @@ class _ContactSupportServiceScreenState
                 // Show error message or fallback
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.errorMessage ?? 'Failed to load support data'),
+                    content: Text(
+                        state.errorMessage ?? 'Failed to load support data'),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -167,7 +168,7 @@ class _ContactSupportServiceScreenState
                     child: Container(
                       margin: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -216,7 +217,8 @@ class _ContactSupportServiceScreenState
                                 //     return _buildQuestionChip(question, index);
                                 //   }).toList(),
                                 // ),
-                                if (state is GetAllContactSupportServiceLoadingState)
+                                if (state
+                                    is GetAllContactSupportServiceLoadingState)
                                   const Center(
                                     child: CircularProgressIndicator(),
                                   )
@@ -224,8 +226,11 @@ class _ContactSupportServiceScreenState
                                   Wrap(
                                     spacing: 8,
                                     runSpacing: 8,
-                                    children: _dynamicQuestions.map((questionData) {
-                                      return _buildQuestionChip(questionData.question!, questionData.answer!);
+                                    children:
+                                        _dynamicQuestions.map((questionData) {
+                                      return _buildQuestionChip(
+                                          questionData.question!,
+                                          questionData.answer!);
                                     }).toList(),
                                   )
                                 else

@@ -373,7 +373,7 @@ class Home2Cubit extends Cubit<Home2State> {
               duration: Duration(seconds: 3),
             ),
           );
-          print('================${data['message']}');
+          // print('================${data['message']}');
 
           emit(MakeBookErrorState(
             errorMessage: data['message'] ?? 'Booking failed',

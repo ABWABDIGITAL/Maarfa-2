@@ -1,6 +1,5 @@
 part of 'contact_support_service_cubit.dart';
 
-@immutable
 sealed class ContactSupportServiceState {}
 
 final class ContactSupportServiceInitial extends ContactSupportServiceState {}

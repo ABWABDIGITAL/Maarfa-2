@@ -1,11 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/bloc/pay/pay_cubit.dart';
-import 'package:my_academy/bloc/payment/payment_cubit.dart';
-import 'package:my_academy/widget/request_lesson/bloc/request_lesson_cubit.dart';
 
 import '../../../res/drawable/icon/icons.dart';
 import '../../../res/value/color/color.dart';
@@ -39,9 +36,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PayCubit, PayState>(
-      listener: (context, state) {
-
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         final cubit = context.read<PayCubit>();
 
@@ -122,8 +117,8 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                           fontSize: 14,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 15),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                       ),
                       style: TextStyle(
                         fontSize: 14,
@@ -133,7 +128,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                   ),
                 ),
                 SizedBox(width: 12),
-                Container(
+                SizedBox(
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
@@ -150,7 +145,8 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                           lessonId: widget.lessonDetails!.id.toString(),
                           coupon: _couponController.text,
                         );
-                        cubit.finalP = cubit.couponResponseDataModel!.data!.finalPrice!;
+                        cubit.finalP =
+                            cubit.couponResponseDataModel!.data!.finalPrice!;
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -313,96 +309,101 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
               boxHeight: 12,
             ),
 
-            state is MakeCouponSuccessState ?
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'قيمة الخصم',
-                      // tr("priceWithoutTax"),
-                      style: TextStyles.appBarStyle
-                          .copyWith(color: secColor, fontSize: 14.sp),
-                    ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
+            state is MakeCouponSuccessState
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Flexible(
-                            child: Text(
-                              cubit.couponResponseDataModel!.data!.discountValue!.toString(),
-                              style: TextStyles.hintStyle.copyWith(
-                                  color: secColor,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const Space(
-                            boxWidth: 4,
-                          ),
                           Text(
-                            tr("sar"),
-                            style: TextStyles.hintStyle.copyWith(color: secColor),
+                            'قيمة الخصم',
+                            // tr("priceWithoutTax"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: secColor, fontSize: 14.sp),
+                          ),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    cubit.couponResponseDataModel!.data!
+                                        .discountValue!
+                                        .toString(),
+                                    style: TextStyles.hintStyle.copyWith(
+                                        color: secColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const Space(
+                                  boxWidth: 4,
+                                ),
+                                Text(
+                                  tr("sar"),
+                                  style: TextStyles.hintStyle
+                                      .copyWith(color: secColor),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
+                      const Space(
+                        boxHeight: 12,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
 
-                const Space(
-                  boxHeight: 12,
-                ),
-              ],
-            ) : const SizedBox.shrink(),
-
-
-            state is MakeCouponSuccessState ?
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'السعر بعد الحصم',
-                      // tr("priceWithoutTax"),
-                      style: TextStyles.appBarStyle
-                          .copyWith(color: secColor, fontSize: 14.sp),
-                    ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
+            state is MakeCouponSuccessState
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Flexible(
-                            child: Text(
-                              cubit.couponResponseDataModel!.data!.finalPrice!.toString(),
-                              style: TextStyles.hintStyle.copyWith(
-                                  color: secColor,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const Space(
-                            boxWidth: 4,
-                          ),
                           Text(
-                            tr("sar"),
-                            style: TextStyles.hintStyle.copyWith(color: secColor),
+                            'السعر بعد الحصم',
+                            // tr("priceWithoutTax"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: secColor, fontSize: 14.sp),
+                          ),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    cubit.couponResponseDataModel!.data!
+                                        .finalPrice!
+                                        .toString(),
+                                    style: TextStyles.hintStyle.copyWith(
+                                        color: secColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const Space(
+                                  boxWidth: 4,
+                                ),
+                                Text(
+                                  tr("sar"),
+                                  style: TextStyles.hintStyle
+                                      .copyWith(color: secColor),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-
-                const Space(
-                  boxHeight: 12,
-                ),
-              ],
-            ) : const SizedBox.shrink(),
+                      const Space(
+                        boxHeight: 12,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
           ],
         );
       },

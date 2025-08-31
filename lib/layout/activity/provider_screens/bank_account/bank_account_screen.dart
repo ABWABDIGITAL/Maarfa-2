@@ -40,6 +40,7 @@ class BankAccount extends StatelessWidget {
         child: BlocBuilder<BankAccountCubit, BankAccountState>(
             builder: (context, state) {
           final bloc = BankAccountCubit.get(context);
+          print(bankData!.bankAccountData!.address);
           return Stack(
             alignment: FractionalOffset.topCenter,
             children: [
@@ -151,96 +152,202 @@ class BankAccount extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Text(tr("bank_account"),
-                          style: TextStyles.appBarStyle
-                              .copyWith(color: black, fontSize: 16)),
-                      const SizedBox(height: 10),
-                      GestureDetector(
-                        onTap: () => Get.to(() => const AddingBankAccount()),
-                        child: Stack(
-                            alignment: Get.locale!.languageCode == "ar"
-                                ? FractionalOffset.topLeft
-                                : FractionalOffset.topRight,
-                            children: [
-                              bankData == null
-                                  ? const SizedBox()
-                                  : SizedBox(
-                                      width: screenWidth,
-                                      child: SidePadding(
-                                        sidePadding: 15,
-                                        child: Row(
+                      if (bankData!.bankAccountData != null) ...[
+                        Text(tr("bank_account"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: black, fontSize: 16)),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () => Get.to(() => const AddingBankAccount()),
+                          child: Stack(
+                              alignment: Get.locale!.languageCode == "ar"
+                                  ? FractionalOffset.topLeft
+                                  : FractionalOffset.topRight,
+                              children: [
+                                bankData!.bankAccountData == null
+                                    ? const SizedBox()
+                                    : SizedBox(
+                                        width: screenWidth,
+                                        child: SidePadding(
+                                          sidePadding: 15,
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(Icons.edit,
+                                                    size: 15.h, color: grey),
+                                                Text(
+                                                  tr("edit_bank"),
+                                                  style: TextStyles.appBarStyle
+                                                      .copyWith(
+                                                          color: grey,
+                                                          fontSize: 10),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                Container(
+                                  width: screenWidth,
+                                  height: 200.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: mainColor.withValues(alpha: 0.1),
+                                  ),
+                                  child: bankData != null
+                                      ? SidePadding(
+                                          sidePadding: 15,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.edit,
-                                                  size: 15.h, color: grey),
                                               Text(
-                                                tr("edit_bank"),
+                                                bankData!
+                                                    .bankAccountData!.bankName
+                                                    .toString(),
                                                 style: TextStyles.appBarStyle
                                                     .copyWith(
-                                                        color: grey,
-                                                        fontSize: 10),
+                                                        color: mainColor,
+                                                        fontSize: 12),
                                               ),
-                                            ]),
-                                      ),
-                                    ),
-                              Container(
-                                width: screenWidth,
-                                height: 200.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: mainColor.withValues(alpha: 0.1),
-                                ),
-                                child: bankData != null
-                                    ? SidePadding(
-                                        sidePadding: 15,
-                                        child: Column(
+                                              Text(
+                                                bankData!.bankAccountData!.iban
+                                                    .toString(),
+                                                style: TextStyles.appBarStyle
+                                                    .copyWith(
+                                                        color: mainColor,
+                                                        fontSize: 12),
+                                              ),
+                                              Text(
+                                                bankData!
+                                                    .bankAccountData!.address
+                                                    .toString(),
+                                                style: TextStyles.appBarStyle
+                                                    .copyWith(
+                                                        color: mainColor,
+                                                        fontSize: 12),
+                                              ),
+                                            ],
+                                          ))
+                                      : Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
+                                            Image.asset(plusIcon, color: grey),
                                             Text(
-                                              bankData!.bankName.toString(),
+                                              tr("add_bank"),
                                               style: TextStyles.appBarStyle
                                                   .copyWith(
-                                                      color: mainColor,
-                                                      fontSize: 12),
-                                            ),
-                                            Text(
-                                              bankData!.iban.toString(),
-                                              style: TextStyles.appBarStyle
-                                                  .copyWith(
-                                                      color: mainColor,
-                                                      fontSize: 12),
-                                            ),
-                                            Text(
-                                              bankData!.address.toString(),
-                                              style: TextStyles.appBarStyle
-                                                  .copyWith(
-                                                      color: mainColor,
-                                                      fontSize: 12),
+                                                      color: grey,
+                                                      fontSize: 16),
                                             ),
                                           ],
-                                        ))
-                                    : Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(plusIcon, color: grey),
-                                          Text(
-                                            tr("add_bank"),
-                                            style: TextStyles.appBarStyle
-                                                .copyWith(
-                                                    color: grey, fontSize: 16),
-                                          ),
-                                        ],
+                                        ),
+                                ),
+                              ]),
+                        ),
+                      ],
+                      const SizedBox(height: 10),
+                      if (bankData!.walletData != null) ...[
+                        Text(tr("wallet"),
+                            style: TextStyles.appBarStyle
+                                .copyWith(color: black, fontSize: 16)),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () => Get.to(() => const AddingBankAccount()),
+                          child: Stack(
+                              alignment: Get.locale!.languageCode == "ar"
+                                  ? FractionalOffset.topLeft
+                                  : FractionalOffset.topRight,
+                              children: [
+                                bankData!.walletData == null
+                                    ? const SizedBox()
+                                    : SizedBox(
+                                        width: screenWidth,
+                                        child: SidePadding(
+                                          sidePadding: 15,
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(Icons.edit,
+                                                    size: 15.h, color: grey),
+                                                Text(
+                                                  tr("edit_wallet"),
+                                                  style: TextStyles.appBarStyle
+                                                      .copyWith(
+                                                          color: grey,
+                                                          fontSize: 10),
+                                                ),
+                                              ]),
+                                        ),
                                       ),
-                              ),
-                            ]),
-                      ),
+                                Container(
+                                  width: screenWidth,
+                                  height: 200.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: mainColor.withValues(alpha: 0.1),
+                                  ),
+                                  child: bankData != null
+                                      ? SidePadding(
+                                          sidePadding: 15,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                bankData!.walletData!.walletName
+                                                    .toString(),
+                                                style: TextStyles.appBarStyle
+                                                    .copyWith(
+                                                        color: mainColor,
+                                                        fontSize: 12),
+                                              ),
+                                              Text(
+                                                bankData!
+                                                    .walletData!.walletNumber
+                                                    .toString(),
+                                                style: TextStyles.appBarStyle
+                                                    .copyWith(
+                                                        color: mainColor,
+                                                        fontSize: 12),
+                                              ),
+                                              Text(
+                                                bankData!.walletData!.address
+                                                    .toString(),
+                                                style: TextStyles.appBarStyle
+                                                    .copyWith(
+                                                        color: mainColor,
+                                                        fontSize: 12),
+                                              ),
+                                            ],
+                                          ))
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(plusIcon, color: grey),
+                                            Text(
+                                              tr("add_bank"),
+                                              style: TextStyles.appBarStyle
+                                                  .copyWith(
+                                                      color: grey,
+                                                      fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ]),
+                        ),
+                      ],
                       const Space(
                         boxHeight: 40,
                       ),

@@ -456,5 +456,8 @@
     "price_range_error": "Price must be between {0} and {1} SAR", 
     "hourly_price_between": "Hourly price between", 
       "about_trainer": "About the Trainer",
-  "available_times": "Available Times"
+  "available_times": "Available Times",
+  "wallet_name": "Wallet Name",
+  "wallet_number": "Wallet Number" , 
+  "edit_wallet":"Edit Wallet"
 }
