@@ -23,7 +23,7 @@ class ProviderLessonsRepository {
   addLesson(Map<String, dynamic> data) async {
     try {
       return await DioService()
-          .post('/providers/lessons/create', body: data)
+          .post22('/providers/lessons/create', body: data)
           .then((value) => value.fold((l) => showToast(l), (r) {
                 showToast(r["messages"]);
                 Get.offAll(() => const ProviderMainScreen());
@@ -54,7 +54,7 @@ class ProviderLessonsRepository {
   addCourse(File? image, Map<String, dynamic> data) async {
     try {
       return await DioService()
-          .requestWithFile(image, data, '/providers/courses/create', "image")
+          .requestWithFile22(image, data, '/providers/courses/create', "image")
           .then((value) => value.fold((l) => showToast(l), (r) {
                 showToast(r["messages"]);
                 BlocProvider.of<ContentCubit>(Get.context!).clearCourseData();

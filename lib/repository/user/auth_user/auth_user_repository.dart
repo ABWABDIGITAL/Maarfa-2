@@ -30,7 +30,7 @@ class AuthUserRepository {
   ) async {
     try {
       return DioService()
-          .post('/provider/auth/login', body: data)
+          .post22('/provider/auth/login', body: data)
           // .then((value) => value.fold(
           //         (l) => showErrorAlert(
           //               message: '$l',
@@ -80,7 +80,7 @@ class AuthUserRepository {
   userLogin(Map<String, dynamic> data) async {
     try {
       return DioService()
-          .post('/client/auth/login', body: data)
+          .post22('/client/auth/login', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -145,7 +145,7 @@ class AuthUserRepository {
     data.putIfAbsent("referral", () => referral);
     try {
       return DioService()
-          .post('/client/auth/register', body: data)
+          .post22('/client/auth/register', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -167,7 +167,7 @@ class AuthUserRepository {
   validateRegister(Map<String, dynamic> data, String email) async {
     try {
       return DioService()
-          .post('/client/auth/validateRegister', body: data)
+          .post22('/client/auth/validateRegister', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -188,7 +188,7 @@ class AuthUserRepository {
   Future<dynamic> sendCode(String email, bool? isCode, bool? isEdit,
       Map<String, dynamic>? data) async {
     try {
-      return DioService().post('/client/auth/sendCode', body: {
+      return DioService().post22('/client/auth/sendCode', body: {
         "email": email,
       }).then((value) => value.fold(
               (l) => showErrorAlert(
@@ -214,7 +214,7 @@ class AuthUserRepository {
   checkCode(Map<String, dynamic> data, String email, code) async {
     try {
       return DioService()
-          .post('/client/auth/verifyCode', body: data)
+          .post22('/client/auth/verifyCode', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -234,7 +234,7 @@ class AuthUserRepository {
   forget(Map<String, dynamic> data) async {
     try {
       return DioService()
-          .post('/client/auth/forgetPassword', body: data)
+          .post22('/client/auth/forgetPassword', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -256,7 +256,7 @@ class AuthUserRepository {
     log("fcmmmmm    $fcmToken");
 
     try {
-      return DioService().post('/client/auth/updateFcmToken', body: {
+      return DioService().post22('/client/auth/updateFcmToken', body: {
         "fcm_token": fcmToken,
         "device_type": Platform.isIOS ? "ios" : "android"
       }).then((value) => value.fold(

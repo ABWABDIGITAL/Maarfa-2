@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    Future.microtask(() => goToProvider());
+    // Future.microtask(() => goToProvider());
     super.initState();
   }
 

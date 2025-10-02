@@ -536,7 +536,7 @@ class _ProfessionalBookingBottomSheetState
             SizedBox(width: 12.w),
             Expanded(
               child: _buildTypeOption(
-                  'course', Icons.library_books, 'courseee'.tr(), '90 min'),
+                  'course', Icons.library_books, 'courseee'.tr(), '60 min'),
             ),
           ],
         ),
@@ -901,44 +901,145 @@ class _ProfessionalBookingBottomSheetState
                   textAlign: TextAlign.center,
                 ),
               ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // print('Confirm booking');
-                  // print(formatDate(_selectedDay.toString()));
-                  // print(_fromTime);
-                  // print(_toTime);
-                  // print(_selectedType);
-                  // canConfirm ? _confirmBooking() : null;
-                  if (_tabController.index == 0) {
-                    // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
-                    _tabController.animateTo(1);
-                  } else if (_tabController.index == 1 && canConfirm) {
-                    // لو المستخدم في تاب الوقت وكامل البيانات متاحة
-                    _confirmBooking();
-                  }
-                },
-                // onPressed: canConfirm ? _confirmBooking : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[600],
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       // print('Confirm booking');
+            //       // print(formatDate(_selectedDay.toString()));
+            //       // print(_fromTime);
+            //       // print(_toTime);
+            //       // print(_selectedType);
+            //       // canConfirm ? _confirmBooking() : null;
+            //       if (_tabController.index == 0) {
+            //         // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
+            //         _tabController.animateTo(1);
+            //       } else if (_tabController.index == 1 && canConfirm) {
+            //         // لو المستخدم في تاب الوقت وكامل البيانات متاحة
+            //         _confirmBooking();
+            //       }
+            //     },
+            //     // onPressed: canConfirm ? _confirmBooking : null,
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.blue[600],
+            //       foregroundColor: Colors.white,
+            //       padding: EdgeInsets.symmetric(vertical: 16.h),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(12.r),
+            //       ),
+            //       elevation: canConfirm ? 2 : 0,
+            //     ),
+            //     child: Text(
+            //       'confirmBooking'.tr(),
+            //       style: TextStyle(
+            //         fontSize: 16.sp,
+            //         fontWeight: FontWeight.w600,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            if (_tabController.index == 0) {
+              // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
+              _tabController.animateTo(1);
+            } else if (_tabController.index == 1) {
+              // ✅ Validation على الوقت
+              if (_fromTime == null || _toTime == null) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    title: Text(
+                      "تنبيه",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    content: Text("من فضلك اختر وقت الحجز أولاً"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text("حسناً"),
+                      ),
+                    ],
                   ),
-                  elevation: canConfirm ? 2 : 0,
-                ),
-                child: Text(
-                  'confirmBooking'.tr(),
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+                );
+                return; // وقف هنا ومكملش
+              }
+
+              // ✅ لو كل حاجة تمام وكامل البيانات
+              if (canConfirm) {
+                _confirmBooking();
+              }
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue[600],
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 16.h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
             ),
-          ],
+            elevation: canConfirm ? 2 : 0,
+          ),
+          child: Text(
+            'confirmBooking'.tr(),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+      // SizedBox(
+      //   width: double.infinity,
+      //   child: ElevatedButton(
+      //     onPressed: () {
+      //       if (_tabController.index == 0) {
+      //         // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
+      //         _tabController.animateTo(1);
+      //       } else if (_tabController.index == 1) {
+      //         // ✅ Validation على الوقت
+      //         if (_fromTime == null || _toTime == null) {
+      //           ScaffoldMessenger.of(context).showSnackBar(
+      //             SnackBar(
+      //               content: Text("من فضلك اختر وقت الحجز أولاً"),
+      //               backgroundColor: Colors.red,
+      //             ),
+      //           );
+      //           return; // وقف هنا ومكملش
+      //         }
+      //
+      //         // ✅ لو كل حاجة تمام وكامل البيانات
+      //         if (canConfirm) {
+      //           _confirmBooking();
+      //         }
+      //       }
+      //     },
+      //     style: ElevatedButton.styleFrom(
+      //       backgroundColor: Colors.blue[600],
+      //       foregroundColor: Colors.white,
+      //       padding: EdgeInsets.symmetric(vertical: 16.h),
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(12.r),
+      //       ),
+      //       elevation: canConfirm ? 2 : 0,
+      //     ),
+      //     child: Text(
+      //       'confirmBooking'.tr(),
+      //       style: TextStyle(
+      //         fontSize: 16.sp,
+      //         fontWeight: FontWeight.w600,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+
+      ],
         ),
       ),
     );

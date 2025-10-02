@@ -251,7 +251,7 @@ class _LessonPayViewState extends State<LessonPayView> {
                                 return MasterLoadButton(
                                   buttonController: bloc.payController,
                                   buttonText:
-                                      "${tr("pay")} ($priceText ${tr("sar")})t",
+                                      "${tr("pay")} ($priceText ${tr("sar")})",
                                   onPressed: () {
                                     bloc.pay(
                                         id: widget.id,

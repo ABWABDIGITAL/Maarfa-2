@@ -18,7 +18,7 @@ class _ProviderMainScreenState extends State<ProviderMainScreen> {
 
   @override
   void initState() {
-    Future.microtask(() => goToProvider());
+    // Future.microtask(() => goToProvider());
     super.initState();
   }
 

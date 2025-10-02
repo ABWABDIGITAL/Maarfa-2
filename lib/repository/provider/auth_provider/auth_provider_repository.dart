@@ -100,7 +100,7 @@ class AuthProviderRepository {
     data.putIfAbsent("referral", () => referral);
     try {
       return DioService()
-          .requestWithFile(cvFile, data, '/provider/auth/register', "cv")
+          .requestWithFile222(cvFile, data, '/provider/auth/register', "cv")
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -176,7 +176,7 @@ class AuthProviderRepository {
   ) async {
     try {
       return DioService()
-          .post('/provider/auth/validate', body: data)
+          .post22('/provider/auth/validate', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',
@@ -250,7 +250,7 @@ class AuthProviderRepository {
   checkCode(Map<String, dynamic> data, String email, code) async {
     try {
       return DioService()
-          .post('/provider/auth/VerifyAccount', body: data)
+          .post22('/provider/auth/VerifyAccount', body: data)
           .then((value) => value.fold(
                   (l) => showErrorAlert(
                         message: '$l',

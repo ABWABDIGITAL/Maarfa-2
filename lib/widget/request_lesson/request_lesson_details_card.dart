@@ -36,7 +36,18 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PayCubit, PayState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is MakeCouponErrorState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message ?? "حدث خطأ")),
+          );
+        }
+        if (state is MakeCouponSuccessState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("تم تطبيق الكوبون بنجاح ✅")),
+          );
+        }
+      },
       builder: (context, state) {
         final cubit = context.read<PayCubit>();
 

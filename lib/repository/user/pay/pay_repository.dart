@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../layout/activity/user_screens/payment/payment_screen.dart';
@@ -62,44 +63,116 @@ class PayRepository {
   //   }
   // }
 
-  pay({
+  Future<void> pay({
     required int id,
     required BuildContext context,
     required Map<String, dynamic> data,
     required int type,
   }) async {
     try {
-      return await DioService()
-          .post('/clients/requests/$id/pay', body: data)
-          .then(
-            (value) => value.fold(
-              (l) => showToast(l.toString()),
-              (r) {
-                // PayDbResponse pay = PayDbResponse.fromJson(r);
-                // if (r['data'] != null) {
+      final response = await DioService().post22(
+        '/clients/requests/$id/pay',
+        body: data,
+      );
 
-                // } else {
+      // ❌ متشيّكش على null هنا، سيب fold يتصرف
+      return response.fold(
+            (l) {
+          if (l is DioError) {
+            final res = l.response;
+            if (res != null && res.data != null) {
+              final msg = res.data["messages"] ?? "حدث خطأ غير متوقع";
+              showToast(msg); // ✅ هيعرض "الطلب منتهي الصلاحية"
+            } else {
+              showToast("فشل الاتصال بالسيرفر");
+            }
+          } else {
+            showToast(l.toString());
+          }
+          return;
+        },
+            (r) {
+          debugPrint("✅ Server response: $r");
 
-                // showToast(r['messages']);
-                type == 1
-                    ? showDialog(
-                        context: Get.context!,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const WalletSimpleAlert();
-                        })
-                    : Get.to(() => PaymentScreen(
-                        paymentUrl: r["data"],
-                        payMethodID: data["payMethodID"]));
-                // }
-                // return pay;
+          final bool success = r["success"] ?? false;
+          final String msg = r["messages"] ?? "حدث خطأ غير متوقع";
+
+          if (!success) {
+            showToast(msg);
+            return;
+          }
+
+          // ✅ نجاح
+          if (type == 1) {
+            showDialog(
+              context: Get.context!,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return const WalletSimpleAlert();
               },
-            ),
-          );
+            );
+          } else {
+            if (r["data"] != null) {
+              Get.to(() => PaymentScreen(
+                paymentUrl: r["data"],
+                payMethodID: data["payMethodID"],
+              ));
+            } else {
+              showToast("لم يتم استلام رابط الدفع");
+            }
+          }
+        },
+      );
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("❌ pay error: $e");
+      showToast("حدث خطأ أثناء عملية الدفع");
     }
   }
+
+
+
+
+
+
+
+  // pay({
+  //   required int id,
+  //   required BuildContext context,
+  //   required Map<String, dynamic> data,
+  //   required int type,
+  // }) async {
+  //   try {
+  //     return await DioService()
+  //         .post('/clients/requests/$id/pay', body: data)
+  //         .then(
+  //           (value) => value.fold(
+  //             (l) => showToast(l.toString()),
+  //             (r) {
+  //               // PayDbResponse pay = PayDbResponse.fromJson(r);
+  //               // if (r['data'] != null) {
+  //
+  //               // } else {
+  //
+  //               // showToast(r['messages']);
+  //               type == 1
+  //                   ? showDialog(
+  //                       context: Get.context!,
+  //                       barrierDismissible: false,
+  //                       builder: (BuildContext context) {
+  //                         return const WalletSimpleAlert();
+  //                       })
+  //                   : Get.to(() => PaymentScreen(
+  //                       paymentUrl: r["data"],
+  //                       payMethodID: data["payMethodID"]));
+  //               // }
+  //               // return pay;
+  //             },
+  //           ),
+  //         );
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   cancelLesson(int id) async {
     try {

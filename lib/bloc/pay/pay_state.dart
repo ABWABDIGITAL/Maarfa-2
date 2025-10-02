@@ -36,11 +36,23 @@ class CourseCancelState extends PayState {}
 class LessonCancelState extends PayState {}
 
 
-final class MakeCouponLoadingState extends PayState {}
+// final class MakeCouponLoadingState extends PayState {}
+//
+// final class MakeCouponSuccessState extends PayState {
+//   final CouponResponseDataModel couponResponseDataModel;
+//   MakeCouponSuccessState({required this.couponResponseDataModel});
+// }
+//
+// final class MakeCouponErrorState extends PayState {}
 
-final class MakeCouponSuccessState extends PayState {
+class MakeCouponLoadingState extends PayState {}
+
+class MakeCouponSuccessState extends PayState {
   final CouponResponseDataModel couponResponseDataModel;
   MakeCouponSuccessState({required this.couponResponseDataModel});
 }
 
-final class MakeCouponErrorState extends PayState {}
+class MakeCouponErrorState extends PayState {
+  final String? message;
+  MakeCouponErrorState({this.message});
+}

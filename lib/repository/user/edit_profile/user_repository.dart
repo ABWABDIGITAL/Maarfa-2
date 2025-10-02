@@ -85,7 +85,7 @@ class UserRepository {
 
   validateEmail(String email, bool isUser) async {
     try {
-      return DioService().post(
+      return DioService().post22(
           isUser
               ? "/client/auth/changeEmailRequest"
               : "/provider/auth/changeEmailRequest",
@@ -128,7 +128,7 @@ class UserRepository {
     final role = prefs.getBool("isUser") ?? true;
     try {
       return DioService()
-          .post(
+          .post22(
               role
                   ? "/client/auth/changePassword"
                   : "/provider/auth/changePassword",

@@ -28,6 +28,7 @@ class PaymentMethodView extends StatelessWidget {
   final bool isCourse;
   final int? id;
   final bool isRequest;
+
   const PaymentMethodView({
     super.key,
     required this.isWallet,
@@ -190,9 +191,14 @@ class PaymentMethodView extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                      top: -50,
-                      child: Image.asset(wallet,
-                          height: 100, width: 100, fit: BoxFit.cover)),
+                    top: -50,
+                    child: Image.asset(
+                      wallet,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ],
               );
             }));

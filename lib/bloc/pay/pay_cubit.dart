@@ -31,21 +31,49 @@ class PayCubit extends Cubit<PayState> {
   CouponResponseDataModel? couponResponseDataModel;
   dynamic finalP = 0;
 
+  // Future<void> makeCouponRequest({
+  //   required String lessonId,
+  //   required String coupon,
+  // }) async {
+  //   emit(MakeCouponLoadingState());
+  //   try {
+  //     final response = await DioService().post23(
+  //       '/clients/request/coupons/apply',
+  //       body: {
+  //         "lesson_id": lessonId,
+  //         "coupon": coupon,
+  //       },
+  //     );
+  //     response.fold((error) {
+  //       emit(MakeCouponErrorState());
+  //     }, (data) {
+  //       couponResponseDataModel = CouponResponseDataModel.fromJson(data);
+  //       finalP = couponResponseDataModel!.data!.finalPrice!;
+  //       couponT = couponResponseDataModel!.data!.coupon!;
+  //       emit(MakeCouponSuccessState(
+  //           couponResponseDataModel: couponResponseDataModel!));
+  //     });
+  //   } catch (e) {
+  //     emit(MakeCouponErrorState());
+  //   }
+  // }
   Future<void> makeCouponRequest({
     required String lessonId,
     required String coupon,
   }) async {
     emit(MakeCouponLoadingState());
     try {
-      final response = await DioService().post(
+      final response = await DioService().post23(
         '/clients/request/coupons/apply',
         body: {
           "lesson_id": lessonId,
           "coupon": coupon,
         },
       );
+
       response.fold((error) {
-        emit(MakeCouponErrorState());
+        // هنا هيجيلك "كود الخصم غير موجود"
+        emit(MakeCouponErrorState(message: error));
       }, (data) {
         couponResponseDataModel = CouponResponseDataModel.fromJson(data);
         finalP = couponResponseDataModel!.data!.finalPrice!;
@@ -54,9 +82,10 @@ class PayCubit extends Cubit<PayState> {
             couponResponseDataModel: couponResponseDataModel!));
       });
     } catch (e) {
-      emit(MakeCouponErrorState());
+      emit(MakeCouponErrorState(message: "حدث خطأ أثناء تنفيذ الطلب"));
     }
   }
+
 
   setPaymentMethod(int value, int paymentMethodId) {
     payment = value;

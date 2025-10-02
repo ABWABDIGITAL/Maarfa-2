@@ -37,7 +37,7 @@ class BankAccountRepository {
 
   requestPay() async {
     try {
-      return DioService().post('/provider/payments/request').then(
+      return DioService().post22('/provider/payments/request').then(
           (value) => value.fold((l) => showErrorAlert(message: "$l"), (r) {
                 showToast(r['messages'].toString());
               }));

@@ -9,7 +9,7 @@ class ContactUsRepository {
   contactUs(Map<String, dynamic> data) async {
     try {
       return DioService()
-          .post('/contact_us', body: data)
+          .post22('/contact_us', body: data)
           .then((value) => value.fold((l) => showToast("$l"), (r) {
                 showToast(r['messages'].toString());
                 Get.back();

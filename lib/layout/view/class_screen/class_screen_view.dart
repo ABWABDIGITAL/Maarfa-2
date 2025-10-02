@@ -143,24 +143,38 @@ class _ClassScreenViewState extends State<ClassScreenView> {
                   }
                 },
                 builder: (context, state) {
+                  if (bloc.lessonsModel.isEmpty) {
+                    return Center(
+                      child: Text(
+                        tr('No Lessons Found'),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    );
+                  }
+
                   return ListView.builder(
-                    controller: scrollController,
-                    itemCount: bloc.lessonsModel.length,
-                    itemBuilder: (context, index) => SubjectCard(
-                      isUser: true,
-                      onTap: () {
-                        bloc.bookmark(index);
-                        BlocProvider.of<BookmarkCubit>(context).addToBookMark(
-                          id: bloc.lessonsModel[index].id!,
-                          type: 'lesson',
+                          controller: scrollController,
+                          itemCount: bloc.lessonsModel.length,
+                          itemBuilder: (context, index) => SubjectCard(
+                            isUser: true,
+                            onTap: () {
+                              bloc.bookmark(index);
+                              BlocProvider.of<BookmarkCubit>(context)
+                                  .addToBookMark(
+                                id: bloc.lessonsModel[index].id!,
+                                type: 'lesson',
+                              );
+                            },
+                            isBlue: bloc.bookmarkList[index],
+                            lessonDetails: bloc.lessonsModel[index],
+                            yearId: widget.yearId,
+                            stageId: widget.stageId,
+                          ),
                         );
-                      },
-                      isBlue: bloc.bookmarkList[index],
-                      lessonDetails: bloc.lessonsModel[index],
-                      yearId: widget.yearId,
-                      stageId: widget.stageId,
-                    ),
-                  );
                 },
               ),
             ),

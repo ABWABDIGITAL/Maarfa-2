@@ -41,22 +41,24 @@ class ClassScreen extends StatelessWidget {
                 listener: (context, state) {},
                 builder: (context, state) {
                   return BlocBuilder<SubjectCubit, SubjectState>(
-                      builder: (context, state) {
-                    if (state is SubjectLoadedState) {
-                      final data = (state).subject;
-                      return ClassScreenView(
-                        subject: data,
-                        yearId: id,
-                        stageId: stageId,
-                        filterData: filterData,
-                        name: name,
-                      );
-                    } else if (state is SubjectErrorState) {
-                      return const ErrorPage();
-                    } else {
-                      return const Loading();
-                    }
-                  });
+                    builder: (context, state) {
+                      if (state is SubjectLoadedState) {
+                        final data = state.subject;
+
+                        return ClassScreenView(
+                          subject: data,
+                          yearId: id,
+                          stageId: stageId,
+                          filterData: filterData,
+                          name: name,
+                        );
+                      } else if (state is SubjectErrorState) {
+                        return const ErrorPage();
+                      } else {
+                        return const Loading();
+                      }
+                    },
+                  );
                 })),
 
         // BlocProvider(
