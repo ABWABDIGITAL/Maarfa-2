@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
@@ -358,7 +359,7 @@ class Home2Cubit extends Cubit<Home2State> {
               (route) => false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Booking confirmed successfully!'),
+              content: Text('Suceesssss'.tr()),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 2),
             ),
