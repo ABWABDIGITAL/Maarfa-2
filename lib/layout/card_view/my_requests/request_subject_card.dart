@@ -2,11 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:my_academy/res/value/color/color.dart';
-
-import '../../../res/value/style/textstyles.dart';
-import '../../../widget/logo/logo/logo.dart';
-import '../../../widget/space/space.dart';
 import '../../activity/user_screens/request/course_pay/pay_screen.dart';
 
 class RequestSubjectCard extends StatelessWidget {
@@ -32,53 +27,158 @@ class RequestSubjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = _statusConfig();
+
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      margin: EdgeInsets.symmetric(horizontal: 18.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey.withValues(alpha: 0.12),
-          width: 1,
-        ),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFE8E8E8), width: 1),
       ),
       child: Material(
         color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14.r),
         child: InkWell(
-          onTap: () => Get.to(() => PayScreen(
-                type: "lesson",
-                id: lessonId,
-                isRequest: true,
-                requestId: id,
-              )),
-          borderRadius: BorderRadius.circular(16.r),
+          onTap: acceptanceCheck.toLowerCase() == 'accepted'
+              ? () => Get.to(() => PayScreen(
+                  type: 'lesson', id: lessonId, isRequest: true, requestId: id))
+              : onTap,
+          borderRadius: BorderRadius.circular(14.r),
           child: Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(14.w),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Main content row
+                // Top row: avatar area + content
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile section with enhanced design
-                    _buildProfileSection(),
-                    Space(boxWidth: 16.w),
-                    // Content section
+                    // Avatar — flat colored circle, no gradient
+                    _Avatar(name: name),
+                    SizedBox(width: 12.w),
                     Expanded(
-                      child: _buildContentSection(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Subject title
+                          Text(
+                            lessonTitle,
+                            style: TextStyle(
+                              fontFamily: 'Shamel',
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF272727),
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4.h),
+                          // Teacher name
+                          Row(
+                            children: [
+                              const Icon(Icons.person_outline_rounded,
+                                  size: 13, color: Color(0xFF707070)),
+                              SizedBox(width: 4.w),
+                              Expanded(
+                                child: Text(
+                                  name,
+                                  style: TextStyle(
+                                    fontFamily: 'Shamel',
+                                    fontSize: 12.sp,
+                                    color: const Color(0xFF707070),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          // Price
+                          Row(
+                            children: [
+                              const Icon(Icons.attach_money_rounded,
+                                  size: 13, color: Color(0xFF065F46)),
+                              SizedBox(width: 2.w),
+                              Text(
+                                '$price ${tr("sar")}',
+                                style: TextStyle(
+                                  fontFamily: 'Shamel',
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF065F46),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Request ID badge
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF9FAFB),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                            color: const Color(0xFFE8E8E8), width: 1),
+                      ),
+                      child: Text(
+                        '#$id',
+                        style: TextStyle(
+                          fontFamily: 'Shamel',
+                          fontSize: 11.sp,
+                          color: const Color(0xFF707070),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                Space(boxHeight: 12.h),
-                // Bottom section with status and action
-                _buildBottomSection(),
+
+                SizedBox(height: 12.h),
+
+                // Divider
+                const Divider(
+                    color: Color(0xFFE8E8E8), thickness: 1, height: 1),
+
+                SizedBox(height: 10.h),
+
+                // Bottom row: online badge + status + action
+                Row(
+                  children: [
+                    // Online/Offline pill
+                    _Pill(
+                      label: tr('online'),
+                      bgColor: const Color(0xFFEEF2FF),
+                      textColor: const Color(0xFF3F2571),
+                      icon: Icons.wifi_rounded,
+                    ),
+                    const Spacer(),
+                    // Status pill
+                    _Pill(
+                      label: status.label,
+                      bgColor: status.bgColor,
+                      textColor: status.textColor,
+                      icon: status.icon,
+                    ),
+                    SizedBox(width: 8.w),
+                    // Action button
+                    if (acceptanceCheck.toLowerCase() == 'accepted')
+                      _ActionButton(
+                        label: tr('pay_now'),
+                        color: const Color(0xFF065F46),
+                        onTap: () => Get.to(() => PayScreen(
+                              type: 'lesson',
+                              id: lessonId,
+                              isRequest: true,
+                              requestId: id,
+                            )),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -87,327 +187,179 @@ class RequestSubjectCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileSection() {
-    return Column(
-      children: [
-        // Enhanced profile avatar
-        Container(
-          width: 80.w,
-          height: 80.h,
-          decoration: BoxDecoration(
-            gradient: blueGradient,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: mainColor.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Container(
-            margin: EdgeInsets.all(4.w),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: const Logo(
-              logoHeight: 72,
-              logoWidth: 72,
-            ),
-          ),
-        ),
-        Space(boxHeight: 8.h),
-        // Request ID chip
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-          decoration: BoxDecoration(
-            color: mainColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: mainColor.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            "#$id",
-            style: TextStyles.contentStyle.copyWith(
-              color: mainColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 11.sp,
-            ),
-          ),
-        ),
-      ],
-    );
+  _StatusConfig _statusConfig() {
+    switch (acceptanceCheck.toLowerCase()) {
+      case 'accepted':
+        return _StatusConfig(
+          label: tr('accepted'),
+          bgColor: const Color(0xFFD1FAE5),
+          textColor: const Color(0xFF065F46),
+          icon: Icons.check_circle_outline_rounded,
+        );
+      case 'pending':
+        return _StatusConfig(
+          label: tr('pending'),
+          bgColor: const Color(0xFFFFF3CD),
+          textColor: const Color(0xFF856404),
+          icon: Icons.hourglass_empty_rounded,
+        );
+      case 'rejected':
+        return _StatusConfig(
+          label: tr('rejected'),
+          bgColor: const Color(0xFFFFE4E6),
+          textColor: const Color(0xFF9F1239),
+          icon: Icons.cancel_outlined,
+        );
+      case 'paid':
+        return _StatusConfig(
+          label: tr('paid'),
+          bgColor: const Color(0xFFEEF2FF),
+          textColor: const Color(0xFF3F2571),
+          icon: Icons.payment_rounded,
+        );
+      default:
+        return _StatusConfig(
+          label: acceptanceCheck,
+          bgColor: const Color(0xFFF3F4F6),
+          textColor: const Color(0xFF6B7280),
+          icon: Icons.info_outline_rounded,
+        );
+    }
   }
+}
 
-  Widget _buildContentSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Lesson title with enhanced typography
-        Text(
-          lessonTitle,
-          style: TextStyles.appBarStyle.copyWith(
-            color: blackColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
-            height: 1.3,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Space(boxHeight: 8.h),
+// ── Sub-widgets ────────────────────────────────────────────────
 
-        // Provider info with icon
-        Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.w),
-              decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6.r),
-              ),
-              child: Icon(
-                Icons.person_outline,
-                size: 14.sp,
-                color: textfieldColor,
-              ),
-            ),
-            Space(boxWidth: 8.w),
-            Expanded(
-              child: Text(
-                name,
-                style: TextStyles.hintStyle.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[700],
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        Space(boxHeight: 6.h),
+class _Avatar extends StatelessWidget {
+  final String name;
+  const _Avatar({required this.name});
 
-        // Price info with enhanced design
-        Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.w),
-              decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6.r),
-              ),
-              child: Icon(
-                Icons.attach_money,
-                size: 14.sp,
-                color: Colors.green[700],
-              ),
-            ),
-            Space(boxWidth: 8.w),
-            Text(
-              "$price ${tr("sar")}",
-              style: TextStyles.hintStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.green[700],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    const bgColors = [
+      Color(0xFFE8F4FD),
+      Color(0xFFFFF3E0),
+      Color(0xFFE8F5E9),
+      Color(0xFFFCE4EC),
+      Color(0xFFEDE7F6),
+    ];
+    const fgColors = [
+      Color(0xFF1565C0),
+      Color(0xFFE65100),
+      Color(0xFF2E7D32),
+      Color(0xFFC62828),
+      Color(0xFF4527A0),
+    ];
+    final idx = initial.codeUnitAt(0) % bgColors.length;
 
-  Widget _buildBottomSection() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
+      width: 44.w,
+      height: 44.w,
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Colors.grey.withValues(alpha: 0.15),
-            width: 1,
+        color: bgColors[idx],
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Text(
+          initial,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w700,
+            color: fgColors[idx],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  final String label;
+  final Color bgColor;
+  final Color textColor;
+  final IconData icon;
+
+  const _Pill({
+    required this.label,
+    required this.bgColor,
+    required this.textColor,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Online badge
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: Colors.blue.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.wifi,
-                  size: 12.sp,
-                  color: Colors.blue[700],
-                ),
-                Space(boxWidth: 4.w),
-                Text(
-                  tr("online"),
-                  style: TextStyles.contentStyle.copyWith(
-                    color: Colors.blue[700],
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-
-          // Status badge with dynamic styling
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: _getStatusColor().withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: _getStatusColor().withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  _getStatusIcon(),
-                  size: 12.sp,
-                  color: _getStatusColor(),
-                ),
-                Space(boxWidth: 4.w),
-                Text(
-                  acceptanceCheck,
-                  style: TextStyles.contentStyle.copyWith(
-                    color: _getStatusColor(),
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Space(boxWidth: 8.w),
-
-          // Action button
-          SizedBox(
-            height: 32.h,
-            child: ElevatedButton(
-              onPressed: () => Get.to(() => PayScreen(
-                    type: "lesson",
-                    id: lessonId,
-                    isRequest: true,
-                    requestId: id,
-                  )),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _getActionButtonColor(),
-                foregroundColor: Colors.white,
-                elevation: 2,
-                shadowColor: _getActionButtonColor().withValues(alpha: 0.3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    _getActionIcon(),
-                    size: 14.sp,
-                  ),
-                  Space(boxWidth: 4.w),
-                  Text(
-                    _getActionText(),
-                    style: TextStyles.contentStyle.copyWith(
-                      color: Colors.white,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+          Icon(icon, size: 11, color: textColor),
+          SizedBox(width: 4.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Shamel',
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
+              color: textColor,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  // Helper methods for status-based styling
-  Color _getStatusColor() {
-    switch (acceptanceCheck.toLowerCase()) {
-      case "pending":
-        return Colors.orange;
-      case "accepted":
-        return Colors.green;
-      case "rejected":
-        return Colors.red;
-      case "paid":
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
-  }
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
 
-  IconData _getStatusIcon() {
-    switch (acceptanceCheck.toLowerCase()) {
-      case "pending":
-        return Icons.schedule;
-      case "accepted":
-        return Icons.check_circle_outline;
-      case "rejected":
-        return Icons.cancel_outlined;
-      case "paid":
-        return Icons.payment;
-      default:
-        return Icons.info_outline;
-    }
-  }
+  const _ActionButton({
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
 
-  Color _getActionButtonColor() {
-    switch (acceptanceCheck.toLowerCase()) {
-      case "accepted":
-        return Colors.green;
-      case "pending":
-        return mainColor;
-      default:
-        return Colors.grey[600]!;
-    }
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Shamel',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
+}
 
-  IconData _getActionIcon() {
-    switch (acceptanceCheck.toLowerCase()) {
-      case "accepted":
-        return Icons.payment;
-      case "pending":
-        return Icons.visibility;
-      default:
-        return Icons.info;
-    }
-  }
+class _StatusConfig {
+  final String label;
+  final Color bgColor;
+  final Color textColor;
+  final IconData icon;
 
-  String _getActionText() {
-    switch (acceptanceCheck.toLowerCase()) {
-      case "accepted":
-        return tr("pay_now");
-      case "pending":
-        return tr("view");
-      case "rejected":
-        return tr("details");
-      case "paid":
-        return tr("view");
-      default:
-        return tr("view");
-    }
-  }
+  const _StatusConfig({
+    required this.label,
+    required this.bgColor,
+    required this.textColor,
+    required this.icon,
+  });
 }

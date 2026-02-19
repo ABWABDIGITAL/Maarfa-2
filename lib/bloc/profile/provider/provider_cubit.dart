@@ -8,7 +8,6 @@ import 'package:my_academy/model/provider/provider/provider_model.dart';
 import 'package:my_academy/repository/user/edit_profile/user_repository.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../model/provider/provider/provider_response.dart';
 
@@ -39,9 +38,6 @@ class ProviderCubit extends Cubit<ProviderState> {
   String? nationality;
   String? birthdate;
   int? genderValue;
-  CityModel? city;
-  String? cityName;
-  int? cityId;
   // List<Map<String, dynamic>> nationList = [
   //   {"id": 1, "name": "المملكة العربية السعودية"},
   //   {"id": 2, "name": "مصر"},
@@ -109,33 +105,15 @@ class ProviderCubit extends Cubit<ProviderState> {
 
   pickProfile() async {
     emit(PickInitState());
-    XFile? pickedFile =
+    final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    profileImage = File(pickedFile!.path);
+    if (pickedFile == null) return; // user cancelled
+    profileImage = File(pickedFile.path);
     picked = true;
     emit(PickPictureState());
   }
 
-  chooseCity(val) {
-    switch (city == val) {
-      case true:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(SameCityState());
-        break;
-      case false:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(ChangeCityState());
-        break;
-    }
-    emit(ChooseCityState());
-  }
-
-  getInitData(
-      Provider user, List<CityModel> cities, List<NationalityModel> nations) {
+  getInitData(Provider user, List<NationalityModel> nations) {
     scientificName.value = scientificName.value.copyWith(text: user.title);
     firstName.value = firstName.value.copyWith(text: user.firstName);
     lastName.value = lastName.value.copyWith(text: user.lastName);
@@ -143,11 +121,6 @@ class ProviderCubit extends Cubit<ProviderState> {
     email.value = email.value.copyWith(text: user.email);
     degree.value = degree.value.copyWith(text: user.degree);
     chooseGender(user.gender == 1 ? true : false);
-    for (int i = 0; i < cities.length; i++) {
-      if (cities[i].id == user.city!.id && cities[i].name == user.city!.name) {
-        chooseCity(cities[i]);
-      }
-    }
     for (int i = 0; i < nations.length; i++) {
       if (nations[i].id == user.nationality!.id &&
           nations[i].name == user.nationality!.name) {
@@ -199,7 +172,6 @@ class ProviderCubit extends Cubit<ProviderState> {
         "degree": degree.text.trim(),
         "nationality_id": nationId,
         "gender": genderValue,
-        "city_id": cityId,
         "email": email.text.trim(),
       };
       providerRepository

@@ -25,18 +25,14 @@ class BottomBarCubit extends Cubit<BottomBarStates> {
     BookmarkScreen(),
     MyRequestsScreen(),
     SubscribeScreen(),
-    ProfileScreen(
-      isUser: true,
-    )
+    ProfileScreen(isUser: true),
   ];
 
   List<Widget> providerList = [
     const ProviderHomeScreen(),
     const ProviderRequestsScreen(),
     const ProviderAppointmentsScreen(),
-    const ProfileScreen(
-      isUser: false,
-    ),
+    const ProfileScreen(isUser: false),
   ];
 
   void changeBottomBar(index) {

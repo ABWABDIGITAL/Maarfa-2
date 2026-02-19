@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_academy/model/common/cities/city_model.dart';
 
 import '../../../../bloc/nations/nations_cubit.dart';
 import '../../../../widget/error/page/error_page.dart';
@@ -9,14 +8,10 @@ import '../../../../widget/profile/provider/provider_profile_body.dart';
 import '../../../../widget/profile/user/user_profile_body.dart';
 
 class UserProfileNationsView extends StatelessWidget {
-  final List<CityModel> cities;
   final dynamic user;
   final bool isUser;
   const UserProfileNationsView(
-      {super.key,
-      required this.cities,
-      required this.user,
-      required this.isUser});
+      {super.key, required this.user, required this.isUser});
   @override
   Widget build(final BuildContext context) {
     return BlocConsumer<NationsCubit, NationsState>(
@@ -40,12 +35,10 @@ class UserProfileNationsView extends StatelessWidget {
   profileView(context, data) {
     return isUser
         ? UserProfileBody(
-            cities: cities,
             nations: data,
             user: user,
           )
         : ProviderProfileBody(
-            cities: cities,
             nations: data,
             user: user,
           );

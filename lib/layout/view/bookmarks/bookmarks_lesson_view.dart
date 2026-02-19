@@ -9,7 +9,6 @@ import '../../../res/drawable/image/images.dart';
 import '../../../res/value/color/color.dart';
 import '../../../res/value/dimenssion/dimenssions.dart';
 import '../../../widget/error/page/error_page.dart';
-import '../../../widget/master_list/custom_list.dart';
 import '../../activity/static/empty_screens/empty_screens.dart';
 import '../../card_view/subject/subject_card.dart';
 import 'bookmarks_lesson_cache_view.dart';
@@ -83,15 +82,22 @@ class BookmarksLessonView extends StatelessWidget {
                             ],
                           ),
                         )
-                      : CustomList(
-                          listHeight: 100000000000000,
-                          listWidth: screenWidth,
-                          scroll: const NeverScrollableScrollPhysics(),
-                          axis: Axis.vertical,
-                          count: bloc.bookmarkLesson == null
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 14.w, vertical: 4.h),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12.w,
+                            mainAxisSpacing: 12.h,
+                            childAspectRatio: 0.82,
+                          ),
+                          itemCount: bloc.bookmarkLesson == null
                               ? data.length
                               : bloc.bookmarkLesson!.length,
-                          child: (context, index) => SubjectCard(
+                          itemBuilder: (context, index) => SubjectCard(
                             isUser: true,
                             onTap: () {
                               bloc.addToBookMark(

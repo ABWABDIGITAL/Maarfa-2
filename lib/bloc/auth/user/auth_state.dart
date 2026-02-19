@@ -13,8 +13,6 @@ class ChangeConfirmState extends AuthState {}
 
 class LoginState extends AuthState {}
 
-
-
 class RegisterState extends AuthState {}
 
 class ValidateEmptyState extends AuthState {}
@@ -58,10 +56,7 @@ class ChangeNationState extends AuthState {}
 
 class ChooseNationState extends AuthState {}
 
-class AuthLoadedState extends AuthState {
-  final List<CityModel>? data;
-  AuthLoadedState({this.data});
-}
+class AuthLoadedState extends AuthState {}
 
 class AuthErrorState extends AuthState {}
 

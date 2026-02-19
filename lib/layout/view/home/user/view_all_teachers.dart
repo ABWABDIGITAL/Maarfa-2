@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
 import 'package:my_academy/layout/view/home/user/view_all_specialization_screen.dart';
+
+import 'package:my_academy/res/value/color/color.dart';
 
 import 'data/cubit/home_cubit.dart';
 import 'data/cubit/home_state.dart';
@@ -37,8 +37,6 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
   @override
   void initState() {
     super.initState();
-    log('widget.selectedSpecializationId ${widget.selectedSpecializationId}');
-
     _scrollController = ScrollController();
     _homeCubit = context.read<Home2Cubit>();
     _fabAnimationController = AnimationController(
@@ -115,16 +113,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
         child: IconButton(
           icon: Icon(Icons.arrow_back_ios_new,
               color: Colors.grey[700], size: 20.w),
-          // onPressed: () => Navigator.pop(context),
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ViewAllSpecializationScreen(),
-              ),
-            );
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       title: Column(
@@ -183,7 +172,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
     return RefreshIndicator(
       onRefresh: () => _homeCubit.getAllTeachers(
           specialityId: widget.selectedSpecializationId),
-      color: Theme.of(context).primaryColor,
+      color: mainColor,
       backgroundColor: Colors.white,
       child: CustomScrollView(
         controller: _scrollController,
@@ -221,9 +210,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Theme.of(context).primaryColor,
-            ),
+            valueColor: const AlwaysStoppedAnimation<Color>(mainColor),
           ),
           SizedBox(height: 16.h),
           Text(
@@ -284,6 +271,9 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
               icon: const Icon(Icons.refresh),
               label: Text('retry'.tr()),
               style: ElevatedButton.styleFrom(
+                backgroundColor: accentColor,
+                foregroundColor: Colors.white,
+                elevation: 0,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
@@ -355,9 +345,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
                   height: 20.h,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor,
-                    ),
+                    valueColor: const AlwaysStoppedAnimation<Color>(mainColor),
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -385,7 +373,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
         scale: _fabAnimationController,
         child: FloatingActionButton.small(
           onPressed: _scrollToTop,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: mainColor,
           child: const Icon(Icons.keyboard_arrow_up, color: Colors.white),
         ),
       ),
@@ -393,9 +381,7 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
   }
 
   void _onTeacherTap(Providers teacher) {
-    // Add haptic feedback
     HapticFeedback.lightImpact();
-
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -416,13 +402,6 @@ class _ViewAllTeachersState extends State<ViewAllTeachers>
         transitionDuration: const Duration(milliseconds: 300),
       ),
     );
-    // Navigate to teacher details
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => TeacherDetailsScreen(teacher: teacher),
-    //   ),
-    // );
   }
 }
 
@@ -442,17 +421,13 @@ class TeacherCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFE8E8E8), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
             offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -479,30 +454,18 @@ class TeacherCard extends StatelessWidget {
   }
 
   Widget _buildTeacherAvatar() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12.r),
-        child: teacher.imagePath != null && teacher.imagePath!.isNotEmpty
-            ? CachedNetworkImage(
-                imageUrl: teacher.imagePath!,
-                width: 64.w,
-                height: 64.h,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => _buildAvatarPlaceholder(),
-                errorWidget: (_, __, ___) => _buildDefaultAvatar(),
-              )
-            : _buildDefaultAvatar(),
-      ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.r),
+      child: teacher.imagePath != null && teacher.imagePath!.isNotEmpty
+          ? CachedNetworkImage(
+              imageUrl: teacher.imagePath!,
+              width: 64.w,
+              height: 64.h,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => _buildAvatarPlaceholder(),
+              errorWidget: (_, __, ___) => _buildDefaultAvatar(),
+            )
+          : _buildDefaultAvatar(),
     );
   }
 
@@ -524,21 +487,41 @@ class TeacherCard extends StatelessWidget {
   }
 
   Widget _buildDefaultAvatar() {
+    final fullName =
+        '${teacher.firstName ?? ''} ${teacher.lastName ?? ''}'.trim();
+    final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
+    const bgColors = [
+      Color(0xFFE8F4FD),
+      Color(0xFFFFF3E0),
+      Color(0xFFE8F5E9),
+      Color(0xFFFCE4EC),
+      Color(0xFFEDE7F6),
+    ];
+    const fgColors = [
+      Color(0xFF1565C0),
+      Color(0xFFE65100),
+      Color(0xFF2E7D32),
+      Color(0xFFC62828),
+      Color(0xFF4527A0),
+    ];
+    final idx = initial.codeUnitAt(0) % bgColors.length;
+
     return Container(
       width: 64.w,
       height: 64.h,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: bgColors[idx],
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Icon(
-        Icons.person_outline,
-        size: 28.w,
-        color: Colors.white,
+      child: Center(
+        child: Text(
+          initial,
+          style: TextStyle(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.w700,
+            color: fgColors[idx],
+          ),
+        ),
       ),
     );
   }
@@ -551,7 +534,7 @@ class TeacherCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          fullName.isNotEmpty ? fullName : 'اسم غير متوفر',
+          fullName.isNotEmpty ? fullName : 'name_not_available'.tr(),
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
@@ -636,313 +619,3 @@ class TeacherCard extends StatelessWidget {
     );
   }
 }
-
-// class ViewAllTeachers extends StatefulWidget {
-//   ViewAllTeachers(
-//       {super.key,
-//       required this.selectedSpecializationId,
-//       required this.specializationName});
-//
-//   final int selectedSpecializationId;
-//   final String specializationName;
-//
-//   @override
-//   State<ViewAllTeachers> createState() => _ViewAllTeachersState();
-// }
-//
-// class _ViewAllTeachersState extends State<ViewAllTeachers> {
-//   late ScrollController _scrollController;
-//   late HomeCubit _homeCubit;
-//
-//   @override
-//   void initState() {
-//     // super.initState();
-//     // _scrollController = ScrollController();
-//     // _homeCubit = context.read<HomeCubit>();
-//     // _homeCubit.getAllTeachers();
-//     //
-//     // // Add scroll listener for pagination
-//     // _scrollController.addListener(_onScroll);
-//     super.initState();
-//     log('widget.selectedSpecializationId ${widget.selectedSpecializationId}');
-//     _scrollController = ScrollController();
-//     _homeCubit = context.read<HomeCubit>();
-//
-//     _homeCubit.getAllTeachers(
-//         specialityId:
-//             widget.selectedSpecializationId); // Get specializations first
-//     _scrollController.addListener(_onScroll);
-//   }
-//
-//   void _onScroll() {
-//     if (_scrollController.position.pixels >=
-//             _scrollController.position.maxScrollExtent - 200 &&
-//         widget.selectedSpecializationId != null) {
-//       _homeCubit.loadMoreTeachers(
-//           specialityId: widget.selectedSpecializationId!);
-//     }
-//   }
-//
-//   // void _onScroll() {
-//   //   if (_scrollController.position.pixels >=
-//   //       _scrollController.position.maxScrollExtent - 200) {
-//   //     _homeCubit.loadMoreTeachers();
-//   //   }
-//   // }
-//
-//   @override
-//   void dispose() {
-//     _scrollController.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           widget.specializationName,
-//         ),
-//         centerTitle: true,
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-//           // onPressed: () => Get.back(),
-//           onPressed: () {
-//             Navigator.pop(context);
-//             Navigator.pushReplacement(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => const ViewAllSpecializationScreen(),
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//       body: BlocBuilder<HomeCubit, HomeState>(
-//         builder: (context, state) {
-//           if (state is GetAllTeachersLoadingState) {
-//             return const Center(
-//               child: CircularProgressIndicator(),
-//             );
-//           }
-//
-//           if (state is GetAllTeachersErrorState) {
-//             return Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Icon(
-//                     Icons.error_outline,
-//                     size: 64,
-//                     color: Colors.red[300],
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     'Error: ${state.errorMessage}',
-//                     textAlign: TextAlign.center,
-//                     style: const TextStyle(fontSize: 16),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   ElevatedButton(
-//                     onPressed: () => _homeCubit.getAllTeachers(
-//                         specialityId: widget.selectedSpecializationId ?? 0),
-//                     child: Text('retry'.tr()),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           }
-//
-//           final teachers = _homeCubit.allTeachers;
-//
-//           if (teachers.isEmpty) {
-//             return Center(
-//               child: Text(
-//                 'no_teachers_found'.tr(),
-//                 style: TextStyle(fontSize: 16),
-//               ),
-//             );
-//           }
-//
-//           return RefreshIndicator(
-//             onRefresh: () => _homeCubit.getAllTeachers(
-//                 specialityId: widget.selectedSpecializationId ?? 0),
-//             child: ListView.builder(
-//               controller: _scrollController,
-//               padding: const EdgeInsets.all(16),
-//               itemCount: teachers.length + 1, // +1 for loading indicator
-//               itemBuilder: (context, index) {
-//                 if (index == teachers.length) {
-//                   // Show loading indicator at the bottom when loading more
-//                   return BlocBuilder<HomeCubit, HomeState>(
-//                     builder: (context, state) {
-//                       if (state is GetAllTeachersLoadingMoreState) {
-//                         return const Padding(
-//                           padding: EdgeInsets.all(16.0),
-//                           child: Center(
-//                             child: CircularProgressIndicator(),
-//                           ),
-//                         );
-//                       }
-//                       return const SizedBox.shrink();
-//                     },
-//                   );
-//                 }
-//
-//                 final teacher = teachers[index];
-//                 return TeacherCard(teacher: teacher);
-//               },
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-//
-// // teacher_card.dart
-// class TeacherCard extends StatelessWidget {
-//   final Providers teacher;
-//
-//   const TeacherCard({
-//     super.key,
-//     required this.teacher,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       margin: const EdgeInsets.only(bottom: 16),
-//       elevation: 2,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(16),
-//         child: Row(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Teacher Image
-//             ClipRRect(
-//               borderRadius: BorderRadius.circular(8),
-//               child: teacher.imagePath != null && teacher.imagePath!.isNotEmpty
-//                   ? Image.network(
-//                       teacher.imagePath!,
-//                       width: 60,
-//                       height: 60,
-//                       fit: BoxFit.cover,
-//                       errorBuilder: (context, error, stackTrace) {
-//                         return _buildDefaultAvatar();
-//                       },
-//                     )
-//                   : _buildDefaultAvatar(),
-//             ),
-//             const SizedBox(width: 16),
-//
-//             // Teacher Details
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Name and Title
-//                   Text(
-//                     '${teacher.firstName ?? ''} ${teacher.lastName ?? ''}'
-//                         .trim(),
-//                     style: const TextStyle(
-//                       fontSize: 16,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                     maxLines: 1,
-//                     overflow: TextOverflow.ellipsis,
-//                   ),
-//                   if (teacher.title != null) ...[
-//                     const SizedBox(height: 4),
-//                     Text(
-//                       teacher.title!,
-//                       style: TextStyle(
-//                         fontSize: 14,
-//                         color: Colors.grey[600],
-//                       ),
-//                       maxLines: 1,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                   ],
-//                   // if (teacher.degree != null) ...[
-//                   //   const SizedBox(height: 4),
-//                   //   Text(
-//                   //     teacher.degree!,
-//                   //     style: TextStyle(
-//                   //       fontSize: 12,
-//                   //       color: Colors.grey[500],
-//                   //     ),
-//                   //     maxLines: 2,
-//                   //     overflow: TextOverflow.ellipsis,
-//                   //   ),
-//                   // ],
-//
-//                   // Rating
-//                   if (teacher.rate != null) ...[
-//                     const SizedBox(height: 8),
-//                     Row(
-//                       children: [
-//                         Icon(
-//                           Icons.star,
-//                           size: 16,
-//                           color: Colors.amber[600],
-//                         ),
-//                         const SizedBox(width: 4),
-//                         Text(
-//                           teacher.rate!.toString(),
-//                           style: const TextStyle(
-//                             fontSize: 14,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                         if (teacher.rateCount != null) ...[
-//                           const SizedBox(width: 4),
-//                           Text(
-//                             '(${teacher.rateCount})',
-//                             style: TextStyle(
-//                               fontSize: 12,
-//                               color: Colors.grey[500],
-//                             ),
-//                           ),
-//                         ],
-//                       ],
-//                     ),
-//                   ],
-//                 ],
-//               ),
-//             ),
-//
-//             // Action Button
-//             IconButton(
-//               onPressed: () {
-//                 // Handle teacher selection/navigation
-//                 // You can add navigation to teacher details here
-//               },
-//               icon: const Icon(Icons.arrow_forward_ios),
-//               iconSize: 16,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildDefaultAvatar() {
-//     return Container(
-//       width: 60,
-//       height: 60,
-//       decoration: BoxDecoration(
-//         color: Colors.grey[300],
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Icon(
-//         Icons.person,
-//         size: 30,
-//         color: Colors.grey[600],
-//       ),
-//     );
-//   }
-// }

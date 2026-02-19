@@ -9,13 +9,17 @@ class NotificationsRepository {
     try {
       return await DioService()
           .get('/provider/auth/notifications')
-          .then((value) => value.fold((l) {}, (r) {
+          .then((value) => value.fold((l) {
+                debugPrint('Provider notifications error: $l');
+                return null;
+              }, (r) {
                 NotificationsProviderResponse notifications =
                     NotificationsProviderResponse.fromJson(r);
                 return notifications;
               }));
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Provider notifications exception: $e');
+      return null;
     }
   }
 
@@ -23,13 +27,17 @@ class NotificationsRepository {
     try {
       return await DioService()
           .get('/client/auth/notifications')
-          .then((value) => value.fold((l) {}, (r) {
+          .then((value) => value.fold((l) {
+                debugPrint('User notifications error: $l');
+                return null;
+              }, (r) {
                 NotificationsUserResponse notifications =
                     NotificationsUserResponse.fromJson(r);
                 return notifications;
               }));
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('User notifications exception: $e');
+      return null;
     }
   }
 }

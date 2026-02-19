@@ -53,3 +53,5 @@ class InitialCourseState extends ProviderRequestsState {}
 class InitialLessonState extends ProviderRequestsState {}
 
 class InitialRequestState extends ProviderRequestsState {}
+
+class RequestStatusChangedState extends ProviderRequestsState {}

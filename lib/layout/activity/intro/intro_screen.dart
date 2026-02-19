@@ -61,12 +61,8 @@ class IntroScreen extends StatelessWidget {
                                   titleStyle: TextStyles.introStyle
                                       .copyWith(color: cvColor),
                                   image: bloc.imageIntro[bloc.intro],
-                                  subject: Get.locale!.languageCode == "ar"
-                                      ? bloc.subjectIntroAr[bloc.intro]
-                                      : bloc.subjectIntroEn[bloc.intro],
-                                  title: Get.locale!.languageCode == "ar"
-                                      ? bloc.titleIntroAr[bloc.intro]
-                                      : bloc.titleIntroEn[bloc.intro],
+                                  subject: bloc.subjectIntro[bloc.intro],
+                                  title: bloc.titleIntro[bloc.intro],
                                 ),
                               ),
                             ),

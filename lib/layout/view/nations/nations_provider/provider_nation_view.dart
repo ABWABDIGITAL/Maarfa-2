@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_academy/model/common/cities/city_model.dart';
 
 import '../../../../bloc/nations/nations_cubit.dart';
 import '../../../../widget/auth/provider_register_body/provider_register_body.dart';
@@ -8,8 +7,7 @@ import '../../../../widget/error/page/error_page.dart';
 import '../../../../widget/loader/loader.dart';
 
 class ProviderNationsView extends StatelessWidget {
-  final List<CityModel> cities;
-  const ProviderNationsView({super.key, required this.cities});
+  const ProviderNationsView({super.key});
   @override
   Widget build(final BuildContext context) {
     return BlocConsumer<NationsCubit, NationsState>(
@@ -31,7 +29,6 @@ class ProviderNationsView extends StatelessWidget {
 
   authView(context, data) {
     return ProviderRegisterBody(
-      cities: cities,
       nations: data,
     );
   }

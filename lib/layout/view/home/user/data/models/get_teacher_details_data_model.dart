@@ -1,4 +1,23 @@
-// main_model.dart (or get_teacher_details_data_model.dart)
+// ── Safe JSON parsing helpers ────────────────────────────────────────────────
+
+/// Parses any JSON value (num, String, null) to double?.
+double? _toDouble(dynamic v) {
+  if (v == null) return null;
+  if (v is num) return v.toDouble();
+  if (v is String) return double.tryParse(v);
+  return null;
+}
+
+/// Parses any JSON value (num, String, null) to int?.
+int? _toInt(dynamic v) {
+  if (v == null) return null;
+  if (v is int) return v;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v);
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 class GetTeacherDetailsDataModel {
   bool? success;
@@ -141,10 +160,10 @@ class ProviderDetails {
       email: json['email'],
       phone: json['phone'],
       bio: json['bio'],
-      status: json['status'],
-      gender: json['gender'],
-      rate: json['rate'],
-      rateCount: json['rate_count'],
+      status: _toInt(json['status']),
+      gender: _toInt(json['gender']),
+      rate: _toInt(json['rate']),
+      rateCount: _toInt(json['rate_count']),
       imagePath: json['image_path'],
       cvPath: json['cv_path'],
       video: json['video'],
@@ -185,10 +204,12 @@ class ProviderDetails {
       data['nationality'] = nationality!.toJson();
     }
     if (specializations != null) {
-      data['specializations'] = specializations!.map((e) => e.toJson()).toList();
+      data['specializations'] =
+          specializations!.map((e) => e.toJson()).toList();
     }
     if (educationalStages != null) {
-      data['educational_stages'] = educationalStages!.map((e) => e.toJson()).toList();
+      data['educational_stages'] =
+          educationalStages!.map((e) => e.toJson()).toList();
     }
     return data;
   }
@@ -287,7 +308,8 @@ class EducationalStage {
     data['name'] = name;
     data['image'] = image;
     if (educationalYears != null) {
-      data['educational_years'] = educationalYears!.map((e) => e.toJson()).toList();
+      data['educational_years'] =
+          educationalYears!.map((e) => e.toJson()).toList();
     }
     return data;
   }
@@ -383,12 +405,12 @@ class Course {
       location: json['location'],
       videoUrl: json['video_url'],
       image: json['image'],
-      rate: json['rate'],
-      rateCount: json['rate_count'],
-      numberOfHours: json['number_of_hours'],
-      price: json['price'],
-      priceWithTax: (json['price_with_tax'] as num?)?.toDouble(),
-      tax: (json['tax'] as num?)?.toDouble(),
+      rate: _toInt(json['rate']),
+      rateCount: _toInt(json['rate_count']),
+      numberOfHours: _toInt(json['number_of_hours']),
+      price: json['price']?.toString(),
+      priceWithTax: _toDouble(json['price_with_tax']),
+      tax: _toDouble(json['tax']),
       subscriptions: json['subscriptions'],
       isBookmarked: json['is_bookmarked'],
       requestsCount: json['requests_count'],
@@ -484,7 +506,8 @@ class TimeDetails {
   String? date;
   String? time;
   String? dayOfWeek;
-  List<String>? times; // The key is 'times', but values are days of week strings
+  List<String>?
+      times; // The key is 'times', but values are days of week strings
 
   TimeDetails({this.date, this.time, this.dayOfWeek, this.times});
 
@@ -493,7 +516,8 @@ class TimeDetails {
       date: json['date'],
       time: json['time'],
       dayOfWeek: json['dayOfWeek'],
-      times: (json['times'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      times:
+          (json['times'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -562,8 +586,8 @@ class ProviderMin {
       lastName: json['last_name'],
       image: json['image'],
       bio: json['bio'],
-      rate: json['rate'],
-      rateCount: json['rate_count'],
+      rate: _toInt(json['rate']),
+      rateCount: _toInt(json['rate_count']),
       isFinished: json['is_finished'],
     );
   }
@@ -640,13 +664,12 @@ class Lesson {
       educationalYear: json['educational_year'] != null
           ? EducationalYear.fromJson(json['educational_year'])
           : null,
-      subject: json['subject'] != null
-          ? Subject.fromJson(json['subject'])
-          : null,
+      subject:
+          json['subject'] != null ? Subject.fromJson(json['subject']) : null,
       content: json['content'],
-      hourPrice: json['hour_price'],
-      priceWithTax: (json['price_with_tax'] as num?)?.toDouble(),
-      tax: (json['tax'] as num?)?.toDouble(),
+      hourPrice: json['hour_price']?.toString(),
+      priceWithTax: _toDouble(json['price_with_tax']),
+      tax: _toDouble(json['tax']),
       isLive: json['isLive'],
       hostUrl: json['host_url'],
       joinUrl: json['join_url'],
@@ -662,8 +685,8 @@ class Lesson {
       isRequested: json['is_requested'],
       nextTime: json['nextTime'],
       isFinished: json['is_finished'],
-      rate: json['rate'],
-      rateCount: json['rate_count'],
+      rate: _toInt(json['rate']),
+      rateCount: _toInt(json['rate_count']),
     );
   }
 

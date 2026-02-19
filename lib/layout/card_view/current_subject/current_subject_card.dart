@@ -25,7 +25,8 @@ class CurrentSubjectCard extends StatelessWidget {
       required this.name,
       required this.currentTimeId,
       required this.price,
-      required this.id});
+      required this.id,
+      this.onConferenceEnded});
   final String courseTitle;
   final String? image;
   final int? currentTimeId;
@@ -34,6 +35,7 @@ class CurrentSubjectCard extends StatelessWidget {
   final int id;
   final String type;
   final bool isLive;
+  final VoidCallback? onConferenceEnded;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -161,7 +163,8 @@ class CurrentSubjectCard extends StatelessWidget {
                           : type == "lesson"
                               ? InkWell(
                                   onTap: () => bloc.enterLive(false, id, type,
-                                      timeId: currentTimeId),
+                                      timeId: currentTimeId,
+                                      onConferenceEnded: onConferenceEnded),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Container(
@@ -182,7 +185,8 @@ class CurrentSubjectCard extends StatelessWidget {
                                   ? InkWell(
                                       onTap: () => bloc.enterLive(
                                           false, id, type,
-                                          timeId: currentTimeId),
+                                          timeId: currentTimeId,
+                                          onConferenceEnded: onConferenceEnded),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(

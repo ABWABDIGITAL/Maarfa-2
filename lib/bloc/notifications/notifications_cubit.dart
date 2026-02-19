@@ -13,13 +13,21 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   getNotificationsProvider() {
     notificationsRepository.providerNotifications().then((value) {
-      return emit(NotificationsProviderLoadedState(data: value.data));
+      if (value != null && value.data != null) {
+        emit(NotificationsProviderLoadedState(data: value.data));
+      } else {
+        emit(NotificationsProviderErrorState());
+      }
     });
   }
 
   getNotificationsUser() {
     notificationsRepository.userNotifications().then((value) {
-      return emit(NotificationsUserLoadedState(data: value.data));
+      if (value != null && value.data != null) {
+        emit(NotificationsUserLoadedState(data: value.data));
+      } else {
+        emit(NotificationsUserErrorState());
+      }
     });
   }
 }

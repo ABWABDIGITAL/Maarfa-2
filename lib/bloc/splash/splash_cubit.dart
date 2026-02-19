@@ -6,7 +6,7 @@ import '../../layout/activity/intro/intro_screen.dart';
 import '../../layout/activity/provider_screens/main/main_screen.dart';
 import '../../layout/activity/role/role_screen.dart';
 import '../../layout/activity/user_screens/main/main_screen.dart';
-import '../../model/common/cities/city_model.dart';
+
 import '../../service/local/share_prefs_service.dart';
 
 part 'splash_state.dart';

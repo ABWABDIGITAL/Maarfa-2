@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../local/share_prefs_service.dart';
+import 'notification_event_bus.dart';
 
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  description:
-      'This channel is used for important notifications.', // description
+  'high_importance_channel',
+  'High Importance Notifications',
+  description: 'This channel is used for important notifications.',
   importance: Importance.high,
 );
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   RemoteNotification? notification = message.notification;
@@ -59,7 +60,7 @@ class NotificationService {
   FlutterLocalNotificationsPlugin? _localNotificationsPlugin;
   NotificationService._internal();
   static bool firstRun = true;
-  // GlobalKey<NavigatorState> _navKey;
+
   Future<String?> getToken() {
     return _messaging.getToken();
   }
@@ -73,7 +74,6 @@ class NotificationService {
   }
 
   Future<void> initNotificationService() async {
-    // _navKey = GlobalKey(debugLabel: "Main Navigator");
     await _initFirebaseMessaging();
     _initLocalNotifications();
     _checkForInitialMessage();
@@ -82,9 +82,7 @@ class NotificationService {
   Future<void> _initLocalNotifications() async {
     debugPrint("init local notifications");
     _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var androidSettings = const AndroidInitializationSettings(
-      "logo",
-    );
+    var androidSettings = const AndroidInitializationSettings("logo");
     var iosSettings = const DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -92,23 +90,7 @@ class NotificationService {
     );
     var settings =
         InitializationSettings(android: androidSettings, iOS: iosSettings);
-    await _localNotificationsPlugin!.initialize(
-      settings,
-      // onSelectNotification: (payload) async {
-      //   debugPrint("notification pressed");
-      //   // if (!firstRun) {
-      //   // final payloadMap = jsonDecode(payload);
-      //   // if (payloadMap.contain("target_id")) {
-      //   // TripModel tripModel = TripModel();
-      //   // tripModel.id = payloadMap['trip']['id'];
-      //   // tripModel.driver = Driver.fromMap(payloadMap['trip']['driver']);
-      //   // Get.to(() => kawidOrderDetailsScreen(id: 22));
-      //   // debugPrint(22);
-      //   // }
-      //   // }
-      // },
-    );
-
+    await _localNotificationsPlugin!.initialize(settings);
     firstRun = false;
   }
 
@@ -126,66 +108,46 @@ class NotificationService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        // final payloadMap = jsonDecode(message);
-        // if (payloadMap.contain("target_id")) {
-        // TripModel tripModel = TripModel();
-        // tripModel.id = payloadMap['trip']['id'];
-        // tripModel.driver = Driver.fromMap(payloadMap['trip']['driver']);
-        // Get.to(() => MainScreen());
-        debugPrint("id: ${message.data["target_id"]}");
+        final type = message.data['type'] ?? '';
+        final objectId = message.data['object_id'] ?? '';
+        debugPrint("onMessageOpenedApp — type: $type, object_id: $objectId");
         log('notifiationonMessageOpenedApp');
-        // }
-        // }
+
+        if (type.isNotEmpty) {
+          NotificationEventBus.instance.fire(
+            NotificationEvent(type: type, objectId: objectId),
+          );
+        }
       });
+
       debugPrint('User granted permission');
+
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        // final payloadMap = jsonDecode(json.encode(message));
-        // if (payloadMap.contain("target_id")) {
-        // TripModel tripModel = TripModel();
-        // tripModel.id = payloadMap['trip']['id'];
-        // tripModel.driver = Driver.fromMap(payloadMap['trip']['driver']);
-        // Get.to(() => MainScreen());
-        // debugPrint(23);
-        // }
-        // }
-        // Parse the message received
-        log('notifiationonMessagep');
+        log('notifiationonMessage');
+
+        final type = message.data['type'] ?? '';
+        final objectId = message.data['object_id'] ?? '';
+
+        if (type.isNotEmpty) {
+          NotificationEventBus.instance.fire(
+            NotificationEvent(type: type, objectId: objectId),
+          );
+        }
 
         PushNotification notification = PushNotification(
-          title: message.notification!.title,
-          body: message.notification!.body,
+          title: message.notification?.title ?? message.data['title'] ?? '',
+          body: message.notification?.body ?? message.data['body'] ?? '',
           sound: "default",
         );
 
-        // if (notification != null) {
-        await showLocalNotification(
-            notification.title!, notification.body!, '');
-        // }
+        if (notification.title!.isNotEmpty) {
+          await showLocalNotification(
+              notification.title!, notification.body!, '');
+        }
       });
     } else {
       debugPrint('User declined or has not accepted permission');
     }
-
-    // _messaging.getNotificationSettings();
-    //   onMessage: (Map<String, dynamic> map) async {
-    //     debugPrint(map);
-    //     Map notification;
-    //     if (map['notification'] == null) {
-    //       notification = map['aps']['alert'];
-    //     } else {
-    //       notification = map['notification'];
-    //     }
-    //     await showLocalNotification(
-    //         notification['title'], notification['body'], null);
-    //   },
-    //   onLaunch: (message) async {
-    //     debugPrint("i'm launced");
-    //     debugPrint(message);
-    //   },
-    //   onResume: (message) async {
-    //     debugPrint("message resume :$message");
-    //   },
-    // );
   }
 
   _checkForInitialMessage() async {
@@ -194,20 +156,17 @@ class NotificationService {
         await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      PushNotification notification = PushNotification(
-        title: initialMessage.notification!.title,
-        body: initialMessage.notification!.body,
-        sound: "default",
-      );
-      debugPrint(notification.body.toString());
+      final type = initialMessage.data['type'] ?? '';
+      final objectId = initialMessage.data['object_id'] ?? '';
+      debugPrint("initialMessage — type: $type, object_id: $objectId");
+
+      if (type.isNotEmpty) {
+        NotificationEventBus.instance.fire(
+          NotificationEvent(type: type, objectId: objectId),
+        );
+      }
     }
   }
-
-  // Future<Option<Failure>> deleteToken() async {
-  //   final result = await _messaging.deleteInstanceID();
-  //   if (!result) return some(Failure("server-error"));
-  //   return none();
-  // }
 
   Future<void> showLocalNotification(
       String title, String body, String payload) async {

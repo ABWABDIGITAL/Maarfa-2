@@ -15,17 +15,14 @@ import '../../../../widget/textfield/master/master_textfield.dart';
 import '../../../bloc/auth/provider/auth_provider_cubit.dart';
 import '../../../layout/activity/auth/login/login_screen.dart';
 import '../../../layout/activity/static/terms_conditions/terms_conditions_screen.dart';
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../repository/provider/auth_provider/auth_provider_repository.dart';
 import '../../buttons/master_load/master_load_button.dart';
 import '../../dropdown/dropdown/dropdown.dart';
 
 class ProviderRegisterBody extends StatelessWidget {
-  final List<CityModel> cities;
   final List<NationalityModel> nations;
-  const ProviderRegisterBody(
-      {super.key, required this.cities, required this.nations});
+  const ProviderRegisterBody({super.key, required this.nations});
 
   @override
   Widget build(final BuildContext context) {
@@ -105,74 +102,35 @@ class ProviderRegisterBody extends StatelessWidget {
                   ),
                   SidePadding(
                     sidePadding: 15,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: BuildDropDown(
-                            isExpanded: true,
-                            value: bloc.city,
-                            onChange: (val) => bloc.chooseCity(val),
-                            items: cities.map<DropdownMenuItem<dynamic>>(
-                                (dynamic value) {
-                              return DropdownMenuItem<dynamic>(
-                                  value: value,
-                                  child: Row(
-                                    children: [
-                                      Space(
-                                        boxWidth: 10.w,
-                                      ),
-                                      Image.asset(city,
-                                          height: 20.h, fit: BoxFit.contain),
-                                      Space(
-                                        boxWidth: 5.w,
-                                      ),
-                                      Text("${value.name}",
-                                          style: TextStyles.textView14SemiBold
-                                              .copyWith(color: mainColor)),
-                                    ],
-                                  ));
-                            }).toList(),
-                            hint: tr("city"),
-                            image: city,
-                          ),
-                        ),
-                        const Space(
-                          boxWidth: 10,
-                        ),
-                        Expanded(
-                          child: BuildDropDown(
-                            isExpanded: true,
-                            value: bloc.nation,
-                            onChange: (val) => bloc.chooseNation(val),
-                            items: nations.map<DropdownMenuItem<dynamic>>(
-                                (dynamic value) {
-                              return DropdownMenuItem<dynamic>(
-                                  value: value,
-                                  child: Row(
-                                    children: [
-                                      Space(
-                                        boxWidth: 10.w,
-                                      ),
-                                      Image.asset(nationality,
-                                          height: 20.h, fit: BoxFit.contain),
-                                      Space(
-                                        boxWidth: 5.w,
-                                      ),
-                                      Expanded(
-                                        child: Text("${value.name}",
-                                            overflow: TextOverflow.clip,
-                                            style: TextStyles.textView14SemiBold
-                                                .copyWith(color: mainColor)),
-                                      ),
-                                    ],
-                                  ));
-                            }).toList(),
-                            hint: tr("nationality"),
-                            image: nationality,
-                          ),
-                        ),
-                      ],
+                    child: BuildDropDown(
+                      isExpanded: true,
+                      value: bloc.nation,
+                      onChange: (val) => bloc.chooseNation(val),
+                      items: nations
+                          .map<DropdownMenuItem<dynamic>>((dynamic value) {
+                        return DropdownMenuItem<dynamic>(
+                            value: value,
+                            child: Row(
+                              children: [
+                                Space(
+                                  boxWidth: 10.w,
+                                ),
+                                Image.asset(nationality,
+                                    height: 20.h, fit: BoxFit.contain),
+                                Space(
+                                  boxWidth: 5.w,
+                                ),
+                                Expanded(
+                                  child: Text("${value.name}",
+                                      overflow: TextOverflow.clip,
+                                      style: TextStyles.textView14SemiBold
+                                          .copyWith(color: mainColor)),
+                                ),
+                              ],
+                            ));
+                      }).toList(),
+                      hint: tr("nationality"),
+                      image: nationality,
                     ),
                   ),
                   const Space(

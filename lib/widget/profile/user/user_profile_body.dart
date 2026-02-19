@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import '../../../bloc/profile/user/user_cubit.dart';
 import '../../../layout/activity/auth/forget/change_password.dart';
 import '../../../layout/activity/user_screens/profile/edit_email/edit_email_screen.dart';
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../model/user/user/user_model.dart';
 import '../../../repository/user/edit_profile/user_repository.dart';
@@ -24,20 +23,15 @@ import '../../space/space.dart';
 import '../../textfield/master/master_textfield.dart';
 
 class UserProfileBody extends StatelessWidget {
-  final List<CityModel> cities;
   final List<NationalityModel> nations;
   final UserModel user;
-  const UserProfileBody(
-      {super.key,
-      required this.cities,
-      required this.nations,
-      required this.user});
+  const UserProfileBody({super.key, required this.nations, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (BuildContext context) =>
-            UserCubit(UserRepository())..getInitData(user, cities, nations),
+            UserCubit(UserRepository())..getInitData(user, nations),
         child: BlocConsumer<UserCubit, UserState>(
             listener: (context, state) {},
             builder: (context, state) {
@@ -200,39 +194,6 @@ class UserProfileBody extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                  const Space(
-                    boxHeight: 10,
-                  ),
-                  SidePadding(
-                    sidePadding: 20,
-                    child: BuildDropDown(
-                      isExpanded: true,
-                      value: bloc.city,
-                      onChange: (val) => bloc.chooseCity(val),
-                      items: cities
-                          .map<DropdownMenuItem<dynamic>>((dynamic value) {
-                        return DropdownMenuItem<dynamic>(
-                            value: value,
-                            child: Row(
-                              children: [
-                                Space(
-                                  boxWidth: 10.w,
-                                ),
-                                Image.asset(city,
-                                    height: 20.h, fit: BoxFit.contain),
-                                Space(
-                                  boxWidth: 5.w,
-                                ),
-                                Text("${value.name}",
-                                    style: TextStyles.textView14SemiBold
-                                        .copyWith(color: mainColor)),
-                              ],
-                            ));
-                      }).toList(),
-                      hint: tr("city"),
-                      image: city,
                     ),
                   ),
                   const Space(

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +24,7 @@ import 'package:my_academy/constants.dart';
 import 'package:my_academy/layout/activity/auth/forget/new_password.dart';
 import 'package:my_academy/layout/activity/splash/splash_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_cubit.dart';
-import 'package:my_academy/repository/common/cities/cities_repository.dart';
+
 import 'package:my_academy/repository/common/nationalities/nationalities_repository.dart';
 import 'package:my_academy/repository/common/search/search_repository.dart';
 import 'package:my_academy/repository/provider/auth_provider/auth_provider_repository.dart';
@@ -39,7 +38,7 @@ import 'package:overlay_support/overlay_support.dart';
 // import 'bloc/auth/show_delete_and_payment./show_delete_and_paymnet_cubit.dart';
 import 'bloc/auth/show_delete_and_payment/show_delete_and_paymnet_cubit.dart';
 import 'bloc/bottom_bar/bottom_bar_cubit.dart';
-import 'bloc/cities/cities_cubit.dart';
+
 import 'bloc/content/content_cubit.dart';
 import 'bloc/course_subject/course_subject_cubit.dart';
 import 'bloc/live/live_cubit.dart';
@@ -169,9 +168,6 @@ class MyApp extends StatelessWidget {
             create: (BuildContext context) =>
                 ProviderInfoCubit(ShowProvidersRepository()),
           ),
-          BlocProvider<CitiesCubit>(
-            create: (BuildContext context) => CitiesCubit(CitiesRepository()),
-          ),
           BlocProvider(
               create: (BuildContext context) =>
                   NationsCubit(NationalitiesRepository())),
@@ -186,11 +182,11 @@ class MyApp extends StatelessWidget {
             defaultTransition: trans.Transition.circularReveal,
             title: "Maarefa",
             theme: ThemeData(
-                fontFamily: "Shamel",
-                scaffoldBackgroundColor: scaffoldBackgroundColor,
-                appBarTheme: AppBarTheme(
-                  surfaceTintColor: Colors.white,
-                ),
+              fontFamily: "Shamel",
+              scaffoldBackgroundColor: scaffoldBackgroundColor,
+              appBarTheme: AppBarTheme(
+                surfaceTintColor: Colors.white,
+              ),
             ),
             debugShowCheckedModeBanner: false,
             debugShowMaterialGrid: false,

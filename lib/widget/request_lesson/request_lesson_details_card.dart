@@ -39,12 +39,12 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
       listener: (context, state) {
         if (state is MakeCouponErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message ?? "حدث خطأ")),
+            SnackBar(content: Text(state.message ?? tr("error_occurred"))),
           );
         }
         if (state is MakeCouponSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("تم تطبيق الكوبون بنجاح ✅")),
+            SnackBar(content: Text(tr("coupon_applied_success"))),
           );
         }
       },
@@ -122,7 +122,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                       controller: _couponController,
                       textAlign: TextAlign.right,
                       decoration: InputDecoration(
-                        hintText: 'coupon_code',
+                        hintText: tr('coupon_code'),
                         hintStyle: TextStyle(
                           color: Colors.grey.shade400,
                           fontSize: 14,
@@ -161,7 +161,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('يرجى إدخال رمز الكوبون'),
+                            content: Text(tr('please_enter_coupon')),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -177,7 +177,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                       elevation: 0,
                     ),
                     child: Text(
-                      'تطبيق',
+                      tr('apply'),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -327,7 +327,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'قيمة الخصم',
+                            tr('discount_value'),
                             // tr("priceWithoutTax"),
                             style: TextStyles.appBarStyle
                                 .copyWith(color: secColor, fontSize: 14.sp),
@@ -375,7 +375,7 @@ class _RequestLessonDetailsCardState extends State<RequestLessonDetailsCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'السعر بعد الحصم',
+                            tr('price_after_discount'),
                             // tr("priceWithoutTax"),
                             style: TextStyles.appBarStyle
                                 .copyWith(color: secColor, fontSize: 14.sp),

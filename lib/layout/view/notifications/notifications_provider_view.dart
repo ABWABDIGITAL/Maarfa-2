@@ -23,20 +23,16 @@ class NotificationsProviderView extends StatelessWidget {
       create: (BuildContext context) =>
           NotificationsCubit(NotificationsRepository())
             ..getNotificationsProvider(),
-      child: BlocConsumer<NotificationsCubit, NotificationsState>(
-        listener: (context, state) {},
+      child: BlocBuilder<NotificationsCubit, NotificationsState>(
         builder: (context, state) {
-          return BlocBuilder<NotificationsCubit, NotificationsState>(
-              builder: (context, state) {
-            if (state is NotificationsProviderLoadedState) {
-              final data = (state).data;
-              return notificationProviderView(data: data!);
-            } else if (state is NotificationsProviderErrorState) {
-              return const ErrorPage();
-            } else {
-              return const Loading();
-            }
-          });
+          if (state is NotificationsProviderLoadedState) {
+            final data = (state).data;
+            return notificationProviderView(data: data!);
+          } else if (state is NotificationsProviderErrorState) {
+            return const ErrorPage();
+          } else {
+            return const Loading();
+          }
         },
       ),
     );
@@ -66,8 +62,10 @@ class NotificationsProviderView extends StatelessWidget {
             ),
           )
         : CustomList(
-            child: (context, index) =>
-                NotificationsCard(data: data.notifications[index], isInProvider: true,),
+            child: (context, index) => NotificationsCard(
+              data: data.notifications[index],
+              isInProvider: true,
+            ),
             axis: Axis.vertical,
             listHeight: screenHeight,
             count: data.notifications.length,

@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../failure.dart';
 import '../../../service/network/dio/dio_service.dart';
@@ -24,7 +25,8 @@ class LiveRepository {
     }
   }
 
-  enterLive(Map<String, dynamic> data, bool isBroadcaster) async {
+  enterLive(Map<String, dynamic> data, bool isBroadcaster,
+      {VoidCallback? onConferenceEnded}) async {
     try {
       return DioService()
           .post('/agora/generate_token', body: data)
@@ -38,11 +40,13 @@ class LiveRepository {
                         userId: r["data"]["user_id"],
                         token: r["data"]["token"],
                         timeId: data["time_id"],
+                        onConferenceEnded: onConferenceEnded,
                       )
                     : JitsiService().joinUserMeeting(
                         roomNo: r["data"]["channel_name"],
                         userId: r["data"]["user_id"],
                         token: r["data"]["token"],
+                        onConferenceEnded: onConferenceEnded,
                       );
               }));
     } catch (e) {

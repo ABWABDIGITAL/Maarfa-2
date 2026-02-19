@@ -2,26 +2,26 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_teacher_details_data_model.dart';
+import 'package:my_academy/res/value/color/color.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ProfessionalBookingBottomSheet extends StatefulWidget {
   final TeacherDetailsData teacher;
+  final int lessonId;
   final Function(String date, String timeFrom, String timeTo, String type)
       onConfirm;
 
   const ProfessionalBookingBottomSheet({
     super.key,
     required this.teacher,
+    required this.lessonId,
     required this.onConfirm,
   });
-
-  @override
-  State<ProfessionalBookingBottomSheet> createState() =>
-      _ProfessionalBookingBottomSheetState();
 
   static void show(
     BuildContext context,
     TeacherDetailsData teacher,
+    int lessonId,
     Function(String date, String timeFrom, String timeTo, String type)
         onConfirm,
   ) {
@@ -29,439 +29,311 @@ class ProfessionalBookingBottomSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => ProfessionalBookingBottomSheet(
+      builder: (_) => ProfessionalBookingBottomSheet(
         teacher: teacher,
+        lessonId: lessonId,
         onConfirm: onConfirm,
       ),
     );
   }
+
+  @override
+  State<ProfessionalBookingBottomSheet> createState() =>
+      _ProfessionalBookingBottomSheetState();
 }
 
 class _ProfessionalBookingBottomSheetState
-    extends State<ProfessionalBookingBottomSheet>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
+    extends State<ProfessionalBookingBottomSheet> {
+  // ── State ──────────────────────────────────
+  int _step = 0; // 0 = date, 1 = time
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  String? _selectedTimeSlot;
+  TimeOfDay? _selectedStartTime;
   String _selectedType = 'lesson';
-  String? _fromTime;
-  String? _toTime;
 
-  // Sample available time slots
-  final Map<String, List<String>> _availableSlots = {
-    'morning': ['09:00', '10:00', '11:00'],
-    'afternoon': ['14:00', '15:00', '16:00', '17:00'],
-    'evening': ['19:00', '20:00', '21:00'],
-  };
-
-  // Sample unavailable dates (you can fetch from API)
+  // Sample unavailable dates
   final List<DateTime> _unavailableDates = [
-    DateTime.now().add(Duration(days: 3)),
-    DateTime.now().add(Duration(days: 7)),
+    DateTime.now().add(const Duration(days: 3)),
+    DateTime.now().add(const Duration(days: 7)),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+  // ── Computed ───────────────────────────────
+
+  TimeOfDay? get _endTime {
+    if (_selectedStartTime == null) return null;
+    final startMinutes =
+        _selectedStartTime!.hour * 60 + _selectedStartTime!.minute;
+    final endMinutes = startMinutes + 60;
+    return TimeOfDay(hour: (endMinutes ~/ 60) % 24, minute: endMinutes % 60);
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  bool get _canProceed {
+    if (_step == 0) return _selectedDay != null;
+    return _selectedStartTime != null;
   }
+
+  String _formatTimeOfDay(TimeOfDay t) {
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
+    return '$h:$m';
+  }
+
+  String _displayTime(TimeOfDay t) {
+    final h = t.hour;
+    final m = t.minute.toString().padLeft(2, '0');
+    if (h == 0) return '12:$m AM';
+    if (h < 12) return '$h:$m AM';
+    if (h == 12) return '12:$m PM';
+    return '${h - 12}:$m PM';
+  }
+
+  // ── Actions ────────────────────────────────
+
+  void _onNext() {
+    if (_step == 0) {
+      setState(() => _step = 1);
+    } else {
+      _confirmBooking();
+    }
+  }
+
+  void _onBack() {
+    if (_step == 1) {
+      setState(() => _step = 0);
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedStartTime ?? TimeOfDay.now(),
+      builder: (ctx, child) => Theme(
+        data: Theme.of(ctx).copyWith(
+          colorScheme: ColorScheme.light(
+            primary: accentColor,
+            onPrimary: Colors.white,
+            surface: Colors.white,
+            onSurface: Colors.grey.shade800,
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) setState(() => _selectedStartTime = picked);
+  }
+
+  void _confirmBooking() {
+    if (_selectedDay == null ||
+        _selectedStartTime == null ||
+        _endTime == null) {
+      return;
+    }
+
+    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDay!);
+    final from = _formatTimeOfDay(_selectedStartTime!);
+    final to = _formatTimeOfDay(_endTime!);
+
+    widget.onConfirm(dateStr, from, to, _selectedType);
+    Navigator.pop(context);
+  }
+
+  // ── Build ──────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: MediaQuery.of(context).size.height * 0.88,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.r),
-          topRight: Radius.circular(24.r),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
       ),
       child: Column(
         children: [
           // Handle
-          Container(
-            width: 40.w,
-            height: 4.h,
-            margin: EdgeInsets.only(top: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2.r),
-            ),
-          ),
+          _buildHandle(),
 
           // Header
           _buildHeader(),
 
-          // Tab Bar
-          _buildTabBar(),
+          // Step indicator
+          _buildStepIndicator(),
 
           // Content
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildDateSelectionTab(),
-                _buildWriteStartAndEndTimeCanGeneratedByStartTimeMakeAfterOneHour()
-                // _buildTimeSelectionTab(),
-              ],
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 280),
+              transitionBuilder: (child, animation) {
+                final slide = Tween<Offset>(
+                  begin: Offset(_step == 0 ? -0.15 : 0.15, 0),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(
+                    parent: animation, curve: Curves.easeOutCubic));
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(position: slide, child: child),
+                );
+              },
+              child: _step == 0
+                  ? _buildDateStep(key: const ValueKey('date'))
+                  : _buildTimeStep(key: const ValueKey('time')),
             ),
           ),
 
-          // Bottom Action
-          _buildBottomAction(),
+          // Bottom bar
+          _buildBottomBar(),
         ],
       ),
     );
   }
 
-  Widget _buildWriteStartAndEndTimeCanGeneratedByStartTimeMakeAfterOneHour() {
-    if (_selectedDay == null) {
-      return _buildSelectDateFirst();
-    }
+  // ── Handle ─────────────────────────────────
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(24.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Selected Date Summary
-          _buildDateSummary(),
-
-          SizedBox(height: 24.h),
-
-          // Start Time Input Section
-          _buildStartTimeInput(),
-
-          SizedBox(height: 16.h),
-
-          // Generated End Time Display
-          if (_selectedStartTime != null) _buildGeneratedEndTime(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStartTimeInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'selectStartTime'.tr(),
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[800],
-          ),
-        ),
-        SizedBox(height: 12.h),
-        GestureDetector(
-          onTap: () => _selectStartTime(),
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                color: _selectedStartTime != null
-                    ? Colors.blue[600]!
-                    : Colors.grey[300]!,
-                width: 1.5,
-              ),
-              borderRadius: BorderRadius.circular(8.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.access_time,
-                  color: _selectedStartTime != null
-                      ? Colors.blue[600]
-                      : Colors.grey[500],
-                  size: 20.sp,
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    _selectedStartTime != null
-                        ? _formatTime(_selectedStartTime!)
-                        : 'tapToSelectStartTime'.tr(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: _selectedStartTime != null
-                          ? Colors.grey[800]
-                          : Colors.grey[500],
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.grey[400],
-                  size: 20.sp,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGeneratedEndTime() {
-    final endTime = _generateEndTime(_selectedStartTime!);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'generatedEndTime'.tr(),
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[800],
-          ),
-        ),
-        SizedBox(height: 12.h),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            border: Border.all(
-              color: Colors.grey[300]!,
-              width: 1.5,
-            ),
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.schedule,
-                color: Colors.grey[600],
-                size: 20.sp,
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                _formatTime(endTime),
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[700],
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                '(+1 hour)',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[500],
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 16.h),
-        // Time slot summary
-        _buildTimeSlotSummary(),
-      ],
-    );
-  }
-
-  Widget _buildTimeSlotSummary() {
-    final startTime = _selectedStartTime!;
-    final endTime = _generateEndTime(startTime);
-    final timeSlot = '${_formatTime(startTime)} - ${_formatTime(endTime)}';
-
+  Widget _buildHandle() {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      width: 36.w,
+      height: 4.h,
+      margin: EdgeInsets.only(top: 12.h, bottom: 8.h),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
-        border: Border.all(
-          color: Colors.blue[200]!,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'selectedTimeSlot'.tr(),
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue[700],
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            timeSlot,
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.blue[800],
-            ),
-          ),
-        ],
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(2.r),
       ),
     );
   }
 
-// Helper methods to add to your class
-  TimeOfDay? _selectedStartTime;
-
-  Future<void> _selectStartTime() async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedStartTime ?? TimeOfDay.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Colors.blue[600]!,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.grey[800]!,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null && picked != _selectedStartTime) {
-      setState(() {
-        _selectedStartTime = picked;
-        // Update the time slot string for compatibility
-        final endTime = _generateEndTime(picked);
-        _selectedTimeSlot = '${_formatTime(picked)} - ${_formatTime(endTime)}';
-        _parseSelectedTimeSlot(); // If you have this method
-      });
-    }
-  }
-
-  TimeOfDay _generateEndTime(TimeOfDay startTime) {
-    final startMinutes = startTime.hour * 60 + startTime.minute;
-    final endMinutes = startMinutes + 60; // Add 1 hour
-
-    final endHour = (endMinutes ~/ 60) % 24; // Handle overflow to next day
-    final endMinute = endMinutes % 60;
-
-    return TimeOfDay(hour: endHour, minute: endMinute);
-  }
-
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
+  // ── Header ─────────────────────────────────
 
   Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(24.w),
+    final name = widget.teacher.provider?.firstName ?? '';
+    final spec = widget.teacher.provider?.specializations
+            ?.map((s) => s.name ?? '')
+            .where((n) => n.isNotEmpty)
+            .join(', ') ??
+        '';
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 25.r,
-            backgroundImage: widget.teacher.provider?.imagePath != null
-                ? NetworkImage(widget.teacher.provider!.imagePath!)
-                : null,
-            child: widget.teacher.provider?.imagePath == null
-                ? Icon(Icons.person, size: 25.w)
-                : null,
+          // Avatar
+          Container(
+            width: 44.w,
+            height: 44.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: accentColor.withValues(alpha: 0.3), width: 2),
+              color: accentColor.withValues(alpha: 0.1),
+            ),
+            child: ClipOval(
+              child: widget.teacher.provider?.imagePath != null
+                  ? Image.network(
+                      widget.teacher.provider!.imagePath!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _defaultAvatarIcon(),
+                    )
+                  : _defaultAvatarIcon(),
+            ),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${'book'.tr()} ${widget.teacher.provider?.firstName ?? "المدرس"}',
+                  '${'book'.tr()} $name',
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
+                    color: primaryText,
                   ),
                 ),
-                SizedBox(height: 4.h),
-                Text(
-                  widget.teacher.provider?.specializations
-                          ?.map((s) => s.name)
-                          .join(', ') ??
-                      'Teacher',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
+                if (spec.isNotEmpty) ...[
+                  SizedBox(height: 2.h),
+                  Text(
+                    spec,
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
+                ],
               ],
             ),
           ),
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.close, color: Colors.grey[600]),
+            icon:
+                Icon(Icons.close_rounded, color: Colors.grey[500], size: 22.w),
+            padding: EdgeInsets.zero,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTabBar() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12.r),
+  Widget _defaultAvatarIcon() {
+    return Icon(Icons.person_outline_rounded, color: accentColor, size: 24.w);
+  }
+
+  // ── Step Indicator ─────────────────────────
+
+  Widget _buildStepIndicator() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
+      child: Row(
+        children: [
+          _stepDot(index: 0, label: 'selectDate'.tr()),
+          _stepLine(),
+          _stepDot(index: 1, label: 'selectTime'.tr()),
+        ],
       ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          color: Colors.blue[600],
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        indicatorSize: TabBarIndicatorSize.tab,
-        dividerColor: Colors.transparent,
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.grey[600],
-        labelStyle: TextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-        ),
-        tabs: [
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.calendar_today, size: 18.w),
-                SizedBox(width: 8.w),
-                Text('selectDate'.tr()),
-              ],
+    );
+  }
+
+  Widget _stepDot({required int index, required String label}) {
+    final isActive = _step == index;
+    final isDone = _step > index;
+
+    return Expanded(
+      child: Row(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            width: 28.w,
+            height: 28.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isDone
+                  ? const Color(0xFF4CAF50)
+                  : isActive
+                      ? accentColor
+                      : Colors.grey.shade200,
+            ),
+            child: Center(
+              child: isDone
+                  ? Icon(Icons.check_rounded, color: Colors.white, size: 14.w)
+                  : Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                        color: isActive ? Colors.white : Colors.grey[500],
+                      ),
+                    ),
             ),
           ),
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.access_time, size: 18.w),
-                SizedBox(width: 8.w),
-                Text('selectTime'.tr()),
-              ],
+          SizedBox(width: 6.w),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                color: isActive ? primaryText : Colors.grey[500],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -469,120 +341,100 @@ class _ProfessionalBookingBottomSheetState
     );
   }
 
-  Widget _buildDateSelectionTab() {
+  Widget _stepLine() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      child: Container(
+        width: 24.w,
+        height: 2.h,
+        decoration: BoxDecoration(
+          color: _step > 0 ? const Color(0xFF4CAF50) : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(1.r),
+        ),
+      ),
+    );
+  }
+
+  // ── Step 0: Date ───────────────────────────
+
+  Widget _buildDateStep({Key? key}) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(24.w),
+      key: key,
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Lesson Type Selection
-          _buildLessonTypeSection(),
-
-          SizedBox(height: 24.h),
+          // Lesson type selector
+          _buildTypeSelector(),
+          SizedBox(height: 20.h),
 
           // Calendar
           _buildCalendar(),
-
           SizedBox(height: 16.h),
 
-          // Selected Date Info
-          if (_selectedDay != null) _buildSelectedDateInfo(),
+          // Selected date pill
+          if (_selectedDay != null) _buildDatePill(),
         ],
       ),
     );
   }
 
-  Widget _buildTimeSelectionTab() {
-    if (_selectedDay == null) {
-      return _buildSelectDateFirst();
-    }
-
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(24.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Selected Date Summary
-          _buildDateSummary(),
-
-          SizedBox(height: 24.h),
-
-          // Time Slots
-          _buildTimeSlots(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLessonTypeSection() {
+  Widget _buildTypeSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'lessonType'.tr(),
           style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[800],
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+            color: primaryText,
           ),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 10.h),
         Row(
           children: [
-            Expanded(
-              child: _buildTypeOption(
-                  'lesson', Icons.school, 'lessonee'.tr(), '60 min'),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: _buildTypeOption(
-                  'course', Icons.library_books, 'courseee'.tr(), '60 min'),
-            ),
+            _typeOption('lesson', Icons.school_rounded, 'lessonee'.tr()),
+            SizedBox(width: 10.w),
+            _typeOption('course', Icons.library_books_rounded, 'courseee'.tr()),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildTypeOption(
-      String type, IconData icon, String label, String duration) {
+  Widget _typeOption(String type, IconData icon, String label) {
     final isSelected = _selectedType == type;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedType = type),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[50] : Colors.grey[50],
-          border: Border.all(
-            color: isSelected ? Colors.blue[600]! : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedType = type),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
+          decoration: BoxDecoration(
+            color: isSelected ? lightColor : Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: isSelected ? mainColor : Colors.grey.shade200,
+              width: isSelected ? 1.5 : 1,
+            ),
           ),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? Colors.blue[600] : Colors.grey[600],
-              size: 28.w,
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.blue[600] : Colors.grey[800],
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon,
+                  color: isSelected ? mainColor : Colors.grey[500], size: 18.w),
+              SizedBox(width: 6.w),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: isSelected ? mainColor : Colors.grey[600],
+                ),
               ),
-            ),
-            Text(
-              duration,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12.sp,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -593,95 +445,87 @@ class _ProfessionalBookingBottomSheetState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: TableCalendar(
         firstDay: DateTime.now(),
-        lastDay: DateTime.now().add(Duration(days: 90)),
+        lastDay: DateTime.now().add(const Duration(days: 90)),
         focusedDay: _focusedDay,
         calendarFormat: CalendarFormat.month,
-        eventLoader: (day) => [],
         startingDayOfWeek: StartingDayOfWeek.sunday,
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
           weekendTextStyle: TextStyle(color: Colors.grey[600]),
-          holidayTextStyle: TextStyle(color: Colors.red),
           defaultTextStyle: TextStyle(color: Colors.grey[800]),
-          todayTextStyle: TextStyle(color: Colors.white),
-          selectedTextStyle: TextStyle(color: Colors.white),
+          todayTextStyle: const TextStyle(color: Colors.white),
+          selectedTextStyle: const TextStyle(color: Colors.white),
           todayDecoration: BoxDecoration(
-            color: Colors.blue[400],
+            color: mainColor.withValues(alpha: 0.4),
             shape: BoxShape.circle,
           ),
-          selectedDecoration: BoxDecoration(
-            color: Colors.blue[600],
+          selectedDecoration: const BoxDecoration(
+            color: mainColor,
             shape: BoxShape.circle,
           ),
-          markerDecoration: BoxDecoration(
-            color: Colors.red,
-            shape: BoxShape.circle,
-          ),
+          disabledTextStyle: TextStyle(color: Colors.grey.shade300),
+          disabledDecoration: const BoxDecoration(shape: BoxShape.circle),
         ),
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
           titleTextStyle: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.bold,
-            color: Colors.grey[800],
+            color: primaryText,
           ),
-          leftChevronIcon: Icon(Icons.chevron_left, color: Colors.blue[600]),
-          rightChevronIcon: Icon(Icons.chevron_right, color: Colors.blue[600]),
+          leftChevronIcon:
+              Icon(Icons.chevron_left_rounded, color: accentColor, size: 22.w),
+          rightChevronIcon:
+              Icon(Icons.chevron_right_rounded, color: accentColor, size: 22.w),
+          headerPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
         ),
-        selectedDayPredicate: (day) {
-          return isSameDay(_selectedDay, day);
-        },
-        onDaySelected: (selectedDay, focusedDay) {
-          if (!_unavailableDates.any((date) => isSameDay(date, selectedDay))) {
+        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+        enabledDayPredicate: (day) =>
+            !_unavailableDates.any((d) => isSameDay(d, day)),
+        onDaySelected: (selected, focused) {
+          if (!_unavailableDates.any((d) => isSameDay(d, selected))) {
             setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
+              _selectedDay = selected;
+              _focusedDay = focused;
             });
           }
         },
-        onPageChanged: (focusedDay) {
-          _focusedDay = focusedDay;
-        },
-        enabledDayPredicate: (day) {
-          return !_unavailableDates.any((date) => isSameDay(date, day));
-        },
+        onPageChanged: (focused) => setState(() => _focusedDay = focused),
       ),
     );
   }
 
-  Widget _buildSelectedDateInfo() {
+  Widget _buildDatePill() {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: lightColor,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue[200]!),
+        border: Border.all(color: mainColor.withValues(alpha: 0.3)),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.calendar_today,
-            color: Colors.blue[600],
-            size: 20.w,
-          ),
-          SizedBox(width: 12.w),
+          Icon(Icons.calendar_today_rounded, color: mainColor, size: 16.w),
+          SizedBox(width: 8.w),
           Text(
-            '${'selectedDate'.tr()}: ${DateFormat('EEEE, MMM dd, yyyy').format(_selectedDay!)}',
+            DateFormat('EEEE, MMM dd, yyyy').format(_selectedDay!),
             style: TextStyle(
-              color: Colors.blue[700],
-              fontSize: 14.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w600,
+              color: const Color(0xFFB45309),
             ),
           ),
         ],
@@ -689,441 +533,383 @@ class _ProfessionalBookingBottomSheetState
     );
   }
 
-  Widget _buildSelectDateFirst() {
-    return Center(
+  // ── Step 1: Time ───────────────────────────
+
+  Widget _buildTimeStep({Key? key}) {
+    return SingleChildScrollView(
+      key: key,
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.calendar_today,
-            size: 64.w,
-            color: Colors.grey[400],
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'selectDateFirst'.tr(),
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'pleaseSelectDate'.tr(),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[500],
-            ),
-            textAlign: TextAlign.center,
-          ),
+          // Date summary chip
+          _buildDateSummaryChip(),
           SizedBox(height: 24.h),
-          ElevatedButton(
-            onPressed: () => _tabController.animateTo(0),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[600],
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            child: Text('goToCalendar'.tr()),
-          ),
+
+          // Time picker trigger
+          _buildTimePickerCard(),
+          SizedBox(height: 16.h),
+
+          // Auto-generated end time
+          if (_selectedStartTime != null) ...[
+            _buildEndTimeCard(),
+            SizedBox(height: 16.h),
+            _buildBookingSummaryCard(),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildDateSummary() {
+  Widget _buildDateSummaryChip() {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue[600]!, Colors.blue[500]!],
+        gradient: const LinearGradient(
+          colors: [accentColor, Color(0xFF5B3E9E)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.calendar_today,
-            color: Colors.white,
-            size: 24.w,
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(Icons.calendar_today_rounded,
+                color: Colors.white, size: 18.w),
           ),
           SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                DateFormat('EEEE').format(_selectedDay!),
+                style: TextStyle(color: Colors.white70, fontSize: 11.sp),
+              ),
+              Text(
+                DateFormat('MMM dd, yyyy').format(_selectedDay!),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: () => setState(() => _step = 0),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Text(
+                'change'.tr(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimePickerCard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'selectStartTime'.tr(),
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+            color: primaryText,
+          ),
+        ),
+        SizedBox(height: 10.h),
+        GestureDetector(
+          onTap: _pickTime,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: _selectedStartTime != null
+                    ? mainColor
+                    : Colors.grey.shade300,
+                width: _selectedStartTime != null ? 1.5 : 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
               children: [
-                Text(
-                  DateFormat('EEEE').format(_selectedDay!),
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 14.sp,
+                Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: (_selectedStartTime != null
+                            ? mainColor
+                            : Colors.grey.shade400)
+                        .withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(
+                    Icons.access_time_rounded,
+                    color: _selectedStartTime != null
+                        ? mainColor
+                        : Colors.grey.shade400,
+                    size: 20.w,
                   ),
                 ),
-                Text(
-                  DateFormat('MMM dd, yyyy').format(_selectedDay!),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    _selectedStartTime != null
+                        ? _displayTime(_selectedStartTime!)
+                        : 'tapToSelectStartTime'.tr(),
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: _selectedStartTime != null
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                      color: _selectedStartTime != null
+                          ? primaryText
+                          : Colors.grey[500],
+                    ),
                   ),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Colors.grey[400],
+                  size: 20.w,
                 ),
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEndTimeCard() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(Icons.schedule_rounded,
+                color: Colors.grey[500], size: 20.w),
+          ),
+          SizedBox(width: 12.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'generatedEndTime'.tr(),
+                style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.grey[500],
+                    fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                _displayTime(_endTime!),
+                style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[700]),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Text(
+              '+1 hour',
+              style: TextStyle(fontSize: 10.sp, color: Colors.grey[600]),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTimeSlots() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'availableTime'.tr(),
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[800],
-          ),
-        ),
-        SizedBox(height: 16.h),
-        ..._availableSlots.entries
-            .map((entry) => _buildTimeSlotSection(entry.key, entry.value)),
-      ],
-    );
-  }
-
-  Widget _buildTimeSlotSection(String period, List<String> slots) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          period.tr(),
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        SizedBox(height: 8.h),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: slots.map((slot) => _buildTimeSlot(slot)).toList(),
-        ),
-        SizedBox(height: 16.h),
-      ],
-    );
-  }
-
-  Widget _buildTimeSlot(String time) {
-    final endTime = _getEndTime(time);
-    final timeSlot = '$time - $endTime';
-    final isSelected = _selectedTimeSlot == timeSlot;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedTimeSlot = timeSlot;
-          _parseSelectedTimeSlot();
-        });
-      },
-      // onTap: () => setState(() => _selectedTimeSlot = timeSlot),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[600] : Colors.white,
-          border: Border.all(
-            color: isSelected ? Colors.blue[600]! : Colors.grey[300]!,
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(8.r),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Colors.blue[600]!.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Text(
-          timeSlot,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey[700],
-            fontSize: 14.sp,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomAction() {
-    final canConfirm = _selectedDay != null && _selectedTimeSlot != null;
+  Widget _buildBookingSummaryCard() {
+    final from = _displayTime(_selectedStartTime!);
+    final to = _displayTime(_endTime!);
+    final dateStr = DateFormat('MMM dd, yyyy').format(_selectedDay!);
+    final typeLabel =
+        _selectedType == 'lesson' ? 'lessonee'.tr() : 'courseee'.tr();
 
     return Container(
-      padding: EdgeInsets.all(24.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
+        color: lightColor,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: mainColor.withValues(alpha: 0.3)),
       ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (_selectedDay != null && _selectedTimeSlot != null)
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(12.w),
-                margin: EdgeInsets.only(bottom: 16.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  '${DateFormat('MMM dd').format(_selectedDay!)} • $_selectedTimeSlot • ${_selectedType == 'lesson' ? 'Lesson' : 'Course'}',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
-                  ),
-                  textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.check_circle_rounded, color: mainColor, size: 16.w),
+              SizedBox(width: 6.w),
+              Text(
+                'selectedTimeSlot'.tr(),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFB45309),
                 ),
               ),
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     onPressed: () {
-            //       // print('Confirm booking');
-            //       // print(formatDate(_selectedDay.toString()));
-            //       // print(_fromTime);
-            //       // print(_toTime);
-            //       // print(_selectedType);
-            //       // canConfirm ? _confirmBooking() : null;
-            //       if (_tabController.index == 0) {
-            //         // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
-            //         _tabController.animateTo(1);
-            //       } else if (_tabController.index == 1 && canConfirm) {
-            //         // لو المستخدم في تاب الوقت وكامل البيانات متاحة
-            //         _confirmBooking();
-            //       }
-            //     },
-            //     // onPressed: canConfirm ? _confirmBooking : null,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.blue[600],
-            //       foregroundColor: Colors.white,
-            //       padding: EdgeInsets.symmetric(vertical: 16.h),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(12.r),
-            //       ),
-            //       elevation: canConfirm ? 2 : 0,
-            //     ),
-            //     child: Text(
-            //       'confirmBooking'.tr(),
-            //       style: TextStyle(
-            //         fontSize: 16.sp,
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-      SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () {
-            if (_tabController.index == 0) {
-              // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
-              _tabController.animateTo(1);
-            } else if (_tabController.index == 1) {
-              // ✅ Validation على الوقت
-              if (_fromTime == null || _toTime == null) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    backgroundColor: Colors.white,
+            ],
+          ),
+          SizedBox(height: 10.h),
+          _summaryRow(Icons.calendar_today_rounded, dateStr),
+          SizedBox(height: 6.h),
+          _summaryRow(Icons.access_time_rounded, '$from – $to'),
+          SizedBox(height: 6.h),
+          _summaryRow(Icons.school_rounded, typeLabel),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 14.w, color: const Color(0xFFB45309)),
+        SizedBox(width: 8.w),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF92400E),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Bottom Bar ─────────────────────────────
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 28.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey.shade100)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            // Back button
+            GestureDetector(
+              onTap: _onBack,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.arrow_back_ios_new_rounded,
+                        size: 14.w, color: Colors.grey[600]),
+                    SizedBox(width: 4.w),
+                    Text(
+                      _step == 0 ? 'cancel'.tr() : 'back'.tr(),
+                      style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            // Next / Confirm button
+            Expanded(
+              child: AnimatedOpacity(
+                opacity: _canProceed ? 1.0 : 0.5,
+                duration: const Duration(milliseconds: 200),
+                child: ElevatedButton(
+                  onPressed: _canProceed ? _onNext : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _step == 1 ? mainColor : accentColor,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor:
+                        (_step == 1 ? mainColor : accentColor)
+                            .withValues(alpha: 0.5),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    title: Text(
-                      "تنبيه",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    content: Text("من فضلك اختر وقت الحجز أولاً"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text("حسناً"),
+                        borderRadius: BorderRadius.circular(14.r)),
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _step == 1
+                            ? Icons.check_circle_rounded
+                            : Icons.arrow_forward_ios_rounded,
+                        size: 18.w,
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        _step == 0 ? 'selectTime'.tr() : 'confirmBooking'.tr(),
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
-                );
-                return; // وقف هنا ومكملش
-              }
-
-              // ✅ لو كل حاجة تمام وكامل البيانات
-              if (canConfirm) {
-                _confirmBooking();
-              }
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[600],
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
             ),
-            elevation: canConfirm ? 2 : 0,
-          ),
-          child: Text(
-            'confirmBooking'.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          ],
         ),
-      ),
-      // SizedBox(
-      //   width: double.infinity,
-      //   child: ElevatedButton(
-      //     onPressed: () {
-      //       if (_tabController.index == 0) {
-      //         // لو المستخدم في تاب التاريخ، حوّله لتاب الوقت
-      //         _tabController.animateTo(1);
-      //       } else if (_tabController.index == 1) {
-      //         // ✅ Validation على الوقت
-      //         if (_fromTime == null || _toTime == null) {
-      //           ScaffoldMessenger.of(context).showSnackBar(
-      //             SnackBar(
-      //               content: Text("من فضلك اختر وقت الحجز أولاً"),
-      //               backgroundColor: Colors.red,
-      //             ),
-      //           );
-      //           return; // وقف هنا ومكملش
-      //         }
-      //
-      //         // ✅ لو كل حاجة تمام وكامل البيانات
-      //         if (canConfirm) {
-      //           _confirmBooking();
-      //         }
-      //       }
-      //     },
-      //     style: ElevatedButton.styleFrom(
-      //       backgroundColor: Colors.blue[600],
-      //       foregroundColor: Colors.white,
-      //       padding: EdgeInsets.symmetric(vertical: 16.h),
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.circular(12.r),
-      //       ),
-      //       elevation: canConfirm ? 2 : 0,
-      //     ),
-      //     child: Text(
-      //       'confirmBooking'.tr(),
-      //       style: TextStyle(
-      //         fontSize: 16.sp,
-      //         fontWeight: FontWeight.w600,
-      //       ),
-      //     ),
-      //   ),
-      // ),
-
-      ],
-        ),
-      ),
-    );
-  }
-
-  // String formatDate(String dateString) {
-  //   DateTime dateTime = DateTime.parse(dateString);
-  //   return "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
-  // }
-  String formatDate(String dateTimeString) {
-    DateTime dateTime = DateTime.parse(dateTimeString);
-    String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(dateTime);
-    return formattedDate;
-  }
-
-  void _parseSelectedTimeSlot() {
-    if (_selectedTimeSlot != null) {
-      final parts = _selectedTimeSlot!.split(' - ');
-      if (parts.length == 2) {
-        _fromTime = parts[0];
-        _toTime = parts[1];
-      }
-    }
-  }
-
-  // String _getEndTime(String startTime) {
-  //   final start = TimeOfDay(
-  //     hour: int.parse(startTime.split(':')[0]),
-  //     minute: int.parse(startTime.split(':')[1]),
-  //   );
-  //
-  //   final duration = _selectedType == 'lesson' ? 60 : 90;
-  //   final endMinutes = start.hour * 60 + start.minute + duration;
-  //   final endHour = (endMinutes ~/ 60) % 24;
-  //   final endMinute = endMinutes % 60;
-  //
-  //   return '${endHour.toString().padLeft(2, '0')}:${endMinute.toString().padLeft(2, '0')}';
-  // }
-  String _getEndTime(String startTime) {
-    final start = TimeOfDay(
-      hour: int.parse(startTime.split(':')[0]),
-      minute: int.parse(startTime.split(':')[1]),
-    );
-
-    final duration = _selectedType == 'lesson' ? 60 : 90;
-    final endMinutes = start.hour * 60 + start.minute + duration;
-    final endHour = (endMinutes ~/ 60) % 24;
-    final endMinute = endMinutes % 60;
-
-    final now = DateTime.now();
-    final endDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      endHour,
-      endMinute,
-    );
-
-    return DateFormat('hh:mm', 'en_US').format(endDateTime); // e.g., 02:30 PM
-  }
-
-  void _confirmBooking() {
-    if (_selectedDay != null && _selectedTimeSlot != null) {
-      final timeParts = _selectedTimeSlot!.split(' - ');
-      final dateString = DateFormat('yyyy-MM-dd').format(_selectedDay!);
-
-      widget.onConfirm(dateString, timeParts[0], timeParts[1], _selectedType);
-      Navigator.pop(context);
-    }
-  }
-
-  static void show(
-    BuildContext context,
-    TeacherDetailsData teacher,
-    Function(String date, String timeFrom, String timeTo, String type)
-        onConfirm,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => ProfessionalBookingBottomSheet(
-        teacher: teacher,
-        onConfirm: onConfirm,
       ),
     );
   }

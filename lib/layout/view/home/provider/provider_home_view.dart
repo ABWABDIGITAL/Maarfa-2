@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:my_academy/widget/headers/home/home_header.dart';
 
 import '../../../../../widget/error/page/error_page.dart';
-import '../../../../bloc/cities/cities_cubit.dart';
 import '../../../../bloc/home/home_cubit.dart';
 import '../../../../bloc/nations/nations_cubit.dart';
 import '../../../../model/provider/home/home_db_response.dart';
@@ -38,7 +37,6 @@ class _ProviderHomeViewState extends State<ProviderHomeView> {
   void initState() {
     super.initState();
 
-    context.read<CitiesCubit>().getCitiesInSplash();
     context.read<NationsCubit>().getNationsInSplash();
   }
 
@@ -179,7 +177,7 @@ class _ProviderHomeViewState extends State<ProviderHomeView> {
                               itemBuilder: (context, index) => Padding(
                                 padding: EdgeInsets.only(bottom: 15.h),
                                 child: ProviderSubjectCard(
-                                    data: data.data.lessons?[index] ,
+                                  data: data.data.lessons?[index],
                                 ),
                               ),
                             ),

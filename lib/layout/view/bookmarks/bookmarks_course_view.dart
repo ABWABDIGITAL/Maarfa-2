@@ -10,7 +10,6 @@ import '../../../res/drawable/image/images.dart';
 import '../../../res/value/color/color.dart';
 import '../../../res/value/dimenssion/dimenssions.dart';
 import '../../../widget/error/page/error_page.dart';
-import '../../../widget/master_list/custom_list.dart';
 import '../../activity/static/empty_screens/empty_screens.dart';
 import '../../activity/user_screens/course/course_registration.dart';
 import '../../card_view/course/course_card.dart';
@@ -99,23 +98,27 @@ class BookmarksCourseView extends StatelessWidget {
                             ],
                           ),
                         )
-                      : CustomList(
-                          listHeight: 100000000000000,
-                          listWidth: screenWidth,
-                          scroll: const NeverScrollableScrollPhysics(),
-                          axis: Axis.vertical,
-                          count: bloc.bookmarkCourse == null
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 14.w, vertical: 4.h),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12.w,
+                            mainAxisSpacing: 12.h,
+                            childAspectRatio: 0.68,
+                          ),
+                          itemCount: bloc.bookmarkCourse == null
                               ? data.length
                               : bloc.bookmarkCourse!.length,
-                          child: (context, index) => CourseCard(
+                          itemBuilder: (context, index) => CourseCard(
                             attendType: bloc.bookmarkCourse![index].type == 1
                                 ? tr("offline")
                                 : tr("online"),
                             isBlue: true,
                             favoriteTap: () {
-                              // bloc.bookmark(bloc.bookmarkCourse == null
-                              //     ? data[index]
-                              //     : bloc.bookmarkCourse![index]);
                               BlocProvider.of<BookmarkCubit>(context)
                                   .addToBookMark(
                                       id: bloc.bookmarkCourse == null
@@ -126,9 +129,6 @@ class BookmarksCourseView extends StatelessWidget {
                             bookmarkCoursesModel: bloc.bookmarkCourse == null
                                 ? data[index]
                                 : bloc.bookmarkCourse![index],
-                            // courseModel: bloc.bookmarkCourse == null
-                            //     ? data[index]
-                            //     : bloc.bookmarkCourse![index],
                             onPress: () => Get.to(
                               CourseRegistration(
                                   isUser: true,

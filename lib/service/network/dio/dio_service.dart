@@ -112,11 +112,11 @@ class DioService {
   }
 
   post2(
-      path, {
-        Map<String, dynamic>? body,
-        String? url,
-        Map<String, dynamic>? queryParams,
-      }) async {
+    path, {
+    Map<String, dynamic>? body,
+    String? url,
+    Map<String, dynamic>? queryParams,
+  }) async {
     debugPrint('new request in ${Get.locale?.languageCode} :$path');
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('token') ?? '0';
@@ -171,10 +171,11 @@ class DioService {
           e.type == dio.DioExceptionType.receiveTimeout ||
           e.type == dio.DioExceptionType.sendTimeout) {
         // ممكن تعيد المحاولة أو ترجع Error
-        return Left("اتصال الانترنت عندك ضعيف حاول مرة تانية");
+        return Left(tr("internet_weak_retry"));
       } else if (e.error is! SocketException) {
         debugPrint("failed");
-        return Left(e.response?.data["messages"]?.toString() ?? "Unknown error");
+        return Left(
+            e.response?.data["messages"]?.toString() ?? "Unknown error");
       } else {
         return Left(tr("no_internet_connection"));
       }
@@ -188,10 +189,10 @@ class DioService {
   }
 
   post3(
-      String path, {
-        Map<String, dynamic>? body,
-        Map<String, dynamic>? queryParams,
-      }) async {
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParams,
+  }) async {
     debugPrint('POST3 => ${Get.locale?.languageCode} : $path');
 
     final prefs = await SharedPreferences.getInstance();
@@ -229,7 +230,6 @@ class DioService {
 
       /// ❗ Always show the message from backend on errors
       return Left(msg);
-
     } on dio.DioException catch (e) {
       debugPrint("❌ DioException: $e");
 
@@ -257,14 +257,12 @@ class DioService {
     }
   }
 
-
-
   post22(
-      path, {
-        Map<String, dynamic>? body,
-        String? url,
-        Map<String, dynamic>? queryParams,
-      }) async {
+    path, {
+    Map<String, dynamic>? body,
+    String? url,
+    Map<String, dynamic>? queryParams,
+  }) async {
     debugPrint('new request in ${Get.locale?.languageCode} :$path');
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('token') ?? '0';
@@ -307,9 +305,9 @@ class DioService {
         }
       } else {
         // 🔥 ده اللي كان ناقصك: لما يكون statusCode مش 200
-        return Left(response.data["messages"]?.toString() ?? "حدث خطأ غير متوقع");
+        return Left(
+            response.data["messages"]?.toString() ?? tr("unexpected_error"));
       }
-
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
@@ -332,19 +330,18 @@ class DioService {
         return Left(tr("no_internet_connection"));
       }
 
-      return Left("حدث خطأ أثناء الاتصال بالسيرفر");
+      return Left(tr("connection_error"));
     } on HandshakeException {
       return Left(tr("no_internet_connection_try_again"));
     }
   }
 
-
   post23(
-      path, {
-        Map<String, dynamic>? body,
-        String? url,
-        Map<String, dynamic>? queryParams,
-      }) async {
+    path, {
+    Map<String, dynamic>? body,
+    String? url,
+    Map<String, dynamic>? queryParams,
+  }) async {
     debugPrint('new request in ${Get.locale?.languageCode} :$path');
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('token') ?? '0';
@@ -389,17 +386,17 @@ class DioService {
           prefs.setInt("notification", response.data['notificationsCount']);
           return Right(response.data);
         } else {
-          final errorMessage = response.data["messages"]?.toString()
-              ?? "حدث خطأ غير متوقع";
+          final errorMessage =
+              response.data["messages"]?.toString() ?? tr("unexpected_error");
           return Left(errorMessage);
         }
       } else {
-        final errorMessage = response.data["data"]?["original"]?["message"]?.toString()
-            ?? response.data["messages"]?.toString()
-            ?? "حدث خطأ غير متوقع";
+        final errorMessage =
+            response.data["data"]?["original"]?["message"]?.toString() ??
+                response.data["messages"]?.toString() ??
+                tr("unexpected_error");
         return Left(errorMessage);
       }
-
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
@@ -415,9 +412,10 @@ class DioService {
       }
 
       if (e.response?.data != null) {
-        final errorMessage = e.response?.data["data"]?["original"]?["message"]?.toString()
-            ?? e.response?.data["messages"]?.toString()
-            ?? "حدث خطأ غير متوقع";
+        final errorMessage =
+            e.response?.data["data"]?["original"]?["message"]?.toString() ??
+                e.response?.data["messages"]?.toString() ??
+                tr("unexpected_error");
         return Left(errorMessage);
       }
 
@@ -425,13 +423,11 @@ class DioService {
         return Left(tr("no_internet_connection"));
       }
 
-      return Left("حدث خطأ أثناء الاتصال بالسيرفر");
+      return Left(tr("connection_error"));
     } on HandshakeException {
       return Left(tr("no_internet_connection_try_again"));
     }
   }
-
-
 
   get(path,
       {Map<String, dynamic>? body,
@@ -471,9 +467,10 @@ class DioService {
 
       if (200 <= response.statusCode! && response.statusCode! <= 299) {
         if (response.data['success'] == false) {
-          prefs.setInt("notification", response.data['notificationsCount']);
           return Left(response.data["messages"].toString());
         } else {
+          prefs.setInt(
+              "notification", response.data['notificationsCount'] ?? 0);
           return Right(response.data);
         }
       }
@@ -619,9 +616,6 @@ class DioService {
     }
   }
 
-
-
-
   requestWithFile(File? file, Map<String, dynamic>? data, path, key) async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString("token") ?? "0";
@@ -676,8 +670,8 @@ class DioService {
 
   delete22(path,
       {Map<String, dynamic>? body,
-        String? url,
-        Map<String, dynamic>? queryParams}) async {
+      String? url,
+      Map<String, dynamic>? queryParams}) async {
     debugPrint('new request :$path');
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString("token") ?? "0";
@@ -748,7 +742,6 @@ class DioService {
     }
   }
 
-
   requestWithFile22(File? file, Map<String, dynamic>? data, path, key) async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString("token") ?? "0";
@@ -797,10 +790,10 @@ class DioService {
       } else {
         // ✅ لو 400, 422, 500 ... الخ
         if (response.data != null && response.data is Map<String, dynamic>) {
-          final msg = response.data['messages'] ?? "حدث خطأ غير متوقع";
+          final msg = response.data['messages'] ?? tr("unexpected_error");
           return Left(msg.toString());
         } else {
-          return Left("فشل الاتصال بالسيرفر");
+          return Left(tr("server_connection_failed"));
         }
       }
     } on dio.DioException catch (e) {
@@ -861,10 +854,10 @@ class DioService {
       } else {
         // ✅ أي حالة تانية (400, 422, 500 ...)
         if (response.data != null && response.data is Map<String, dynamic>) {
-          final msg = response.data['messages'] ?? "حدث خطأ غير متوقع";
+          final msg = response.data['messages'] ?? tr("unexpected_error");
           return Left(msg.toString());
         } else {
-          return Left("فشل الاتصال بالسيرفر");
+          return Left(tr("server_connection_failed"));
         }
       }
     } on dio.DioException catch (e) {
@@ -878,15 +871,14 @@ class DioService {
       } else if (e.error is SocketException) {
         return Left(tr("no_internet_connection"));
       } else {
-        final msg = e.response?.data?["messages"] ?? e.message ?? "Unknown error";
+        final msg =
+            e.response?.data?["messages"] ?? e.message ?? "Unknown error";
         return Left(msg.toString());
       }
     } catch (e) {
       return Left("Unexpected error: $e");
     }
   }
-
-
 
   requestWithFiles(List<File?> images, Map<String, dynamic>? data, path) async {
     final prefs = await SharedPreferences.getInstance();
@@ -962,11 +954,11 @@ class DioService2 {
   DioService2._internal();
 
   Future<Either<String, Map<String, dynamic>>> post(
-      String path, {
-        Map<String, dynamic>? body,
-        String? url,
-        Map<String, dynamic>? queryParams,
-      }) async {
+    String path, {
+    Map<String, dynamic>? body,
+    String? url,
+    Map<String, dynamic>? queryParams,
+  }) async {
     debugPrint('new request in ${Get.locale?.languageCode} :$path');
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('token') ?? '0';
@@ -997,11 +989,14 @@ class DioService2 {
       }
 
       if (200 <= response.statusCode! && response.statusCode! <= 299) {
-        if (response.data['status'] == true) { // Changed from 'success' to 'status'
-          prefs.setInt("notification", response.data['notificationsCount'] ?? 0);
+        if (response.data['status'] == true) {
+          // Changed from 'success' to 'status'
+          prefs.setInt(
+              "notification", response.data['notificationsCount'] ?? 0);
           return Right(response.data);
         } else {
-          return Left(response.data["message"]?.toString() ?? tr("unknown_error"));
+          return Left(
+              response.data["message"]?.toString() ?? tr("unknown_error"));
         }
       }
     } on dio.DioException catch (e) {
@@ -1016,7 +1011,8 @@ class DioService2 {
         return Left(tr("connection_timeout"));
       } else if (e.error.runtimeType != SocketException) {
         debugPrint("failed");
-        return Left(e.response?.data["message"]?.toString() ?? tr("unknown_error"));
+        return Left(
+            e.response?.data["message"]?.toString() ?? tr("unknown_error"));
       } else {
         return Left(tr("no_internet_connection"));
       }

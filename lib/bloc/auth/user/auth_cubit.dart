@@ -12,7 +12,6 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../repository/provider/auth_provider/auth_provider_repository.dart';
 import '../../../repository/user/auth_user/auth_user_repository.dart';
@@ -49,9 +48,6 @@ class AuthUserCubit extends Cubit<AuthState> {
   bool isPassword = true;
   bool isConfirm = true;
   bool loading = false;
-
-  String? cityName;
-  int? cityId;
 
   List<Map<String, dynamic>> gendreArList = [
     {"id": 1, "name": "ذكر"},
@@ -90,8 +86,6 @@ class AuthUserCubit extends Cubit<AuthState> {
   ];
 
   bool? agree = false;
-
-  CityModel? city;
 
   Future<GoogleSignInAccount?> handleGoogle() async {
     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -211,24 +205,6 @@ class AuthUserCubit extends Cubit<AuthState> {
     if (!isClosed) {
       super.emit(state);
     }
-  }
-
-  chooseCity(val) {
-    switch (city == val) {
-      case true:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(SameCityState());
-        break;
-      case false:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(ChangeCityState());
-        break;
-    }
-    emit(ChooseCityState());
   }
 
   NationalityModel? nation;
@@ -462,9 +438,6 @@ class AuthUserCubit extends Cubit<AuthState> {
       } else if (genderValue == null) {
         showToast(tr("error_gender"));
         authController.reset();
-      } else if (cityId == null) {
-        showToast(tr("error_city"));
-        authController.reset();
       } else if (nationId == null) {
         showToast(tr("error_nation"));
         authController.reset();
@@ -478,7 +451,6 @@ class AuthUserCubit extends Cubit<AuthState> {
           "birth_date": birthdate,
           "nationality_id": nationId,
           "gender": genderValue,
-          "city_id": cityId,
           "email": email.text.trim(),
           "phone": phone.text.trim(),
           "password": password.text.trim(),

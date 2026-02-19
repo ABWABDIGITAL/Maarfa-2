@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -14,8 +15,12 @@ class SubscribeCubit extends Cubit<SubscribeState> {
 
   static SubscribeCubit get(BuildContext context) => BlocProvider.of(context);
   SubscriptionsRepository subscriptionsRepository;
-  List<String> typeListAr = ["الكل", "حضوري", "أونلاين", "مباشر"];
-  List<String> typeListEn = ["All", "Offline", "Online", "Live"];
+  List<String> get typeList => [
+        tr("all"),
+        tr("attendance_in_person"),
+        tr("attendance_online"),
+        tr("attendance_live"),
+      ];
 
   // List<String> filters = [];
 
@@ -141,7 +146,7 @@ class SubscribeCubit extends Cubit<SubscribeState> {
     print(status);
     print('==========================');
     if (status == "") {
-      showToast('choose filter first');
+      showToast(tr('choose_filter_first'));
     } else if (status == 'comming') {
       status = 'comming';
       getSubscriptionCourse();
@@ -156,7 +161,7 @@ class SubscribeCubit extends Cubit<SubscribeState> {
     print(status);
     print('==========================');
     if (status == "") {
-      showToast('choose filter first');
+      showToast(tr('choose_filter_first'));
     } else if (status == 'comming') {
       status = 'comming';
       getSubscriptionLesson();

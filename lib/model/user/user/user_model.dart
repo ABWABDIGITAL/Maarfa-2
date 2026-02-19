@@ -1,4 +1,3 @@
-import '../../common/cities/city_model.dart';
 import '../../common/nationalities/nationality_model.dart';
 
 class UserModel {
@@ -9,7 +8,6 @@ class UserModel {
     this.email,
     this.phone,
     this.image,
-    this.city,
     this.nationality,
     this.gender,
     this.birthDate,
@@ -23,7 +21,6 @@ class UserModel {
   String? email;
   String? phone;
   String? image;
-  CityModel? city;
   NationalityModel? nationality;
   int? gender;
   DateTime? birthDate;
@@ -37,14 +34,13 @@ class UserModel {
         email: json["email"],
         phone: json["phone"],
         image: json["image"],
-        city: json["city"] == null ? null : CityModel.fromJson(json["city"]),
         nationality: json["nationality"] == null
             ? null
             : NationalityModel.fromJson(json["nationality"]),
         gender: json["gender"],
         birthDate: json["birth_date"] == null
             ? null
-            : DateTime.parse(json["birth_date"]),
+            : DateTime.tryParse(json["birth_date"]),
         wallet: double.tryParse(json["wallet"].toString()) ?? 0,
         provider: json["provider"],
       );

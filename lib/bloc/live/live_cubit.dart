@@ -13,22 +13,14 @@ class LiveCubit extends Cubit<LiveState> {
 
   bool isLoad = false;
 
-  enterLive(bool isBroadcaster, int id, String type, {int? timeId}) {
+  Future<void> enterLive(bool isBroadcaster, int id, String type,
+      {int? timeId, VoidCallback? onConferenceEnded}) async {
     isLoad = true;
-    if (isBroadcaster) {
-      Map<String, dynamic> data = {"type": type, "id": id, "time_id": timeId};
-      liveRepository.enterLive(data, isBroadcaster).then((v) {
-        isLoad = false;
-      });
-      isLoad = false;
-      emit(EnterLiveState());
-    } else {
-      Map<String, dynamic> data = {"type": type, "id": id, "time_id": timeId};
-      liveRepository.enterLive(data, isBroadcaster).then((v) {
-        isLoad = false;
-      });
-      isLoad = false;
-      emit(EnterLiveState());
-    }
+    emit(EnterLiveLoadingState());
+    final data = {"type": type, "id": id, "time_id": timeId};
+    await liveRepository.enterLive(data, isBroadcaster,
+        onConferenceEnded: onConferenceEnded);
+    isLoad = false;
+    emit(EnterLiveState());
   }
 }

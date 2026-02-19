@@ -1,16 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_academy/model/provider/requests/requests_model/requests_model.dart';
 import 'package:my_academy/repository/provider/requests/requests_repository.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+
 import '../../model/common/courses/course_model.dart';
 import '../../model/common/lessons/lesson_model.dart';
+import '../../service/notification/notification_event_bus.dart';
+
 part 'provider_requests_state.dart';
 
 class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
   ProviderRequestsCubit(this.requestsProvider)
-      : super(ProviderRequestsInitial());
+      : super(ProviderRequestsInitial()) {
+    _notificationSubscription =
+        NotificationEventBus.instance.stream.listen(_onNotification);
+  }
+
   RequestsProvider requestsProvider;
+  StreamSubscription<NotificationEvent>? _notificationSubscription;
+
   static ProviderRequestsCubit get(BuildContext context) =>
       BlocProvider.of(context);
   int page = 1;
@@ -23,6 +34,16 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
   RoundedLoadingButtonController rejectControl =
       RoundedLoadingButtonController();
   final TextEditingController rejectController = TextEditingController();
+
+  void _onNotification(NotificationEvent event) {
+    if (['new_request', 'request_paid'].contains(event.type)) {
+      page = 1;
+      courseModel = [];
+      lessonModel = [];
+      getRequests();
+      getLessonsRequests();
+    }
+  }
 
   initCourse(data) {
     page == 1 ? courseModel = data : courseModel.addAll(data.data.items);
@@ -42,7 +63,6 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
       page++;
       courseModel.addAll(newRequests.data.items);
       if (newRequests.data.pagination.hasMorePages == true) {
-        // courseModel.addAll(newRequests.data.items);
         requestsProvider.getItemsHasRequest("course", page).then((v) {
           courseModel.addAll(v.data.items);
           emit(ProviderRequestsLoadedState(data: courseModel));
@@ -71,7 +91,6 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
       page++;
       lessonModel.addAll(newRequests.data.items);
       if (newRequests.data.pagination.hasMorePages == true) {
-        // lessonModel.addAll(newRequests.data.items);
         requestsProvider.getItemsHasRequest("lesson", page).then((v) {
           lessonModel.addAll(v.data.items);
           emit(ProviderLessonRequestsLoadedState(data: lessonModel));
@@ -113,7 +132,6 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
       page++;
       requestModel.addAll(newRequests.data.requests);
       if (newRequests.data.pagination.hasMorePages == true) {
-        // requestModel.addAll(newRequests.data.requests);
         requestsProvider.getItemsRequestDetails(type, id, page).then((v) {
           requestModel.addAll(v.data.requests);
           emit(ProviderShowRequestsLoadedState(data: requestModel));
@@ -129,6 +147,7 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
     };
     requestsProvider.changeRequestStatus(id, data).then((value) {
       acceptController.reset();
+      emit(RequestStatusChangedState());
     });
   }
 
@@ -139,6 +158,7 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
     };
     requestsProvider.changeRequestStatus(id, data).then((value) {
       rejectControl.reset();
+      emit(RequestStatusChangedState());
     });
   }
 
@@ -152,5 +172,11 @@ class ProviderRequestsCubit extends Cubit<ProviderRequestsState> {
         isSubject = false;
         emit(ChooseCourseState());
     }
+  }
+
+  @override
+  Future<void> close() {
+    _notificationSubscription?.cancel();
+    return super.close();
   }
 }

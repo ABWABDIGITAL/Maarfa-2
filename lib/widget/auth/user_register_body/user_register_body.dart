@@ -13,17 +13,14 @@ import '../../../../widget/space/space.dart';
 import '../../../../widget/textfield/master/master_textfield.dart';
 import '../../../bloc/auth/user/auth_cubit.dart';
 import '../../../layout/activity/static/terms_conditions/terms_conditions_screen.dart';
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../repository/user/auth_user/auth_user_repository.dart';
 import '../../buttons/master_load/master_load_button.dart';
 import '../../dropdown/dropdown/dropdown.dart';
 
 class UserRegisterBody extends StatefulWidget {
-  final List<CityModel> cities;
   final List<NationalityModel> nations;
-  const UserRegisterBody(
-      {super.key, required this.cities, required this.nations});
+  const UserRegisterBody({super.key, required this.nations});
 
   @override
   State<UserRegisterBody> createState() => _UserRegisterBodyState();
@@ -281,39 +278,6 @@ class _UserRegisterBodyState extends State<UserRegisterBody> {
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                      const Space(
-                        boxHeight: 15,
-                      ),
-                      SidePadding(
-                        sidePadding: 15,
-                        child: BuildDropDown(
-                          isExpanded: true,
-                          value: bloc.city,
-                          onChange: (val) => bloc.chooseCity(val),
-                          items: widget.cities
-                              .map<DropdownMenuItem<dynamic>>((dynamic value) {
-                            return DropdownMenuItem<dynamic>(
-                                value: value,
-                                child: Row(
-                                  children: [
-                                    Space(
-                                      boxWidth: 10.w,
-                                    ),
-                                    Image.asset(city,
-                                        height: 20.h, fit: BoxFit.contain),
-                                    Space(
-                                      boxWidth: 5.w,
-                                    ),
-                                    Text("${value.name}",
-                                        style: TextStyles.appBarStyle
-                                            .copyWith(color: mainColor)),
-                                  ],
-                                ));
-                          }).toList(),
-                          hint: tr("city"),
-                          image: city,
                         ),
                       ),
                       const Space(

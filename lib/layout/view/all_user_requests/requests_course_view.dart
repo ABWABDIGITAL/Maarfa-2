@@ -63,37 +63,44 @@ class RequestsCourseView extends StatelessWidget {
               ],
             ),
           )
-        : CustomList(
-            listHeight: 100000000000000,
-            listWidth: screenWidth,
-            scroll: const ClampingScrollPhysics(),
-            axis: Axis.vertical,
-            count: data.length,
-            child: (context, index) {
-              final attendanceType = context
-                  .read<AllRequestsCubit>()
-                  .getAttendanceType(data[index].course.type.toString());
-              final status = context
-                  .read<AllRequestsCubit>()
-                  .getStatus(data[index].status.toString());
-              return Column(
-                children: [
-                  RequestCourseCard(
-                    courseId: data[index].id,
-                    image: data[index].course.image,
-                    courseTitle: data[index].course.name ?? '',
-                    price: data[index].course.price,
-                    name:
-                        "${data[index].course.provider.title} ${data[index].course.provider.firstName} ${data[index].course.provider.lastName}",
-                    attendance: attendanceType,
-                    id: data[index].course.id!,
-                    acceptanceCheck: status,
-                  ),
-                  const Space(
-                    boxHeight: 15,
-                  ),
-                ],
-              );
-            });
+        : RefreshIndicator(
+            onRefresh: () async {
+              context.read<AllRequestsCubit>().getCourseRequests();
+            },
+            child: CustomList(
+                listHeight: 100000000000000,
+                listWidth: screenWidth,
+                scroll: const AlwaysScrollableScrollPhysics(
+                  parent: ClampingScrollPhysics(),
+                ),
+                axis: Axis.vertical,
+                count: data.length,
+                child: (context, index) {
+                  final attendanceType = context
+                      .read<AllRequestsCubit>()
+                      .getAttendanceType(data[index].course.type.toString());
+                  final status = context
+                      .read<AllRequestsCubit>()
+                      .getStatus(data[index].status.toString());
+                  return Column(
+                    children: [
+                      RequestCourseCard(
+                        courseId: data[index].id,
+                        image: data[index].course.image,
+                        courseTitle: data[index].course.name ?? '',
+                        price: data[index].course.price,
+                        name:
+                            "${data[index].course.provider.title} ${data[index].course.provider.firstName} ${data[index].course.provider.lastName}",
+                        attendance: attendanceType,
+                        id: data[index].course.id!,
+                        acceptanceCheck: status,
+                      ),
+                      const Space(
+                        boxHeight: 15,
+                      ),
+                    ],
+                  );
+                }),
+          );
   }
 }

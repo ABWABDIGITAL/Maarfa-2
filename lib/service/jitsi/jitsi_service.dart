@@ -8,6 +8,7 @@ class JitsiService {
     required String token,
     required int userId,
     required int timeId,
+    VoidCallback? onConferenceEnded,
   }) async {
     try {
       var jitsiMeet = JitsiMeet();
@@ -24,26 +25,21 @@ class JitsiService {
       featureFlagEnum[FeatureFlag.recordingEnabled.key] = false;
       featureFlagEnum[FeatureFlag.liveStreamingEnabled.key] = false;
       featureFlagEnum[FeatureFlag.kickOutEnabled.key] = false;
-      featureFlagEnum[FeatureFlag.videoShareButtonEnabled.key] = false;
+      featureFlagEnum[FeatureFlag.videoShareButtonEnabled.key] = true;
+      featureFlagEnum[FeatureFlag.iosScreenSharingEnabled.key] = true;
+      featureFlagEnum[FeatureFlag.androidScreenSharingEnabled.key] = true;
       featureFlagEnum[FeatureFlag.audioOnlyButtonEnabled.key] = false;
       featureFlagEnum[FeatureFlag.closeCaptionsEnabled.key] = false;
-      featureFlagEnum[FeatureFlag.liveStreamingEnabled.key] = false;
 
       var options = JitsiMeetConferenceOptions(
         room: roomNo,
         serverURL: "https://meeting.maarefa.app/",
-        // subject: "",
         token: token,
         configOverrides: {
           "startWithAudioMuted": false,
           "startWithVideoMuted": false,
           "subject": "",
         },
-        // isAudioMuted: true,
-        // isAudioOnly: true,
-        // isVideoMuted: true,
-        // userDisplayName: userId.toString(),
-        // userEmail: "myemail@email.com",
         featureFlags: featureFlagEnum,
       );
 
@@ -54,13 +50,14 @@ class JitsiService {
                 debugPrint("onConferenceWillJoin: url: $url"),
             conferenceJoined: (url) =>
                 debugPrint("onConferenceJoined: url: $url"),
-            readyToClose: () async => await DioService().get(
-                  '/provider/time/end/$timeId',
-                ),
-            conferenceTerminated: (url, error) async =>
-                await DioService().get(
-                  '/provider/time/end/$timeId',
-                ),
+            readyToClose: () async {
+              await DioService().get('/provider/time/end/$timeId');
+              onConferenceEnded?.call();
+            },
+            conferenceTerminated: (url, error) async {
+              await DioService().get('/provider/time/end/$timeId');
+              onConferenceEnded?.call();
+            },
             participantLeft: (participantId) async => await DioService().get(
                   '/provider/time/end/$timeId',
                 )),
@@ -74,6 +71,7 @@ class JitsiService {
     required String roomNo,
     required String token,
     required int userId,
+    VoidCallback? onConferenceEnded,
   }) async {
     try {
       Map<String, Object> featureFlagEnum = {};
@@ -88,36 +86,35 @@ class JitsiService {
       featureFlagEnum[FeatureFlag.recordingEnabled.key] = false;
       featureFlagEnum[FeatureFlag.liveStreamingEnabled.key] = false;
       featureFlagEnum[FeatureFlag.kickOutEnabled.key] = false;
-      featureFlagEnum[FeatureFlag.videoShareButtonEnabled.key] = false;
+      featureFlagEnum[FeatureFlag.videoShareButtonEnabled.key] = true;
+      featureFlagEnum[FeatureFlag.iosScreenSharingEnabled.key] = true;
+      featureFlagEnum[FeatureFlag.androidScreenSharingEnabled.key] = true;
       featureFlagEnum[FeatureFlag.audioOnlyButtonEnabled.key] = false;
       featureFlagEnum[FeatureFlag.closeCaptionsEnabled.key] = false;
-      featureFlagEnum[FeatureFlag.liveStreamingEnabled.key] = false;
-// share
-// enable lobby mode
-// start rcording , start live strem
-// share a youtube video
-// mute everyone
-// disable camera
-// invite others
 
       var options = JitsiMeetConferenceOptions(
         room: roomNo,
         serverURL: "https://meeting.maarefa.app/",
-        // subject: "",
         token: token,
         configOverrides: {
           "startWithAudioMuted": false,
           "startWithVideoMuted": false,
           "subject": "",
         },
-        // isAudioMuted: true,
-        // isVideoMuted: true,
-        // userDisplayName: userId.toString(),
-        // userEmail: "myemail@email.com",
         featureFlags: featureFlagEnum,
       );
       var jitsiMeet = JitsiMeet();
-      await jitsiMeet.join(options);
+      await jitsiMeet.join(
+        options,
+        JitsiMeetEventListener(
+          conferenceTerminated: (url, error) {
+            onConferenceEnded?.call();
+          },
+          readyToClose: () {
+            onConferenceEnded?.call();
+          },
+        ),
+      );
     } catch (error) {
       debugPrint("error: $error");
     }

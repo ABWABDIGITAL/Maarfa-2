@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../layout/activity/auth/register/provider/cv_register_screen.dart';
 import '../../../layout/activity/auth/register/provider/specialization_register_screen.dart';
 import '../../../layout/activity/role/role_screen.dart';
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../model/provider/certificate/certificate_data.dart';
 import '../../../repository/provider/auth_provider/auth_provider_repository.dart';
@@ -35,9 +34,6 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
   int timer = 60;
   bool isPassword = true;
   bool isConfirm = true;
-
-  String? cityName;
-  int? cityId;
 
   String? nationName;
   int? nationId;
@@ -71,7 +67,6 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
   List<bool> selectedGrade = [];
   List<int> gradesId = [];
 
-  CityModel? city;
   File? cvFile;
   File? certificateFile;
   bool picked = false;
@@ -112,24 +107,6 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
         break;
     }
     emit(ValidateState());
-  }
-
-  chooseCity(val) {
-    switch (city == val) {
-      case true:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(SameCityState());
-        break;
-      case false:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(ChangeCityState());
-        break;
-    }
-    emit(ChooseCityState());
   }
 
   NationalityModel? nation;
@@ -332,9 +309,6 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
       if (genderValue == null) {
         showToast(tr("error_gender"));
         authController.reset();
-      } else if (cityId == null) {
-        showToast(tr("error_city"));
-        authController.reset();
       } else if (nationId == null) {
         showToast(tr("error_nation"));
         authController.reset();
@@ -347,7 +321,6 @@ class AuthProviderCubit extends Cubit<AuthProviderState> {
           "first_name": firstName.text.trim(),
           "last_name": lastName.text.trim(),
           "degree": degree.text.trim(),
-          "city_id": cityId,
           "nationality_id": nationId,
           "gender": genderValue,
           "email": email.text.trim(),

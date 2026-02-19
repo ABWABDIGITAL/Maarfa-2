@@ -121,38 +121,42 @@ Widget requestsLessonView(
   }
 
   return Container(
-    color: Colors.grey[50], // Subtle background
+    color: Colors.grey[50],
     child: Column(
       children: [
-        // Header section with statistics
         _buildHeaderSection(data),
-
-        // Requests list
         Expanded(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return RequestSubjectCard(
-                        lessonId: data[index].id!,
-                        price: data[index].lesson!.hourPrice!,
-                        lessonTitle: data[index].lesson!.subject!.name!,
-                        name: data[index].lesson!.provider!.firstName!,
-                        id: data[index].lesson!.subject!.id!,
-                        onlineCheck: data[index].status.toString(),
-                        acceptanceCheck: _getStatusText(data[index].status),
-                        onTap: () {},
-                      );
-                    },
-                    childCount: data.length,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<AllRequestsCubit>().getLessonRequests();
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return RequestSubjectCard(
+                          lessonId: data[index].id!,
+                          price: data[index].lesson!.hourPrice!,
+                          lessonTitle: data[index].lesson!.subject!.name!,
+                          name: data[index].lesson!.provider!.firstName!,
+                          id: data[index].lesson!.subject!.id!,
+                          onlineCheck: data[index].status.toString(),
+                          acceptanceCheck: _getStatusText(data[index].status),
+                          onTap: () {},
+                        );
+                      },
+                      childCount: data.length,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

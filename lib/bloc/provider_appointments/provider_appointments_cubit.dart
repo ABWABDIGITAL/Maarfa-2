@@ -5,7 +5,6 @@ import 'package:my_academy/model/common/courses/course_model.dart';
 import 'package:my_academy/model/common/lessons/lesson_model.dart';
 import 'package:my_academy/repository/provider/lessons/lessons_repository.dart';
 import '../../repository/provider/courses/courses_repository.dart';
-import '../../widget/toast/toast.dart';
 
 part 'provider_appointments_state.dart';
 
@@ -23,6 +22,9 @@ class ProviderAppointmentsCubit extends Cubit<ProviderAppointmentsState> {
   String status = "";
 
   changeFilter(String state) {
+    page = 1;
+    courseModel = [];
+    lessonModel = [];
     if (status == state) {
       status = state;
       emit(SameFilterState());
@@ -130,17 +132,14 @@ class ProviderAppointmentsCubit extends Cubit<ProviderAppointmentsState> {
   }
 
   getFilteredCoursesHandler() {
+    page = 1;
+    courseModel = [];
     if (status == "") {
       getCourses("");
-      showToast('choose filter first');
     } else if (status == 'comming') {
-      page = 1;
-      status = 'comming';
       getCourses("comming");
       emit(CourseCommingState());
     } else {
-      status = 'finished';
-      page = 1;
       getCourses("finished");
       emit(CourseFinishedState());
     }
@@ -148,19 +147,17 @@ class ProviderAppointmentsCubit extends Cubit<ProviderAppointmentsState> {
   }
 
   getFilteredLessonsHandler() {
+    page = 1;
+    lessonModel = [];
     if (status == "") {
       getLessons("");
-      showToast('choose filter first');
     } else if (status == 'comming') {
-      status = 'comming';
       getLessons("comming");
       emit(LessonCommingState());
     } else {
-      status = 'finished';
       getLessons("finished");
       emit(LessonFinishedState());
     }
-
     emit(LessonState());
   }
 }

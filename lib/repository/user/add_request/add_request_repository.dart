@@ -9,6 +9,7 @@ import 'package:my_academy/model/user/groups_courses/groups_courses_model.dart';
 
 import '../../../layout/activity/user_screens/main/main_screen.dart';
 import '../../../layout/activity/user_screens/request/request_lesson_screen.dart';
+import '../../../layout/activity/user_screens/success_booking/booking_success.dart';
 import '../../../service/network/dio/dio_service.dart';
 import '../../../widget/alert/alert_messege.dart';
 import '../../../widget/toast/toast.dart';
@@ -66,12 +67,12 @@ class AddRequestsRepository {
     }
 
     return value.fold(
-          (l) {
+      (l) {
         // Error من Dio (network, timeout...)
         showToast(l.toString());
         return null;
       },
-          (r) {
+      (r) {
         if (r is Map && r['success'] == false) {
           // 🔥 هتسحب الرسالة اللي جاية من السيرفر
           final msg = r['messages'] ?? 'حدث خطأ غير متوقع';
@@ -80,8 +81,7 @@ class AddRequestsRepository {
         }
 
         if (r is Map && r['success'] == true) {
-          // نجاح → نروح على MainScreen
-          Get.offAll(() => const MainScreen());
+          Get.offAll(() => const BookingStatus());
           return r;
         }
 
@@ -91,18 +91,13 @@ class AddRequestsRepository {
     );
   }
 
-
-
-
-
-  validateRequest({
-    required int id,
-    required String type,
-    required List<int> times,
-    required dynamic lessonDetails,
-    required BuildContext context,
-    bool? isHome = false
-  }) async {
+  validateRequest(
+      {required int id,
+      required String type,
+      required List<int> times,
+      required dynamic lessonDetails,
+      required BuildContext context,
+      bool? isHome = false}) async {
     try {
       return await DioService().post23('/clients/requests/validate', body: {
         'type': type,
@@ -112,16 +107,16 @@ class AddRequestsRepository {
         return value.fold((l) => showToast(l), (r) {
           // ValidateRequestModel validateRequest =
           //     ValidateRequestModel.fromJson(r);
-          if(isHome == true){
-            Get.to(() =>
-                RequestLessonScreen(lessonDetails: lessonDetails, times: times));
+          if (isHome == true) {
+            Get.to(() => RequestLessonScreen(
+                lessonDetails: lessonDetails, times: times));
           } else {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MainScreen(),
                 ),
-                    (route) => false);
+                (route) => false);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(tr('Bookingconfirmedsuccessfully')),

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../../../model/common/cities/city_model.dart';
 import '../../../model/common/nationalities/nationality_model.dart';
 import '../../../model/user/user/user_model.dart';
 import '../../../model/user/user/user_response.dart';
@@ -38,10 +37,6 @@ class UserCubit extends Cubit<UserState> {
   DateTime? pickedDate;
   String? birthdate;
   int? genderValue;
-  CityModel? city;
-  String? cityName;
-  int? cityId;
-
   bool isPassword = true;
   bool isConfirm = true;
   bool isOld = true;
@@ -161,26 +156,7 @@ class UserCubit extends Cubit<UserState> {
     emit(ChangeConfirmState());
   }
 
-  chooseCity(val) {
-    switch (city == val) {
-      case true:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(SameCityState());
-        break;
-      case false:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(ChangeCityState());
-        break;
-    }
-    emit(ChooseCityState());
-  }
-
-  getInitData(
-      UserModel user, List<CityModel> cities, List<NationalityModel> nations) {
+  getInitData(UserModel user, List<NationalityModel> nations) {
     firstName.value = firstName.value.copyWith(text: user.firstName);
     lastName.value = lastName.value.copyWith(text: user.lastName);
     user.phone == null
@@ -191,14 +167,6 @@ class UserCubit extends Cubit<UserState> {
         ? null
         : birthdate = DateFormat("yyyy-MM-dd", "en").format(user.birthDate!);
     chooseGender(user.gender == 1 ? true : false);
-    if (user.city != null) {
-      for (int i = 0; i < cities.length; i++) {
-        if (cities[i].id == user.city!.id &&
-            cities[i].name == user.city!.name) {
-          chooseCity(cities[i]);
-        }
-      }
-    }
     if (user.nationality != null) {
       for (int i = 0; i < nations.length; i++) {
         if (nations[i].id == user.nationality!.id &&
@@ -242,7 +210,6 @@ class UserCubit extends Cubit<UserState> {
         "birth_date": birthdate,
         "nationality_id": nationId,
         "gender": genderValue,
-        "city_id": cityId,
         "email": email.text.trim(),
         "phone": phone.text.trim(),
       };

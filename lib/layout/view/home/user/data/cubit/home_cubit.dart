@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_best_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_specializations_data_model.dart';
@@ -331,8 +329,8 @@ class Home2Cubit extends Cubit<Home2State> {
     required String date,
     required String timeFrom,
     required String timeTo,
-    required String type, // lesson, course, etc.
-    required BuildContext context, // lesson, course, etc.
+    required String type,
+    required int lessonId,
   }) async {
     emit(MakeBookLoadingState());
     try {
@@ -340,6 +338,7 @@ class Home2Cubit extends Cubit<Home2State> {
         '/clients/providers/request-lesson/$teacherId',
         body: {
           "client_id": clientId,
+          "lesson_id": lessonId,
           "date": date,
           "time_from": timeFrom,
           "time_to": timeTo,
@@ -350,67 +349,14 @@ class Home2Cubit extends Cubit<Home2State> {
       response.fold((error) {
         emit(MakeBookErrorState(errorMessage: error));
       }, (data) {
-        // Assuming the API returns success: true on successful booking
-        if (data['success'] == true || data['messages'] == "تم بنجاح") {
-          Navigator.pop(context);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
-              (route) => false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Suceesssss'.tr()),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
+        if (data['success'] == true) {
           emit(MakeBookSuccessState());
-        } else if (data['success'] == false) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                  '${data['message']}' ?? 'Booking failed. Please try again.'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 3),
-            ),
-          );
-          // print('================${data['message']}');
-
-          emit(MakeBookErrorState(
-            errorMessage: data['message'] ?? 'Booking failed',
-          ));
         } else {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
-              (route) => false);
-
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                  '${data['message']}' ?? 'Booking failed. Please try again.'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 3),
-            ),
-          );
-
-          emit(MakeBookErrorState(
-              errorMessage: data['message'] ?? 'Booking failed'));
+          final msg = data['messages']?.toString() ?? tr('booking_failed');
+          emit(MakeBookErrorState(errorMessage: msg));
         }
       });
     } catch (e) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-          (route) => false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString() ?? 'Booking failed. Please try again.'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
-        ),
-      );
       emit(MakeBookErrorState(errorMessage: e.toString()));
     }
   }

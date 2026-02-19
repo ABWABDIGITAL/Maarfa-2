@@ -1,4 +1,3 @@
-import '../../common/cities/city_model.dart';
 import '../../common/educational_stages/educational_stages_model.dart';
 import '../../common/nationalities/nationality_model.dart';
 import '../../common/specializations/specializations_model.dart';
@@ -21,7 +20,6 @@ class Provider {
       this.imagePath,
       this.cvPath,
       this.video,
-      this.city,
       this.nationality,
       this.specializations,
       this.educationalStages,
@@ -48,7 +46,6 @@ class Provider {
   String? imagePath;
   String? cvPath;
   String? video;
-  CityModel? city;
   NationalityModel? nationality;
   List<SpecializationsModel>? specializations;
   List<EducationalStageModel>? educationalStages;
@@ -69,12 +66,11 @@ class Provider {
         degree: json["degree"],
         gender: json["gender"],
         balance: json["balance"],
-        rate: (json["rate"] as num).toDouble(),
+        rate: json["rate"] == null ? null : (json["rate"] as num).toDouble(),
         fcmToken: json["fcm_token"],
         imagePath: json["image_path"],
         cvPath: json["cv_path"],
         video: json["video"],
-        city: json["city"] == null ? null : CityModel.fromJson(json["city"]),
         nationality: json["nationality"] == null
             ? null
             : NationalityModel.fromJson(json["nationality"]),

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../../model/common/cities/city_model.dart';
 import '../../repository/provider/bank_account/bank_account_repository.dart';
 
 part 'bank_account_state.dart';
@@ -23,28 +22,6 @@ class BankAccountCubit extends Cubit<BankAccountState> {
       RoundedLoadingButtonController();
   List<TextEditingController> controllers = [];
   List<String?> validators = [null, null, null, null];
-
-  CityModel? city;
-  String? cityName;
-  int? cityId;
-
-  chooseCity(val) {
-    switch (city == val) {
-      case true:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(SameCityState());
-        break;
-      case false:
-        city = val;
-        cityName = val.name;
-        cityId = val.id;
-        emit(ChangeCityState());
-        break;
-    }
-    emit(ChooseCityState());
-  }
 
   void validate(String val, int index) {
     val.isEmpty
@@ -72,7 +49,6 @@ class BankAccountCubit extends Cubit<BankAccountState> {
   //       "swift_code": swiftCode.text.trim(),
   //       "bank_name": bankName.text.trim(),
   //       "iban": iban.text.trim(),
-  //       "city_id": cityId,
   //       "address": address.text.trim(),
   //     };
   //     bankAccountRepository
@@ -100,7 +76,6 @@ class BankAccountCubit extends Cubit<BankAccountState> {
           "bank_name": bankName.text.trim(),
           "iban": iban.text.trim(),
           'type': 'bank',
-          "city_id": cityId,
           "address": address.text.trim(),
         };
 
@@ -127,7 +102,6 @@ class BankAccountCubit extends Cubit<BankAccountState> {
           'wallet_name': walletName.text.trim(),
           'wallet_number': walletNumber.text.trim(),
           'address': address.text.trim(),
-          'city_id': cityId,
         };
 
         bankAccountRepository

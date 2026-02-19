@@ -9,4 +9,14 @@ abstract class LiveState extends Equatable {
 
 class LiveInitial extends LiveState {}
 
+class EnterLiveLoadingState extends LiveState {}
+
 class EnterLiveState extends LiveState {}
+
+class EnterLiveErrorState extends LiveState {
+  final String message;
+  const EnterLiveErrorState(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

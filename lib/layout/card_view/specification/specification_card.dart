@@ -99,7 +99,7 @@ class _SpecificationCardState extends State<SpecificationCard>
       widget.onTap!();
     } else {
       Get.to(
-            () => SpecificationScreen(
+        () => SpecificationScreen(
           title: widget.specializationsModel.name!,
           id: widget.specializationsModel.id,
         ),
@@ -129,7 +129,8 @@ class _SpecificationCardState extends State<SpecificationCard>
     final cardWidth = (screenWidth - 80.w) / 2;
 
     return Container(
-      margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
+      margin:
+          widget.margin ?? EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
       child: Semantics(
         label: 'Specialization: ${widget.specializationsModel.name}',
         hint: 'Tap to view details',
@@ -144,7 +145,7 @@ class _SpecificationCardState extends State<SpecificationCard>
                 color: Colors.transparent,
                 elevation: _isHovered ? _elevationAnimation.value : 2.0,
                 borderRadius: BorderRadius.circular(12.r),
-                shadowColor: theme.shadowColor.withValues(alpha:0.1),
+                shadowColor: theme.shadowColor.withValues(alpha: 0.1),
                 child: InkWell(
                   onTap: _handleTap,
                   onTapDown: _handleTapDown,
@@ -153,8 +154,8 @@ class _SpecificationCardState extends State<SpecificationCard>
                   onHover: _handleHover,
                   onFocusChange: _handleFocusChange,
                   borderRadius: BorderRadius.circular(12.r),
-                  splashColor: theme.primaryColor.withValues(alpha:0.1),
-                  highlightColor: theme.primaryColor.withValues(alpha:0.05),
+                  splashColor: theme.primaryColor.withValues(alpha: 0.1),
+                  highlightColor: theme.primaryColor.withValues(alpha: 0.05),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     height: 88.h,
@@ -173,24 +174,18 @@ class _SpecificationCardState extends State<SpecificationCard>
 
   BoxDecoration _buildCardDecoration(ThemeData theme) {
     return BoxDecoration(
-      color: widget.isEnabled ? courseTypeColor : courseTypeColor.withValues(alpha:0.5),
+      color: widget.isEnabled
+          ? courseTypeColor
+          : courseTypeColor.withValues(alpha: 0.5),
       borderRadius: BorderRadius.circular(12.r),
       border: Border.all(
         color: _isFocused
-            ? theme.primaryColor.withValues(alpha:0.8)
+            ? theme.primaryColor.withValues(alpha: 0.8)
             : _isHovered
-            ? theme.primaryColor.withValues(alpha:0.3)
-            : textfieldColor.withValues(alpha:0.3),
+                ? theme.primaryColor.withValues(alpha: 0.3)
+                : textfieldColor.withValues(alpha: 0.3),
         width: _isFocused ? 2.0 : 1.0,
       ),
-      gradient: _isHovered ? LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          courseTypeColor,
-          courseTypeColor.withValues(alpha:0.95),
-        ],
-      ) : null,
     );
   }
 
@@ -305,7 +300,7 @@ class _SpecificationCardState extends State<SpecificationCard>
             style: TextStyles.hintStyle.copyWith(
               color: widget.isEnabled
                   ? (_isHovered ? Colors.black87 : grey)
-                  : grey.withValues(alpha:0.5),
+                  : grey.withValues(alpha: 0.5),
               fontSize: 13.sp,
               fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w500,
               height: 1.3,
@@ -452,7 +447,6 @@ class SpecializationGrid extends StatelessWidget {
     );
   }
 }
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';

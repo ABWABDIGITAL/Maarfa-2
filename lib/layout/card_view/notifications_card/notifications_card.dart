@@ -1,92 +1,3 @@
-// import 'package:easy_localization/easy_localization.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:get/get.dart';
-// import '../../../models/common/notifications/notification_model.dart';
-// import '../../../res/value/color/color.dart';
-// import '../../../res/value/style/textstyles.dart';
-// import '../../../widget/buttons/master/master_button.dart';
-// import '../../../widget/space/space.dart';
-// import '../../activity/provider_screens/requests_sent/requests_sent_screen.dart';
-// import '../../activity/user_screens/request/course_pay/pay_screen.dart';
-//
-// class NotificationsCard extends StatelessWidget {
-//   final NotificationModel data;
-//   const NotificationsCard({super.key, required this.data});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           data.text ?? "",
-//           style: TextStyles.subTitleStyle.copyWith(color: txtColor),
-//         ),
-//         Space(
-//           boxHeight: 10.h,
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.end,
-//           children: [
-//             Text(
-//               textAlign: TextAlign.center,
-//               data.createdAt.toString(),
-//               style: TextStyles.contentStyle.copyWith(color: timeColor),
-//             ),
-//           ],
-//         ),
-//         Space(
-//           boxHeight: 5.h,
-//         ),
-//         data.type == "YourRequestWasAccepted.Course" ||
-//                 data.type == "YourRequestWasAccepted.Lesson"
-//             ? SizedBox(
-//                 height: 60.h,
-//                 width: 200.w,
-//                 child: MasterButton(
-//                   buttonText: tr("go_to_pay"),
-//                   buttonColor: mainColor,
-//                   borderColor: mainColor,
-//                   onPressed: () => Get.to(() => PayScreen(
-//                         id: data.objectId,
-//                         type: data.type == "YourRequestWasAccepted.Course"
-//                             ? "course"
-//                             : "lesson",
-//                       )),
-//                 ),
-//               )
-//             : data.type == "YouHaveNewRequest.Course" ||
-//                     data.type == "YouHaveNewRequest.Lesson"
-//                 ? SizedBox(
-//                     height: 60.h,
-//                     width: 200.w,
-//                     child: MasterButton(
-//                       buttonText: tr("go_to_request"),
-//                       buttonColor: mainColor,
-//                       borderColor: mainColor,
-//                       onPressed: () => Get.to(() => RequestsSentScreen(
-//                             id: data.objectId,
-//                             type: data.type == "YouHaveNewRequest.Course"
-//                                 ? "course"
-//                                 : "lesson",
-//                           )),
-//                     ),
-//                   )
-//                 : const SizedBox(),
-//         data.type == "YourRequestWasAccepted.Course" ||
-//                 data.type == "YourRequestWasAccepted.Lesson" ||
-//                 data.type == "YouHaveNewRequest.Course" ||
-//                 data.type == "YouHaveNewRequest.Lesson"
-//             ? const Space(
-//                 boxHeight: 10,
-//               )
-//             : const SizedBox(),
-//         const Divider()
-//       ],
-//     );
-//   }
-// }
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -95,577 +6,274 @@ import 'package:get/get.dart';
 import '../../../model/common/notifications/notification_model.dart';
 import '../../../res/value/color/color.dart';
 import '../../../res/value/style/textstyles.dart';
-import '../../../widget/buttons/master/master_button.dart';
-import '../../../widget/space/space.dart';
 import '../../activity/provider_screens/requests_sent/requests_sent_screen.dart';
 import '../../activity/user_screens/request/course_pay/pay_screen.dart';
 
 class NotificationsCard extends StatelessWidget {
   final NotificationModel data;
   final bool? isInProvider;
+  final bool isRead;
 
-  const NotificationsCard(
-      {super.key, required this.data, this.isInProvider = false});
+  const NotificationsCard({
+    super.key,
+    required this.data,
+    this.isInProvider = false,
+    this.isRead = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      margin: EdgeInsets.symmetric(horizontal: 18.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey.withValues(alpha: 0.1),
-          width: 1,
-        ),
+        color: isRead ? Colors.white : const Color(0xFFFFF8F0),
+        borderRadius: BorderRadius.circular(14.r),
+        border: _buildDirectionalBorder(context),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
+        padding: EdgeInsets.all(14.w),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with notification icon and timestamp
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Notification type icon
-                Container(
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    color: _getNotificationColor().withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    _getNotificationIcon(),
-                    color: _getNotificationColor(),
-                    size: 20.sp,
-                  ),
-                ),
-                Space(boxWidth: 12.w),
-                // Notification content
-                Expanded(
-                  child: Column(
+            // Icon container
+            Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: BoxDecoration(
+                color: _iconBgColor(),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Icon(
+                _icon(),
+                color: _iconColor(),
+                size: 18.sp,
+              ),
+            ),
+            SizedBox(width: 12.w),
+
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title row
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Notification title
-                      Text(
-                        _getNotificationTitle(),
-                        style: TextStyles.subTitleStyle.copyWith(
-                          color: txtColor,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: Text(
+                          _title(),
+                          style: TextStyle(
+                            fontFamily: 'Shamel',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF272727),
+                            height: 1.3,
+                          ),
                         ),
                       ),
-                      Space(boxHeight: 4.h),
-                      // Notification message
+                      SizedBox(width: 8.w),
                       Text(
-                        data.title ?? "",
-                        style: TextStyles.contentStyle.copyWith(
-                          color: txtColor.withValues(alpha: 0.8),
-                          height: 1.4,
-                        ),
-                      ),
-                      Space(boxHeight: 4.h),
-
-                      Divider(
-                        color: Colors.grey.withValues(alpha: 0.1),
-                        thickness: 1,
-                      ),
-                      Space(boxHeight: 4.h),
-
-                      // Notification message
-                      Text(
-                        data.text ?? "",
-                        style: TextStyles.contentStyle.copyWith(
-                          color: txtColor.withValues(alpha: 0.8),
-                          height: 1.4,
+                        _relativeTime(),
+                        style: TextStyle(
+                          fontFamily: 'Shamel',
+                          fontSize: 11.sp,
+                          color: const Color(0xFF707070),
                         ),
                       ),
                     ],
                   ),
-                ),
-                // Timestamp
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+
+                  if ((data.title ?? '').isNotEmpty) ...[
+                    SizedBox(height: 3.h),
                     Text(
-                      _formatTimestamp(data.createdAt),
-                      style: TextStyles.contentStyle.copyWith(
-                        color: timeColor,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                    Space(boxHeight: 2.h),
-                    // Status indicator
-                    Container(
-                      width: 8.w,
-                      height: 8.h,
-                      decoration: BoxDecoration(
-                        color: _getStatusColor(),
-                        shape: BoxShape.circle,
+                      data.title!,
+                      style: TextStyle(
+                        fontFamily: 'Shamel',
+                        fontSize: 13.sp,
+                        color: const Color(0xFF707070),
+                        height: 1.4,
                       ),
                     ),
                   ],
-                ),
-              ],
-            ),
 
-            Space(boxHeight: 16.h),
-
-            // Divider
-            // Divider(
-            //   color: Colors.grey.withValues(alpha: 0.1),
-            //   thickness: 1,
-            // ),
-
-            // Space(boxHeight: 16.h),
-
-            // Notification Accept or Decline Button
-            // if (_isCustomLessonRequest()) ...[
-            //   Row(
-            //     children: [
-            //       // Accept Button
-            //       Expanded(
-            //         child: MasterButton(
-            //           buttonText: tr("accept"),
-            //           buttonColor: _getNotificationColor(),
-            //           borderColor: _getNotificationColor(),
-            //           onPressed: _acceptRequest,
-            //         ),
-            //       ),
-            //       Space(boxWidth: 12.w),
-            //       // Decline Button
-            //       Expanded(
-            //         child: MasterButton(
-            //           buttonText: tr("decline"),
-            //           buttonColor: Colors.red[500],
-            //           borderColor: Colors.red[500],
-            //           onPressed: _declineRequest,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ],
-
-            // Action button (if applicable)
-            if (_hasAction()) ...[
-              Space(boxHeight: 16.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 48.h,
-                      child: MasterButton(
-                        buttonText: _getButtonText(),
-                        buttonColor: _getNotificationColor(),
-                        borderColor: _getNotificationColor(),
-                        onPressed: _getButtonAction(),
+                  if ((data.text ?? '').isNotEmpty) ...[
+                    SizedBox(height: 3.h),
+                    Text(
+                      data.text!,
+                      style: TextStyle(
+                        fontFamily: 'Shamel',
+                        fontSize: 12.sp,
+                        color: const Color(0xFF707070),
+                        height: 1.4,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Space(boxWidth: 12.w),
-                  // Secondary action button (optional)
-                  if (_isRequestNotification()) ...[
-                    Expanded(
-                      child: SizedBox(
-                        height: 48.h,
-                        // width: 100.w,
-                        child: OutlinedButton(
-                          onPressed: _viewDetails,
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                                color: Colors.grey.withValues(alpha: 0.3)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                          ),
-                          child: Text(
-                            tr("view_details"),
-                            style: TextStyles.contentStyle.copyWith(
-                              color: Colors.grey[600],
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  ],
+
+                  if (_hasAction()) ...[
+                    SizedBox(height: 10.h),
+                    _actionButton(),
                   ],
                 ],
               ),
-            ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Helper methods for better organization and maintainability
+  // ── helpers ──────────────────────────────────────────────────
 
-  IconData _getNotificationIcon() {
+  Border _buildDirectionalBorder(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.RTL;
+    final accentSide = BorderSide(
+      color: isRead ? const Color(0xFFE8E8E8) : mainColor,
+      width: isRead ? 1 : 3,
+    );
+    const plainSide = BorderSide(color: Color(0xFFE8E8E8), width: 1);
+    return Border(
+      left: isRtl ? plainSide : accentSide,
+      right: isRtl ? accentSide : plainSide,
+      top: plainSide,
+      bottom: plainSide,
+    );
+  }
+
+  IconData _icon() {
     switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-        return Icons.school; // Course icon
-      case "YourRequestWasAccepted.Lesson":
-        return Icons.book; // Lesson icon
-      case "YouHaveNewRequest.Course":
-        return Icons.school_outlined; // New course request
-      case "YouHaveNewRequest.Lesson":
-        return Icons.book_outlined; // New lesson request
+      case 'YourRequestWasAccepted.Course':
+        return Icons.school_rounded;
+      case 'YourRequestWasAccepted.Lesson':
+        return Icons.menu_book_rounded;
+      case 'YouHaveNewRequest.Course':
+        return Icons.assignment_rounded;
+      case 'YouHaveNewRequest.Lesson':
+        return Icons.edit_note_rounded;
       default:
-        return Icons.notifications;
+        return Icons.notifications_rounded;
     }
   }
 
-  Color _getNotificationColor() {
+  Color _iconBgColor() {
     switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-      case "YourRequestWasAccepted.Lesson":
-        return mainColor; // Changed from Colors.green to mainColor
-      case "YouHaveNewRequest.Course":
-      case "YouHaveNewRequest.Lesson":
+      case 'YourRequestWasAccepted.Course':
+      case 'YourRequestWasAccepted.Lesson':
+        return const Color(0xFFD1FAE5);
+      case 'YouHaveNewRequest.Course':
+      case 'YouHaveNewRequest.Lesson':
+        return const Color(0xFFFFF4EB);
+      default:
+        return const Color(0xFFEEF2FF);
+    }
+  }
+
+  Color _iconColor() {
+    switch (data.type) {
+      case 'YourRequestWasAccepted.Course':
+      case 'YourRequestWasAccepted.Lesson':
+        return const Color(0xFF065F46);
+      case 'YouHaveNewRequest.Course':
+      case 'YouHaveNewRequest.Lesson':
         return mainColor;
       default:
-        return mainColor; // Changed from Colors.blue to mainColor
+        return const Color(0xFF3F2571);
     }
   }
 
-  Color _getStatusColor() {
-    // You can implement read/unread status here
-    // For now, using notification color with reduced opacity
-    return _getNotificationColor().withValues(alpha: 0.6);
-  }
-
-  String _getNotificationTitle() {
+  String _title() {
     switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-        return tr("course_request_accepted");
-      case "YourRequestWasAccepted.Lesson":
-        return tr("lesson_request_accepted");
-      case "YouHaveNewRequest.Course":
-        return tr("new_course_request");
-      case "YouHaveNewRequest.Lesson":
-        return tr("new_lesson_request");
+      case 'YourRequestWasAccepted.Course':
+        return tr('course_request_accepted');
+      case 'YourRequestWasAccepted.Lesson':
+        return tr('lesson_request_accepted');
+      case 'YouHaveNewRequest.Course':
+        return tr('new_course_request');
+      case 'YouHaveNewRequest.Lesson':
+        return tr('new_lesson_request');
       default:
-        return tr("notification");
+        return tr('notification');
     }
   }
 
-  String _getButtonText() {
+  bool _hasAction() => [
+        'YourRequestWasAccepted.Course',
+        'YourRequestWasAccepted.Lesson',
+        'YouHaveNewRequest.Course',
+        'YouHaveNewRequest.Lesson',
+      ].contains(data.type);
+
+  String _actionLabel() {
     switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-      case "YourRequestWasAccepted.Lesson":
-        return tr("proceed_to_payment");
-      case "YouHaveNewRequest.Course":
-      case "YouHaveNewRequest.Lesson":
-        return tr("view_request");
+      case 'YourRequestWasAccepted.Course':
+      case 'YourRequestWasAccepted.Lesson':
+        return tr('proceed_to_payment');
       default:
-        return tr("view");
+        return tr('view_request');
     }
   }
 
-  VoidCallback? _getButtonAction() {
+  VoidCallback _actionTap() {
+    final rawId = data.objectId;
+    final id = rawId is int ? rawId : int.tryParse(rawId.toString()) ?? 0;
     switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-      case "YourRequestWasAccepted.Lesson":
-        return () => Get.to(() => PayScreen(
-              id: data.objectId is int
-                  ? data.objectId
-                  : int.parse(data.objectId),
-              type: data.type == "YourRequestWasAccepted.Course"
-                  ? "course"
-                  : "lesson",
-            ));
-      case "YouHaveNewRequest.Course":
-      case "YouHaveNewRequest.Lesson":
-        return () => Get.to(() => RequestsSentScreen(
-              id: data.objectId is int
-                  ? data.objectId
-                  : int.parse(data.objectId),
-              type:
-                  data.type == "YouHaveNewRequest.Course" ? "course" : "lesson",
-            ));
+      case 'YourRequestWasAccepted.Course':
+        return () => Get.to(() => PayScreen(id: id, type: 'course'));
+      case 'YourRequestWasAccepted.Lesson':
+        return () => Get.to(() => PayScreen(id: id, type: 'lesson'));
+      case 'YouHaveNewRequest.Course':
+        return () => Get.to(() => RequestsSentScreen(id: id, type: 'course'));
+      case 'YouHaveNewRequest.Lesson':
+        return () => Get.to(() => RequestsSentScreen(id: id, type: 'lesson'));
       default:
-        return null;
+        return () {};
     }
   }
 
-  bool _hasAction() {
-    return [
-      "YourRequestWasAccepted.Course",
-      "YourRequestWasAccepted.Lesson",
-      "YouHaveNewRequest.Course",
-      "YouHaveNewRequest.Lesson"
-    ].contains(data.type);
-  }
-
-  bool _isRequestNotification() {
-    return data.type?.contains("Request") ?? false;
-  }
-
-  String _formatTimestamp(String? timestamp) {
-    if (timestamp == null || timestamp.isEmpty) return "";
-
-    try {
-      final dateTime = DateTime.parse(timestamp);
-      final now = DateTime.now();
-      final difference = now.difference(dateTime);
-
-      if (difference.inMinutes < 1) {
-        return tr("just_now");
-      } else if (difference.inHours < 1) {
-        return tr("minutes_ago", args: [difference.inMinutes.toString()]);
-      } else if (difference.inDays < 1) {
-        return tr("hours_ago", args: [difference.inHours.toString()]);
-      } else if (difference.inDays < 7) {
-        return tr("days_ago", args: [difference.inDays.toString()]);
-      } else {
-        return DateFormat('MMM dd, yyyy').format(dateTime);
-      }
-    } catch (e) {
-      // If parsing fails, return the original string
-      return timestamp;
-    }
-  }
-
-  void _viewDetails() {
-    // Show detailed notification information in a bottom sheet or dialog
-    Get.bottomSheet(
-      Container(
-        padding: EdgeInsets.all(20.w),
+  Widget _actionButton() {
+    final isPayment = data.type?.contains('Accepted') ?? false;
+    return GestureDetector(
+      onTap: _actionTap(),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.r),
-            topRight: Radius.circular(20.r),
-          ),
+          color: isPayment ? const Color(0xFF065F46) : mainColor,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-            ),
-            Space(boxHeight: 20.h),
-
-            // Title
-            Row(
-              children: [
-                Icon(
-                  _getNotificationIcon(),
-                  color: _getNotificationColor(),
-                  size: 24.sp,
-                ),
-                Space(boxWidth: 12.w),
-                Expanded(
-                  child: Text(
-                    _getNotificationTitle(),
-                    style: TextStyles.subTitleStyle.copyWith(
-                      color: txtColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Space(boxHeight: 16.h),
-
-            // Message content
-            Text(
-              tr("message"),
-              style: TextStyles.contentStyle.copyWith(
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Space(boxHeight: 8.h),
-            Text(
-              data.text ?? "",
-              style: TextStyles.contentStyle.copyWith(
-                color: txtColor,
-                height: 1.5,
-              ),
-            ),
-            Space(boxHeight: 16.h),
-
-            // Notification details
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-              ),
-              child: Column(
-                children: [
-                  _buildDetailRow(
-                      tr("notification_type"), _getNotificationTypeDisplay()),
-                  if (data.objectId != null) ...[
-                    Space(boxHeight: 8.h),
-                    _buildDetailRow(
-                        tr("reference_id"), data.objectId!.toString()),
-                  ],
-                  Space(boxHeight: 8.h),
-                  _buildDetailRow(
-                      tr("received_at"), _formatTimestamp(data.createdAt)),
-                ],
-              ),
-            ),
-            Space(boxHeight: 20.h),
-
-            // Action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Get.back(),
-                    style: OutlinedButton.styleFrom(
-                      side:
-                          BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
-                    child: Text(
-                      tr("close"),
-                      style: TextStyles.contentStyle.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ),
-                ),
-                if (_hasAction()) ...[
-                  Space(boxWidth: 12.w),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                        _getButtonAction()?.call();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _getNotificationColor(),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                      ),
-                      child: Text(
-                        _getButtonText(),
-                        style: TextStyles.contentStyle.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            Space(boxHeight: 20.h),
-          ],
+        child: Text(
+          _actionLabel(),
+          style: TextStyle(
+            fontFamily: 'Shamel',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
         ),
       ),
-      isScrollControlled: true,
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100.w,
-          child: Text(
-            label,
-            style: TextStyles.contentStyle.copyWith(
-              color: Colors.grey[600],
-              fontSize: 12.sp,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyles.contentStyle.copyWith(
-              color: txtColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _getNotificationTypeDisplay() {
-    switch (data.type) {
-      case "YourRequestWasAccepted.Course":
-        return tr("accepted_course_request");
-      case "YourRequestWasAccepted.Lesson":
-        return tr("accepted_lesson_request");
-      case "YouHaveNewRequest.Course":
-        return tr("incoming_course_request");
-      case "YouHaveNewRequest.Lesson":
-        return tr("incoming_lesson_request");
-      default:
-        return tr("general_notification");
+  String _relativeTime() {
+    final raw = data.createdAt;
+    if (raw == null || raw.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(raw);
+      final diff = DateTime.now().difference(dt);
+      if (diff.inMinutes < 1) return tr('just_now');
+      if (diff.inHours < 1) {
+        return tr('minutes_ago', args: [diff.inMinutes.toString()]);
+      }
+      if (diff.inDays < 1) {
+        return tr('hours_ago', args: [diff.inHours.toString()]);
+      }
+      if (diff.inDays < 7) {
+        return tr('days_ago', args: [diff.inDays.toString()]);
+      }
+      return DateFormat('MMM d').format(dt);
+    } catch (_) {
+      return raw;
     }
-  }
-
-  bool _isCustomLessonRequest() {
-    // Check if this is a custom lesson request notification
-    return data.type == "YouHaveNewRequest.Lesson" && isInProvider == true;
-  }
-
-  void _acceptRequest() {
-    // Handle accept request logic here
-    // print("Accepting lesson request with ID: ${data.objectId}");
-
-    // You can add your API call here to accept the request
-    // Example:
-    // NotificationService.acceptLessonRequest(data.objectId);
-
-    // Show success message
-    Get.snackbar(
-      tr("success"),
-      tr("request_accepted_successfully"),
-      backgroundColor: Colors.green[100],
-      colorText: Colors.green[800],
-      snackPosition: SnackPosition.TOP,
-    );
-  }
-
-  void _declineRequest() {
-    // Handle decline request logic here
-    // print("Declining lesson request with ID: ${data.objectId}");
-
-    // You can add your API call here to decline the request
-    // Example:
-    // NotificationService.declineLessonRequest(data.objectId);
-
-    // Show decline message
-    Get.snackbar(
-      tr("declined"),
-      tr("request_declined_successfully"),
-      backgroundColor: Colors.red[100],
-      colorText: Colors.red[800],
-      snackPosition: SnackPosition.TOP,
-    );
   }
 }

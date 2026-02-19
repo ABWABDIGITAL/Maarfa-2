@@ -16,19 +16,13 @@ class BankAccountModel {
 
 class BankAccountData {
   BankAccountData(
-      {this.id,
-      this.swiftCode,
-      this.address,
-      this.bankName,
-      this.cityId,
-      this.iban});
+      {this.id, this.swiftCode, this.address, this.bankName, this.iban});
 
   int? id;
   String? swiftCode;
   String? bankName;
   String? address;
   String? iban;
-  int? cityId;
 
   factory BankAccountData.fromJson(Map<String, dynamic> json) =>
       BankAccountData(
@@ -37,7 +31,6 @@ class BankAccountData {
         bankName: json["bank_name"],
         iban: json["iban"],
         address: json["address"],
-        cityId: json["city_id"],
       );
 }
 

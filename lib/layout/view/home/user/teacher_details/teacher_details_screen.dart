@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/bloc/add_request/add_request_cubit.dart';
+import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_teacher_details_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/profissional_booking_bottom_sheet.dart';
 import 'package:my_academy/service/local/share_prefs_service.dart';
+import 'package:my_academy/res/value/color/color.dart';
 import 'package:my_academy/widget/toast/toast.dart';
 
 import '../data/cubit/home_cubit.dart';
@@ -28,10 +30,7 @@ class TeacherDetailsScreen extends StatefulWidget {
 class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     with TickerProviderStateMixin {
   late ScrollController _scrollController;
-  late AnimationController _appBarAnimationController;
   late AnimationController _bookingButtonController;
-  bool _isAppBarExpanded = true;
-
   bool _isSelectionMode = false;
   String? _selectedLesson;
 
@@ -39,23 +38,15 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _appBarAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
     _bookingButtonController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-
-    _scrollController.addListener(_onScroll);
 
     _fetchTeacherDetails();
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        _bookingButtonController.forward();
-      }
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) _bookingButtonController.forward();
     });
   }
 
@@ -66,29 +57,21 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     }
   }
 
-  void _onScroll() {
-    const offset = 200.0;
-    if (_scrollController.offset > offset && _isAppBarExpanded) {
-      setState(() => _isAppBarExpanded = false);
-      _appBarAnimationController.forward();
-    } else if (_scrollController.offset <= offset && !_isAppBarExpanded) {
-      setState(() => _isAppBarExpanded = true);
-      _appBarAnimationController.reverse();
-    }
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
-    _appBarAnimationController.dispose();
     _bookingButtonController.dispose();
     super.dispose();
   }
 
+  // ─────────────────────────────────────────────
+  // Build
+  // ─────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: scaffoldBackgroundColor,
       body: BlocProvider(
         create: (context) => AddRequestCubit(),
         child: BlocBuilder<Home2Cubit, Home2State>(
@@ -112,75 +95,20 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     );
   }
 
+  // ─────────────────────────────────────────────
+  // Loading / Error
+  // ─────────────────────────────────────────────
+
   Widget _buildLoadingScreen() {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
-  Widget _buildErrorScreen(String error) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Center(
+      backgroundColor: scaffoldBackgroundColor,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64.w,
-              color: Colors.red[400],
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'something_went_wrong'.tr(),
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              error,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 24.h),
-            ElevatedButton(
-              onPressed: _fetchTeacherDetails,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                'retry'.tr(),
-                style: TextStyle(fontSize: 16.sp),
+            _buildSimpleAppBar(),
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(color: accentColor),
               ),
             ),
           ],
@@ -188,6 +116,81 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
       ),
     );
   }
+
+  Widget _buildErrorScreen(String error) {
+    return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildSimpleAppBar(),
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.error_outline,
+                            size: 48.w, color: Colors.red.shade400),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        'something_went_wrong'.tr(),
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: primaryText,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        error,
+                        style:
+                            TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 28.h),
+                      _filledButton(
+                        label: 'retry'.tr(),
+                        icon: Icons.refresh,
+                        onTap: _fetchTeacherDetails,
+                        color: accentColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimpleAppBar() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(8.w, 12.h, 8.w, 0),
+      child: Row(
+        children: [
+          _circleIconButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Success Screen
+  // ─────────────────────────────────────────────
 
   Widget _buildSuccessScreen(TeacherDetailsData teacher) {
     return Stack(
@@ -197,242 +200,227 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
           physics: const BouncingScrollPhysics(),
           slivers: [
             _buildSliverAppBar(teacher),
-            SliverToBoxAdapter(child: _buildTeacherInfo(teacher)),
-            SliverToBoxAdapter(child: _buildStatsSection(teacher)),
+            SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+            SliverToBoxAdapter(child: _buildStatsRow(teacher)),
+            SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+            SliverToBoxAdapter(child: _buildInfoCard(teacher)),
+            SliverToBoxAdapter(child: SizedBox(height: 12.h)),
             SliverToBoxAdapter(child: _buildAboutSection(teacher)),
-            SliverToBoxAdapter(child: _buildEducationSection(teacher)),
+            SliverToBoxAdapter(child: SizedBox(height: 12.h)),
             SliverToBoxAdapter(child: _buildLessonsSection(teacher)),
-            SliverToBoxAdapter(child: SizedBox(height: 100.h)),
+            SliverToBoxAdapter(child: SizedBox(height: 110.h)),
           ],
         ),
-        _buildBookingButton(teacher),
+        _buildBookingBar(teacher),
       ],
     );
   }
+
+  // ─────────────────────────────────────────────
+  // Sliver Hero Header
+  // ─────────────────────────────────────────────
 
   Widget _buildSliverAppBar(TeacherDetailsData teacher) {
     final fullName =
         '${teacher.provider?.firstName ?? ''} ${teacher.provider?.lastName ?? ''}'
             .trim();
+    final specialization = teacher.provider?.specializations
+            ?.map((s) => s.name ?? '')
+            .where((n) => n.isNotEmpty)
+            .join(' • ') ??
+        '';
 
     return SliverAppBar(
-      expandedHeight: 300.h,
+      expandedHeight: 290.h,
       floating: false,
       pinned: true,
       elevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: accentColor,
       surfaceTintColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
       leading: Container(
         margin: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.3),
+          color: Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20.w),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Colors.white, size: 18.w),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      // actions: [
-      //   Container(
-      //     margin: EdgeInsets.all(8.w),
-      //     decoration: BoxDecoration(
-      //       color: Colors.black.withValues(alpha: 0.3),
-      //       borderRadius: BorderRadius.circular(12.r),
-      //     ),
-      //     child: IconButton(
-      //       icon: Icon(Icons.description_outlined,
-      //           color: Colors.white, size: 20.w),
-      //       onPressed: () {
-      //         HapticFeedback.lightImpact();
-      //       },
-      //     ),
-      //   ),
-      // ],
       flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        collapseMode: CollapseMode.pin,
+        background: _buildHeaderBackground(teacher, fullName, specialization),
+        title: AnimatedOpacity(
+          opacity: 1,
+          duration: const Duration(milliseconds: 200),
+          child: Text(
+            fullName.isNotEmpty ? fullName : '',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
             ),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 40.h),
-                  Hero(
-                    tag: 'teacher_avatar_${teacher.provider?.id}',
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 4.w),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: teacher.provider?.imagePath != null &&
-                                teacher.provider!.imagePath!.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: teacher.provider!.imagePath!,
-                                width: 120.w,
-                                height: 120.h,
-                                fit: BoxFit.cover,
-                                placeholder: (_, __) =>
-                                    _buildAvatarPlaceholder(),
-                                errorWidget: (_, __, ___) =>
-                                    _buildDefaultAvatar(),
-                              )
-                            : _buildDefaultAvatar(),
-                      ),
+          ),
+        ),
+        titlePadding: EdgeInsets.only(left: 56.w, bottom: 16.h),
+      ),
+    );
+  }
+
+  Widget _buildHeaderBackground(
+      TeacherDetailsData teacher, String fullName, String specialization) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Gradient background
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF3F2571), Color(0xFF5B3E9E)],
+            ),
+          ),
+        ),
+        // Decorative circles
+        Positioned(
+          top: -40,
+          right: -40,
+          child: Container(
+            width: 180.w,
+            height: 180.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.05),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          left: -30,
+          child: Container(
+            width: 120.w,
+            height: 120.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: mainColor.withValues(alpha: 0.15),
+            ),
+          ),
+        ),
+        // Content
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 16.h),
+              // Avatar with ring
+              Hero(
+                tag: 'teacher_avatar_${teacher.provider?.id}',
+                child: Container(
+                  padding: EdgeInsets.all(3.w),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [mainColor, mainColor.withValues(alpha: 0.5)],
                     ),
                   ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    fullName.isNotEmpty ? fullName : 'name_not_available'.tr(),
+                  child: Container(
+                    padding: EdgeInsets.all(3.w),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: accentColor,
+                    ),
+                    child: ClipOval(
+                      child: teacher.provider?.imagePath?.isNotEmpty == true
+                          ? CachedNetworkImage(
+                              imageUrl: teacher.provider!.imagePath!,
+                              width: 100.w,
+                              height: 100.w,
+                              fit: BoxFit.cover,
+                              placeholder: (_, __) => _buildAvatarPlaceholder(),
+                              errorWidget: (_, __, ___) =>
+                                  _buildDefaultAvatar(),
+                            )
+                          : _buildDefaultAvatar(),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 12.h),
+              // Name
+              Text(
+                fullName.isNotEmpty ? fullName : 'name_not_available'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (teacher.provider?.title?.isNotEmpty == true) ...[
+                SizedBox(height: 4.h),
+                Text(
+                  teacher.provider!.title!,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              if (specialization.isNotEmpty) ...[
+                SizedBox(height: 8.h),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 24.w),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
+                  decoration: BoxDecoration(
+                    color: mainColor.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: mainColor.withValues(alpha: 0.4)),
+                  ),
+                  child: Text(
+                    specialization,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w500,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                   ),
-                  if (teacher.provider?.title != null) ...[
-                    SizedBox(height: 8.h),
-                    Text(
-                      teacher.provider!.title!,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                ),
+              ],
+              // Rating row
+              SizedBox(height: 10.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.star_rounded, color: mainColor, size: 16.w),
+                  SizedBox(width: 4.w),
+                  Text(
+                    teacher.provider?.rate?.toStringAsFixed(1) ?? '0.0',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
                     ),
-                  ],
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    '(${teacher.provider?.rateCount ?? 0} ${'ratee'.tr()})',
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: 11.sp,
+                    ),
+                  ),
                 ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTeacherInfo(TeacherDetailsData teacher) {
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.blue[600], size: 24.w),
-              SizedBox(width: 12.w),
-              Text(
-                'teacher_info'.tr(),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          if (teacher.provider?.specializations != null) ...[
-            _buildInfoRow(
-                Icons.school_outlined,
-                'specialization'.tr(),
-                teacher.provider!.specializations!
-                    .map((spec) => spec.name ?? '')
-                    .where((name) => name.isNotEmpty)
-                    .join(', ')),
-            SizedBox(height: 12.h),
-          ],
-          if (teacher.provider?.degree != null) ...[
-            _buildInfoRow(
-                Icons.workspace_premium_outlined,
-                'qualification'.tr(),
-                teacher.provider?.degree ?? 'no_qualification'.tr()),
-            SizedBox(height: 12.h),
-          ],
-          // if (teacher.provider?.phone != null) ...[
-          //   _buildInfoRow(Icons.phone_outlined, 'phoneNumber'.tr(),
-          //       teacher.provider?.phone ?? 'no_phone_number'.tr()),
-          //   SizedBox(height: 12.h),
-          // ],
-          // if (teacher.provider?.email != null) ...[
-          //   _buildInfoRow(Icons.email_outlined, 'emailAddress'.tr(),
-          //       teacher.provider?.email ?? 'no_email'.tr()),
-          // ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, color: Colors.grey[600], size: 20.w),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.w600,
-                ),
               ),
             ],
           ),
@@ -441,126 +429,163 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     );
   }
 
-  Widget _buildStatsSection(TeacherDetailsData teacher) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+  // ─────────────────────────────────────────────
+  // Stats Row
+  // ─────────────────────────────────────────────
+
+  Widget _buildStatsRow(TeacherDetailsData teacher) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
         children: [
-          Expanded(
-              child: _buildStatCard(
-                  'ratee'.tr(),
-                  teacher.provider?.rate?.toStringAsFixed(1) ?? '0.0',
-                  Icons.star,
-                  Colors.amber)),
-          SizedBox(width: 12.w),
-          Expanded(
-              child: _buildStatCard(
-                  'students'.tr(),
-                  '${teacher.provider?.rateCount ?? 0}',
-                  Icons.people,
-                  Colors.blue)),
-          SizedBox(width: 12.w),
-          Expanded(
-              child: _buildStatCard(
-                  'coursess'.tr(),
-                  '${teacher.lessons?.length ?? 0}',
-                  Icons.play_lesson,
-                  Colors.green)),
+          _statChip(
+            icon: Icons.people_alt_rounded,
+            value: '${teacher.provider?.rateCount ?? 0}',
+            label: 'students'.tr(),
+            color: const Color(0xFF4CAF50),
+          ),
+          SizedBox(width: 10.w),
+          _statChip(
+            icon: Icons.play_lesson_rounded,
+            value: '${teacher.lessons?.length ?? 0}',
+            label: 'lessonWW'.tr(),
+            color: const Color(0xFF2196F3),
+          ),
+          SizedBox(width: 10.w),
+          _statChip(
+            icon: Icons.workspace_premium_rounded,
+            value: teacher.provider?.degree?.split(' ').first ?? '–',
+            label: 'qualification'.tr(),
+            color: mainColor,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatCard(
-      String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+  Widget _statChip({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 10.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 18.w, color: color),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: primaryText,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              label,
+              style: TextStyle(fontSize: 10.sp, color: Colors.grey[500]),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Info Card
+  // ─────────────────────────────────────────────
+
+  Widget _buildInfoCard(TeacherDetailsData teacher) {
+    final specs = teacher.provider?.specializations
+        ?.map((s) => s.name ?? '')
+        .where((n) => n.isNotEmpty)
+        .toList();
+
+    return _sectionCard(
+      title: 'teacher_info'.tr(),
+      icon: Icons.info_outline_rounded,
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+          if (specs != null && specs.isNotEmpty) ...[
+            _infoTile(
+              icon: Icons.school_rounded,
+              label: 'specialization'.tr(),
+              value: specs.join(', '),
             ),
-            child: Icon(icon, color: color, size: 24.w),
-          ),
-          SizedBox(height: 12.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+            _divider(),
+          ],
+          if (teacher.provider?.degree != null)
+            _infoTile(
+              icon: Icons.workspace_premium_rounded,
+              label: 'qualification'.tr(),
+              value: teacher.provider!.degree!,
             ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildAboutSection(TeacherDetailsData teacher) {
-    final aboutText = teacher.provider?.bio?.isNotEmpty == true
-        ? teacher.provider?.bio!
-        : '${teacher.provider?.title ?? "teacher".tr()} ${'specialized_in'.tr()} ${teacher.provider?.specializations ?? teacher.provider?.degree ?? "education".tr()}';
-
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+  Widget _infoTile({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.person_outline, color: Colors.blue[600], size: 24.w),
-              SizedBox(width: 12.w),
-              Text(
-                'aboutOfTeacher'.tr(),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-            ],
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: accentColor.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(icon, size: 18.w, color: accentColor),
           ),
-          SizedBox(height: 16.h),
-          Text(
-            aboutText ?? '',
-            style: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.grey[700],
-              height: 1.6,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label,
+                    style: TextStyle(
+                        fontSize: 11.sp,
+                        color: Colors.grey[500],
+                        fontWeight: FontWeight.w500)),
+                SizedBox(height: 2.h),
+                Text(value,
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        color: primaryText,
+                        fontWeight: FontWeight.w600)),
+              ],
             ),
           ),
         ],
@@ -568,77 +593,139 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     );
   }
 
-  String _formatLessonTime(String? timeString) {
-    if (timeString == null || timeString.isEmpty) return '';
+  Widget _divider() => Divider(
+        height: 20.h,
+        thickness: 1,
+        color: Colors.grey.shade100,
+      );
 
-    try {
-      final dateTime = DateTime.parse(timeString);
-      final now = DateTime.now();
-      final difference = dateTime.difference(now);
+  // ─────────────────────────────────────────────
+  // About Section
+  // ─────────────────────────────────────────────
 
-      if (difference.inDays > 0) {
-        return '${'during'.tr()} ${difference.inDays} ${'dayss'.tr()}';
-      } else if (difference.inHours > 0) {
-        return '${'during'.tr()} ${difference.inHours} ${'hourss'.tr()}';
-      } else if (difference.inMinutes > 0) {
-        return '${'during'.tr()} ${difference.inMinutes} ${'minutess'.tr()}';
-      } else {
-        return 'now'.tr();
-      }
-    } catch (e) {
-      return timeString;
-    }
+  Widget _buildAboutSection(TeacherDetailsData teacher) {
+    final bio = teacher.provider?.bio?.isNotEmpty == true
+        ? teacher.provider!.bio!
+        : null;
+
+    if (bio == null) return const SizedBox.shrink();
+
+    return _sectionCard(
+      title: 'aboutOfTeacher'.tr(),
+      icon: Icons.person_outline_rounded,
+      child: Text(
+        bio,
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: Colors.grey[700],
+          height: 1.7,
+        ),
+      ),
+    );
   }
 
+  // ─────────────────────────────────────────────
+  // Lessons Section
+  // ─────────────────────────────────────────────
+
+  Widget _buildLessonsSection(TeacherDetailsData teacher) {
+    final lessons = teacher.lessons ?? [];
+
+    return _sectionCard(
+      title: lessons.isEmpty ? 'lessons'.tr() : 'available_lessons'.tr(),
+      icon: Icons.play_lesson_rounded,
+      trailing: lessons.isNotEmpty
+          ? _badge('${lessons.length} ${'lessonWW'.tr()}')
+          : null,
+      child: lessons.isEmpty
+          ? _emptyLessons()
+          : Column(
+              children: [
+                ...lessons.take(3).map((l) => _buildLessonCard(l)),
+                if (lessons.length > 3) ...[
+                  SizedBox(height: 4.h),
+                  _viewAllButton(lessons),
+                ],
+              ],
+            ),
+    );
+  }
+
+  Widget _emptyLessons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 24.h),
+      child: Column(
+        children: [
+          Icon(Icons.school_outlined, size: 48.w, color: Colors.grey[300]),
+          SizedBox(height: 12.h),
+          Text(
+            'no_lessonsً'.tr(),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _viewAllButton(List<Lesson> lessons) {
+    return TextButton(
+      onPressed: () => _showAllLessons(lessons),
+      style: TextButton.styleFrom(
+        foregroundColor: accentColor,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '${'view_all_lessons'.tr()} (${lessons.length})',
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(width: 4.w),
+          Icon(Icons.arrow_forward_ios_rounded, size: 12.w),
+        ],
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Lesson Card
+  // ─────────────────────────────────────────────
+
   Widget _buildLessonCard(Lesson lesson) {
-    final nextTime = _formatLessonTime(lesson.nextTime);
+    final lessonId = lesson.id?.toString() ?? lesson.hashCode.toString();
+    final isSelected = _selectedLesson == lessonId;
     final priceText = lesson.hourPrice != null
         ? '${lesson.hourPrice} ${'SAR/hour'.tr()}'
         : 'pppp'.tr();
-
-    final isSelected = _selectedLesson ==
-        (lesson.id?.toString() ?? lesson.hashCode.toString());
+    final nextTime = _formatLessonTime(lesson.nextTime);
+    final isLive = lesson.isLive == true;
 
     return GestureDetector(
       onTap: _isSelectionMode ? () => _toggleLessonSelection(lesson) : null,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 12.h),
-        padding: EdgeInsets.all(16.w),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: EdgeInsets.only(bottom: 10.h),
+        padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[50] : Colors.grey[50],
-          borderRadius: BorderRadius.circular(16.r),
+          color: isSelected
+              ? accentColor.withValues(alpha: 0.06)
+              : Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: isSelected ? Colors.blue[600]! : Colors.grey[200]!,
-            width: isSelected ? 2.0 : 1.0,
+            color: isSelected ? accentColor : Colors.grey.shade200,
+            width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Title row
             Row(
               children: [
                 if (_isSelectionMode) ...[
-                  Container(
-                    width: 24.w,
-                    height: 24.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSelected ? Colors.blue[600] : Colors.transparent,
-                      border: Border.all(
-                        color:
-                            isSelected ? Colors.blue[600]! : Colors.grey[400]!,
-                        width: 2.0,
-                      ),
-                    ),
-                    child: isSelected
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 16.w,
-                          )
-                        : null,
-                  ),
-                  SizedBox(width: 12.w),
+                  _selectionCircle(isSelected),
+                  SizedBox(width: 10.w),
                 ],
                 Expanded(
                   child: Column(
@@ -648,20 +735,17 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
                         Text(
                           lesson.subject!.name!,
                           style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                            color: primaryText,
                           ),
                         ),
-                      if (lesson.content != null &&
-                          lesson.content!.isNotEmpty) ...[
-                        SizedBox(height: 4.h),
+                      if (lesson.content?.isNotEmpty == true) ...[
+                        SizedBox(height: 3.h),
                         Text(
                           lesson.content!,
                           style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey[600],
-                          ),
+                              fontSize: 12.sp, color: Colors.grey[600]),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -669,907 +753,252 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
                     ],
                   ),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: lesson.isLive == true
-                            ? Colors.red[50]
-                            : Colors.green[50],
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        lesson.isLive == true
-                            ? 'livee'.tr()
-                            : 'registered'.tr(),
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: lesson.isLive == true
-                              ? Colors.red[600]
-                              : Colors.green[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (lesson.rate != null && lesson.rate! > 0) ...[
-                      SizedBox(height: 4.h),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 12.w),
-                          SizedBox(width: 2.w),
-                          Text(
-                            '${lesson.rate}',
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                ),
+                SizedBox(width: 8.w),
+                // Live / Recorded badge
+                _lessonTypeBadge(isLive),
               ],
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 10.h),
+            // Meta row
             Row(
               children: [
                 if (lesson.educationalStage?.name != null) ...[
-                  Icon(Icons.school, color: Colors.blue[600], size: 14.w),
-                  SizedBox(width: 4.w),
+                  Icon(Icons.school_rounded, size: 12.w, color: accentColor),
+                  SizedBox(width: 3.w),
                   Text(
                     lesson.educationalStage!.name!,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 10.w),
                 ],
                 if (nextTime.isNotEmpty) ...[
-                  Icon(Icons.access_time,
-                      color: Colors.orange[600], size: 14.w),
-                  SizedBox(width: 4.w),
+                  Icon(Icons.schedule_rounded,
+                      size: 12.w, color: Colors.orange),
+                  SizedBox(width: 3.w),
                   Text(
                     nextTime,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+                    style:
+                        TextStyle(fontSize: 11.sp, color: Colors.orange[700]),
                   ),
                 ],
                 const Spacer(),
                 Text(
                   priceText,
                   style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.green[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            if (lesson.subscriptions != null && lesson.subscriptions! > 0) ...[
-              SizedBox(height: 8.h),
-              Row(
-                children: [
-                  Icon(Icons.people, color: Colors.grey[500], size: 14.w),
-                  SizedBox(width: 4.w),
-                  Text(
-                    '${lesson.subscriptions} ${'subscriptionss'.tr()}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue[50]!, Colors.cyan[50]!],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(color: Colors.blue[100]!, width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue[100]!.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(6.w),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.blue[600]!, Colors.blue[700]!],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(8.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.blue[600]!.withValues(alpha: 0.3),
-                          blurRadius: 3,
-                          offset: Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.schedule_rounded,
-                      size: 14.w,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          _formatTimeRange(lesson.times?.first),
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            color: Colors.blue[800],
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                        if (_calculateDuration(
-                          lesson.times?.first.startsAt ?? '',
-                          lesson.times?.first.endsAt ?? '',
-                        ).isNotEmpty) ...[
-                          SizedBox(height: 2.h),
-                          Text(
-                            _calculateDuration(
-                              lesson.times?.first.startsAt ?? '',
-                              lesson.times?.first.endsAt ?? '',
-                            ),
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              color: Colors.blue[600],
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _formatTimeRange(LessonTime? time) {
-    if (time == null || time.startsAt == null || time.endsAt == null) {
-      return '';
-    }
-
-    final start = formatTime(context, time.startsAt!);
-    final end = formatTime(context, time.endsAt!);
-
-    return '$start - $end';
-  }
-
-  String formatTime(BuildContext context, String timeString) {
-    try {
-      final time = DateTime.parse('1970-01-01T$timeString');
-      final timeOfDay = TimeOfDay.fromDateTime(time);
-      return timeOfDay.format(context);
-    } catch (e) {
-      return timeString;
-    }
-  }
-
-  Widget _buildTimeDisplay(Lesson lesson) {
-    if (lesson.times == null || lesson.times!.isEmpty) {
-      return SizedBox.shrink();
-    }
-
-    if (lesson.times!.length > 1) {
-      return _buildMultipleTimesDisplay(lesson.times!);
-    }
-
-    return _buildSingleTimeDisplay(lesson.times!.first);
-  }
-
-  Widget _buildSingleTimeDisplay(LessonTime time) {
-    final timeRange = _formatProfessionalTimeRange(time);
-    final dayInfo = _formatDayInfo(time);
-
-    if (timeRange.isEmpty && dayInfo.isEmpty) {
-      return SizedBox.shrink();
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue[50]!, Colors.indigo[50]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue[100]!, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (dayInfo.isNotEmpty) ...[
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[600],
-                    borderRadius: BorderRadius.circular(6.r),
-                  ),
-                  child: Text(
-                    dayInfo,
-                    style: TextStyle(
-                      fontSize: 9.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6.h),
-          ],
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: EdgeInsets.all(4.w),
-                decoration: BoxDecoration(
-                  color: Colors.blue[600],
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.schedule_rounded,
-                  size: 12.w,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: Text(
-                  timeRange.isNotEmpty ? timeRange : 'Time TBD',
-                  style: TextStyle(
                     fontSize: 13.sp,
-                    color: Colors.blue[800],
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMultipleTimesDisplay(List<LessonTime> times) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple[50]!, Colors.indigo[50]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.purple[100]!, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-                decoration: BoxDecoration(
-                  color: Colors.purple[600],
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  'Multiple Sessions',
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: Colors.white,
+                    color: mainColor,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '${times.length} ${'sessions'.tr()}',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: Colors.purple[700],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          ...times.take(2).map((time) => Padding(
-                padding: EdgeInsets.only(bottom: 4.h),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 6.w,
-                      height: 6.w,
-                      decoration: BoxDecoration(
-                        color: Colors.purple[600],
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        _formatCompactTimeRange(time),
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.purple[800],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-          if (times.length > 2) ...[
-            SizedBox(height: 4.h),
-            Text(
-              '+${times.length - 2} ${'more sessions'.tr()}',
-              style: TextStyle(
-                fontSize: 11.sp,
-                color: Colors.purple[600],
-                fontWeight: FontWeight.w600,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  String _formatProfessionalTimeRange(LessonTime? time) {
-    if (time == null || time.startsAt == null || time.endsAt == null) {
-      return '';
-    }
-
-    final start = _formatProfessionalTime(time.startsAt!);
-    final end = _formatProfessionalTime(time.endsAt!);
-    final duration = _calculateDuration(time.startsAt!, time.endsAt!);
-
-    return '$start → $end${duration.isNotEmpty ? ' ($duration)' : ''}';
-  }
-
-  String _formatCompactTimeRange(LessonTime? time) {
-    if (time == null || time.startsAt == null || time.endsAt == null) {
-      return '';
-    }
-
-    final start = _formatProfessionalTime(time.startsAt!);
-    final end = _formatProfessionalTime(time.endsAt!);
-    final dayInfo = _formatDayInfo(time);
-
-    return '${dayInfo.isNotEmpty ? '$dayInfo: ' : ''}$start - $end';
-  }
-
-  String _formatProfessionalTime(String timeString) {
-    try {
-      final time = DateTime.parse('1970-01-01T$timeString');
-      final hour = time.hour;
-      final minute = time.minute;
-
-      if (hour == 0) {
-        return '12:${minute.toString().padLeft(2, '0')} AM';
-      } else if (hour < 12) {
-        return '$hour:${minute.toString().padLeft(2, '0')} AM';
-      } else if (hour == 12) {
-        return '12:${minute.toString().padLeft(2, '0')} PM';
-      } else {
-        return '${hour - 12}:${minute.toString().padLeft(2, '0')} PM';
-      }
-    } catch (e) {
-      return timeString;
-    }
-  }
-
-  String _formatDayInfo(LessonTime? time) {
-    if (time?.startsAt == null) return '';
-
-    try {
-      final dateTime = DateTime.parse(time!.startsAt!);
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final targetDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-
-      final difference = targetDate.difference(today).inDays;
-
-      if (difference == 0) {
-        return 'Today';
-      } else if (difference == 1) {
-        return 'Tomorrow';
-      } else if (difference == -1) {
-        return 'Yesterday';
-      } else if (difference > 1 && difference < 7) {
-        const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        return weekdays[dateTime.weekday - 1];
-      } else {
-        return '${dateTime.day}/${dateTime.month}';
-      }
-    } catch (e) {
-      return '';
-    }
-  }
-
-  String _calculateDuration(String startTime, String endTime) {
-    try {
-      final start = DateTime.parse('1970-01-01T$startTime');
-      final end = DateTime.parse('1970-01-01T$endTime');
-      final duration = end.difference(start);
-
-      final hours = duration.inHours;
-      final minutes = duration.inMinutes % 60;
-
-      if (hours > 0 && minutes > 0) {
-        return '${hours}h ${minutes}m';
-      } else if (hours > 0) {
-        return '${hours}h';
-      } else if (minutes > 0) {
-        return '${minutes}m';
-      }
-
-      return '';
-    } catch (e) {
-      return '';
-    }
-  }
-
-  String _formatDayInfoWithDate(LessonTime? time, DateTime? lessonDate) {
-    if (lessonDate == null) return time?.startsAt ?? '';
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final targetDate =
-        DateTime(lessonDate.year, lessonDate.month, lessonDate.day);
-
-    final difference = targetDate.difference(today).inDays;
-
-    if (difference == 0) {
-      return 'Today';
-    } else if (difference == 1) {
-      return 'Tomorrow';
-    } else if (difference == -1) {
-      return 'Yesterday';
-    } else if (difference > 1 && difference < 7) {
-      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      return weekdays[lessonDate.weekday - 1];
-    } else {
-      return '${lessonDate.day}/${lessonDate.month}';
-    }
-  }
-
-  String _formatTimeInfo(LessonTime? time) {
-    if (time == null) return '';
-
-    String result = '';
-    if (time.startsAt != null) {
-      result += time.startsAt!;
-    }
-    if (time.endsAt != null) {
-      result += time.startsAt != null ? ' - ${time.endsAt!}' : time.endsAt!;
-    }
-    return result;
-  }
-
-  Widget _buildLessonsSection(TeacherDetailsData teacher) {
-    if (teacher.lessons == null || teacher.lessons!.isEmpty) {
-      return Container(
-        margin: EdgeInsets.all(16.w),
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.play_lesson, color: Colors.blue[600], size: 24.w),
-                SizedBox(width: 12.w),
-                Text(
-                  'lessons'.tr(),
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
-            Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.school_outlined,
-                    size: 48.w,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'no_lessonsً'.tr(),
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
+            // Time slots
+            if (lesson.times != null && lesson.times!.isNotEmpty) ...[
+              SizedBox(height: 8.h),
+              _buildLessonTimeChip(lesson.times!),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _selectionCircle(bool isSelected) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 22.w,
+      height: 22.w,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isSelected ? accentColor : Colors.transparent,
+        border: Border.all(
+          color: isSelected ? accentColor : Colors.grey.shade400,
+          width: 2,
+        ),
+      ),
+      child: isSelected
+          ? Icon(Icons.check_rounded, color: Colors.white, size: 14.w)
+          : null,
+    );
+  }
+
+  Widget _lessonTypeBadge(bool isLive) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: isLive ? Colors.red.shade50 : Colors.green.shade50,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 5.w,
+            height: 5.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isLive ? Colors.red.shade600 : Colors.green.shade600,
             ),
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            isLive ? 'livee'.tr() : 'registered'.tr(),
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: isLive ? Colors.red.shade600 : Colors.green.shade700,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLessonTimeChip(List<LessonTime> times) {
+    if (times.isEmpty) return const SizedBox.shrink();
+
+    if (times.length == 1) {
+      final t = times.first;
+      final range = _formatTimeRange(t);
+      if (range.isEmpty) return const SizedBox.shrink();
+
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF0EEF9),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.schedule_rounded, size: 13.w, color: accentColor),
+            SizedBox(width: 6.w),
+            Text(
+              range,
+              style: TextStyle(
+                  fontSize: 12.sp,
+                  color: accentColor,
+                  fontWeight: FontWeight.w600),
+            ),
+            if (_calculateDuration(t.startsAt ?? '', t.endsAt ?? '')
+                .isNotEmpty) ...[
+              SizedBox(width: 6.w),
+              Text(
+                '· ${_calculateDuration(t.startsAt ?? '', t.endsAt ?? '')}',
+                style: TextStyle(fontSize: 10.sp, color: Colors.grey[500]),
+              ),
+            ],
           ],
         ),
       );
     }
 
     return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: const Color(0xFFF0EEF9),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Icon(Icons.play_lesson, color: Colors.blue[600], size: 24.w),
-              SizedBox(width: 12.w),
-              Text(
-                'available_lessons'.tr(),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-              const Spacer(),
-              if (_isSelectionMode && _selectedLesson != null) ...[
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: Colors.green[50],
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Text(
-                    '1 ${'selected'.tr()}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.green[600],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-              ],
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  '${teacher.lessons!.length} ${'lessonWW'.tr()}',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.blue[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+          Icon(Icons.schedule_rounded, size: 13.w, color: accentColor),
+          SizedBox(width: 6.w),
+          Text(
+            '${times.length} ${'sessions'.tr()}',
+            style: TextStyle(
+                fontSize: 12.sp,
+                color: accentColor,
+                fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: 16.h),
-          ...teacher.lessons!.take(3).map((lesson) => _buildLessonCard(lesson)),
-          if (teacher.lessons!.length > 3) ...[
-            SizedBox(height: 12.h),
-            Center(
-              child: TextButton(
-                onPressed: () => _showAllLessons(teacher.lessons!),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue[600],
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${'view_all_lessons'.tr()} (${teacher.lessons!.length})',
-                      style: TextStyle(
-                          fontSize: 14.sp, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 4.w),
-                    Icon(Icons.arrow_forward_ios, size: 14.w),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ],
       ),
     );
   }
+
+  // ─────────────────────────────────────────────
+  // All Lessons Bottom Sheet
+  // ─────────────────────────────────────────────
 
   void _showAllLessons(List<Lesson> lessons) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildAllLessonsBottomSheet(lessons),
+      builder: (context) => _buildAllLessonsSheet(lessons),
     );
   }
 
-  Widget _buildAllLessonsBottomSheet(List<Lesson> lessons) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.r),
-              topRight: Radius.circular(24.r),
+  Widget _buildAllLessonsSheet(List<Lesson> lessons) {
+    return StatefulBuilder(builder: (context, setModalState) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.82,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
+        child: Column(
+          children: [
+            // Handle
+            Container(
+              width: 36.w,
+              height: 4.h,
+              margin: EdgeInsets.only(top: 12.h, bottom: 8.h),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2.r),
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Container(
-                width: 40.w,
-                height: 4.h,
-                margin: EdgeInsets.only(top: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20.w),
-                child: Row(
-                  children: [
-                    Text(
-                      'all_lessons'.tr(),
-                      style: TextStyle(
-                        fontSize: 20.sp,
+            // Header
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              child: Row(
+                children: [
+                  Text(
+                    'all_lessons'.tr(),
+                    style: TextStyle(
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _toggleSelectionMode();
-                        });
-
-                        this.setState(() {});
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 6.h),
-                        decoration: BoxDecoration(
-                          color: _isSelectionMode
-                              ? Colors.green[50]
-                              : Colors.blue[50],
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _isSelectionMode
-                                  ? Icons.check_circle
-                                  : Icons.list_alt,
-                              size: 16.w,
-                              color: _isSelectionMode
-                                  ? Colors.green[600]
-                                  : Colors.blue[600],
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              _isSelectionMode
-                                  ? 'Selection Mode'.tr()
-                                  : 'Select Mode'.tr(),
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: _isSelectionMode
-                                    ? Colors.green[600]
-                                    : Colors.blue[600],
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Container(
+                        color: primaryText),
+                  ),
+                  const Spacer(),
+                  // Selection mode toggle
+                  GestureDetector(
+                    onTap: () {
+                      setModalState(() {});
+                      setState(_toggleSelectionMode);
+                    },
+                    child: Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                       decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        '${lessons.length} ${'lessonWW'.tr()}',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.blue[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_isSelectionMode && _selectedLesson != null) ...[
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20.w),
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: Colors.green[50],
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.green[200]!, width: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            size: 16.w,
-                            color: Colors.green[600],
-                          ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            '1 ${'lesson selected'.tr()}',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.green[700],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedLesson = null;
-                          });
-
-                          this.setState(() {});
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 4.h),
-                          minimumSize: Size.zero,
-                        ),
-                        child: Text(
-                          'Clear'.tr(),
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.red[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 12.h),
-              ],
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  itemCount: lessons.length,
-                  itemBuilder: (context, index) {
-                    return _buildLessonCard(lessons[index]);
-                  },
-                ),
-              ),
-              if (_isSelectionMode && _selectedLesson != null) ...[
-                Container(
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.pop(context);
-
-                        final selectedLessonObj = getSelectedLesson(lessons);
-
-                        if (selectedLessonObj != null) {
-                          final addRequestState =
-                              context.read<AddRequestCubit>();
-
-                          // print('Selected Lesson ID: ${selectedLessonObj.id}');
-                          // print(
-                          //     'Selected Lesson Duration: ${selectedLessonObj.times?.first}');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[600],
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        elevation: 2,
+                        color: _isSelectionMode
+                            ? accentColor.withValues(alpha: 0.1)
+                            : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.check_circle, size: 20.w),
-                          SizedBox(width: 8.w),
+                          Icon(
+                            _isSelectionMode
+                                ? Icons.check_circle_rounded
+                                : Icons.checklist_rounded,
+                            size: 16.w,
+                            color: _isSelectionMode
+                                ? accentColor
+                                : Colors.grey[600],
+                          ),
+                          SizedBox(width: 4.w),
                           Text(
-                            'Book Selected Lesson'.tr(),
+                            _isSelectionMode
+                                ? 'Selection Mode'.tr()
+                                : 'Select Mode'.tr(),
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 12.sp,
+                              color: _isSelectionMode
+                                  ? accentColor
+                                  : Colors.grey[600],
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1577,127 +1006,116 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
                       ),
                     ),
                   ),
-                ),
-              ],
-            ],
+                  SizedBox(width: 8.w),
+                  _badge('${lessons.length}'),
+                ],
+              ),
+            ),
+            // Selection banner
+            if (_isSelectionMode && _selectedLesson != null)
+              _buildSelectionBanner(
+                onClear: () {
+                  setState(() => _selectedLesson = null);
+                  setModalState(() {});
+                },
+              ),
+            // List
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 16.h),
+                itemCount: lessons.length,
+                itemBuilder: (_, i) => _buildLessonCard(lessons[i]),
+              ),
+            ),
+            // Confirm button inside sheet
+            if (_isSelectionMode && _selectedLesson != null)
+              _buildSheetConfirmButton(lessons),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildSelectionBanner({required VoidCallback onClear}) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: Colors.green.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.check_circle_rounded,
+              size: 16.w, color: Colors.green.shade600),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              '1 ${'lesson selected'.tr()}',
+              style: TextStyle(
+                  fontSize: 13.sp,
+                  color: Colors.green.shade700,
+                  fontWeight: FontWeight.w600),
+            ),
           ),
-        );
-      },
+          GestureDetector(
+            onTap: onClear,
+            child: Text(
+              'Clear'.tr(),
+              style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.red.shade500,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildEducationSection(TeacherDetailsData teacher) {
+  Widget _buildSheetConfirmButton(List<Lesson> lessons) {
     return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.07),
+            blurRadius: 12,
+            offset: const Offset(0, -3),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.school_outlined, color: Colors.blue[600], size: 24.w),
-              SizedBox(width: 12.w),
-              Text(
-                'educationAndExperience'.tr(),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-            ],
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            final sel = getSelectedLesson(lessons);
+            if (sel != null) {
+              // Booking logic delegated to parent state
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF065F46),
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 14.h),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14.r)),
+            elevation: 0,
           ),
-          SizedBox(height: 16.h),
-          if (teacher.provider?.degree != null)
-            _buildEducationItem(
-              teacher.provider?.degree ?? '',
-              teacher.provider?.specializations
-                      ?.map((spec) => spec.name ?? '')
-                      .where((name) => name.isNotEmpty)
-                      .join(', ') ??
-                  '',
-              '',
-            ),
-        ],
+          child: Text('Book Selected Lesson'.tr(),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700)),
+        ),
       ),
     );
   }
 
-  Widget _buildEducationItem(String institution, String degree, String period) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 12.w,
-          height: 12.h,
-          decoration: BoxDecoration(
-            color: Colors.blue[600],
-            shape: BoxShape.circle,
-          ),
-        ),
-        SizedBox(width: 16.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                institution,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-              if (degree.isNotEmpty) ...[
-                SizedBox(height: 4.h),
-                Text(
-                  degree,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  // ─────────────────────────────────────────────
+  // Booking Bar
+  // ─────────────────────────────────────────────
 
-  void _toggleSelectionMode() {
-    setState(() {
-      _isSelectionMode = !_isSelectionMode;
-      if (!_isSelectionMode) {
-        _selectedLesson = null;
-      }
-    });
-  }
-
-  void _toggleLessonSelection(Lesson lesson) {
-    setState(() {
-      final lessonId = lesson.id?.toString() ?? lesson.hashCode.toString();
-
-      if (_selectedLesson == lessonId) {
-        _selectedLesson = null;
-      } else {
-        _selectedLesson = lessonId;
-      }
-    });
-  }
-
-  Widget _buildBookingButton(TeacherDetailsData teacher) {
+  Widget _buildBookingBar(TeacherDetailsData teacher) {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -1711,130 +1129,51 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
           curve: Curves.easeOutCubic,
         )),
         child: Container(
-          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+          padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 28.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.r),
-              topRight: Radius.circular(24.r),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withValues(alpha: 0.10),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
             ],
           ),
           child: Row(
-            spacing: 14.w,
             children: [
+              // Select / Book lesson button
               Expanded(
                 child: BlocBuilder<AddRequestCubit, AddRequestState>(
-                  builder: (context, state) {
-                    final addRequestState = context.read<AddRequestCubit>();
-
-                    return ElevatedButton(
-                      onPressed: _selectedLesson != null
-                          ? () {
-                              // print('Selected lesson: $_selectedLesson');
-
-                              final selectedLessonObj =
-                                  getSelectedLesson(teacher.lessons ?? []);
-
-                              if (selectedLessonObj != null) {
-                                List<int> lessonTimes = [];
-                                if (selectedLessonObj.times != null &&
-                                    selectedLessonObj.times!.isNotEmpty) {
-                                  lessonTimes = selectedLessonObj.times!
-                                      .where((time) => time.id != null)
-                                      .map((time) => time.id!)
-                                      .toList();
-                                }
-
-                                if (lessonTimes.isEmpty) {
-                                  showToast(
-                                      "This lesson has no available time slots".tr());
-                                  return;
-                                }
-
-                                addRequestState.times.clear();
-                                addRequestState.times.addAll(lessonTimes);
-
-                                // print('Lesson Times: $lessonTimes');
-
-                                addRequestState.addRequestLesson(
-                                  lessonId: int.parse(_selectedLesson!),
-                                  // type: 'lesson',
-                                  times: lessonTimes,
-                                  context: context,
-                                );
-                              }
-                            }
-                          : () => _toggleSelectionMode(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _selectedLesson != null
-                            ? Colors.green[600]
-                            : Colors.blue[600],
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                              _selectedLesson != null
-                                  ? Icons.check_circle
-                                  : Icons.list_alt,
-                              size: 20.w),
-                          SizedBox(width: 8.w),
-                          Text(
-                            _selectedLesson != null
-                                ? 'Book Selected Lesson'.tr()
-                                : _isSelectionMode
-                                    ? 'Cancel Selection'.tr()
-                                    : 'Select Lesson'.tr(),
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                  builder: (context, _) {
+                    final hasSelection = _selectedLesson != null;
+                    return _filledButton(
+                      label: hasSelection
+                          ? 'Book Selected Lesson'.tr()
+                          : _isSelectionMode
+                              ? 'Cancel Selection'.tr()
+                              : 'Select Lesson'.tr(),
+                      icon: hasSelection
+                          ? Icons.check_circle_rounded
+                          : Icons.checklist_rounded,
+                      color:
+                          hasSelection ? const Color(0xFF065F46) : accentColor,
+                      onTap: hasSelection
+                          ? () => _bookSelectedLesson(teacher, context)
+                          : _toggleSelectionMode,
                     );
                   },
                 ),
               ),
+              SizedBox(width: 12.w),
+              // Book new date button
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () => _onBookNowPressed(teacher),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[600],
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.calendar_today, size: 20.w),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'bookANewDate'.tr(),
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                child: _filledButton(
+                  label: 'bookANewDate'.tr(),
+                  icon: Icons.calendar_today_rounded,
+                  color: mainColor,
+                  onTap: () => _onBookNowPressed(teacher),
                 ),
               ),
             ],
@@ -1844,114 +1183,408 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
     );
   }
 
-  void _showTimeSelectionDialog(
-      Lesson lesson, AddRequestCubit addRequestState) {
-    if (lesson.times == null || lesson.times!.isEmpty) {
-      showToast("This lesson has no available time slots");
+  void _bookSelectedLesson(TeacherDetailsData teacher, BuildContext ctx) {
+    final selectedLessonObj = getSelectedLesson(teacher.lessons ?? []);
+    if (selectedLessonObj == null) return;
+
+    final lessonTimes = selectedLessonObj.times
+            ?.where((t) => t.id != null)
+            .map((t) => t.id!)
+            .toList() ??
+        [];
+
+    if (lessonTimes.isEmpty) {
+      showToast('This lesson has no available time slots'.tr());
       return;
     }
 
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text('Select Time Slots'.tr()),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: lesson.times!.length,
-              itemBuilder: (context, index) {
-                final time = lesson.times![index];
-                final isSelected = addRequestState.times.contains(time.id);
+    final cubit = ctx.read<AddRequestCubit>();
+    cubit.times
+      ..clear()
+      ..addAll(lessonTimes);
 
-                return CheckboxListTile(
-                  title: Text(
-                    '${time.startsAt} - ${time.endsAt}',
-                    style: TextStyle(fontSize: 14.sp),
-                  ),
-                  value: isSelected,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        if (!addRequestState.times.contains(time.id)) {
-                          addRequestState.times.add(time.id!);
-                        }
-                      } else {
-                        addRequestState.times.remove(time.id);
-                      }
-                    });
-                  },
-                );
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-            ),
-            BlocListener<AddRequestCubit, AddRequestState>(
-              listener: (context, state) {
-                if (state is ValidateRequest) {}
-              },
-              child: ElevatedButton(
-                onPressed: addRequestState.times.isNotEmpty
-                    ? () {
-                        Navigator.pop(context);
-                        addRequestState.addRequestLesson(
-                          lessonId: lesson.id!,
-                        times: addRequestState.times,
-                          context: context,
-                        );
-                      }
-                    : null,
-                child: Text('Book Lesson'.tr()),
-              ),
-            ),
-          ],
-        ),
+    cubit.addRequestLesson(
+      lessonId: int.parse(_selectedLesson!),
+      times: lessonTimes,
+      context: ctx,
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Booking Handling
+  // ─────────────────────────────────────────────
+
+  void _onBookNowPressed(TeacherDetailsData teacher) {
+    final lessons = teacher.lessons ?? [];
+    if (lessons.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('no_lessonsً'.tr())),
+      );
+      return;
+    }
+
+    // Use the selected lesson if one is picked, otherwise fall back to first
+    final selectedObj =
+        _selectedLesson != null ? getSelectedLesson(lessons) : null;
+    final lesson = selectedObj ?? lessons.first;
+    final lessonId = lesson.id;
+
+    if (lessonId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('booking_failed'.tr())),
+      );
+      return;
+    }
+
+    HapticFeedback.mediumImpact();
+    ProfessionalBookingBottomSheet.show(
+      context,
+      teacher,
+      lessonId,
+      (date, timeFrom, timeTo, type) => _handleBookingWithConsumer(
+        teacher: teacher,
+        lessonId: lessonId,
+        date: formatDateToEnglish(date),
+        timeFrom: timeFrom,
+        timeTo: timeTo,
+        type: type,
       ),
     );
   }
 
+  Future<void> _handleBookingWithConsumer({
+    required TeacherDetailsData teacher,
+    required int lessonId,
+    required String date,
+    required String timeFrom,
+    required String timeTo,
+    required String type,
+  }) async {
+    final prefService = SharedPrefService();
+    final clientId = await prefService.getValue('user_id');
+    if (!mounted) return;
+
+    final cubit = context.read<Home2Cubit>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => BlocProvider.value(
+        value: cubit,
+        child: BlocConsumer<Home2Cubit, Home2State>(
+          listener: (ctx, state) {
+            if (state is MakeBookSuccessState) {
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('booking_success'.tr()),
+                  backgroundColor: Colors.green,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const MainScreen()),
+                (route) => false,
+              );
+            } else if (state is MakeBookErrorState) {
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage.isNotEmpty
+                      ? state.errorMessage
+                      : 'booking_failed'.tr()),
+                  backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 4),
+                ),
+              );
+            }
+          },
+          builder: (ctx, state) => AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(color: accentColor),
+                SizedBox(height: 16.h),
+                Text('Processing your booking...'.tr(),
+                    style: TextStyle(fontSize: 14.sp)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    cubit.makeBook(
+      clientId: clientId,
+      lessonId: lessonId,
+      date: date,
+      timeFrom: timeFrom,
+      timeTo: timeTo,
+      type: type,
+      teacherId: teacher.provider!.id.toString(),
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────
+
+  Widget _sectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+    Widget? trailing,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(18.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.045),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(7.w),
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(icon, size: 18.w, color: accentColor),
+              ),
+              SizedBox(width: 10.w),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: primaryText,
+                ),
+              ),
+              if (trailing != null) ...[
+                const Spacer(),
+                trailing,
+              ],
+            ],
+          ),
+          SizedBox(height: 16.h),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _badge(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+            fontSize: 11.sp, color: accentColor, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+
+  Widget _filledButton({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+        elevation: 0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 18.w),
+          SizedBox(width: 6.w),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _circleIconButton(
+      {required IconData icon, required VoidCallback onTap}) {
+    return Container(
+      margin: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.07),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 20.w, color: primaryText),
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // Avatar widgets
+  // ─────────────────────────────────────────────
+
   Widget _buildAvatarPlaceholder() {
     return Container(
-      width: 120.w,
-      height: 120.h,
+      width: 100.w,
+      height: 100.w,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white24,
       ),
       child: const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 2,
-        ),
+        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
       ),
     );
   }
 
   Widget _buildDefaultAvatar() {
     return Container(
-      width: 120.w,
-      height: 120.h,
+      width: 100.w,
+      height: 100.w,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white24,
       ),
-      child: Icon(
-        Icons.person_outline,
-        size: 60.w,
-        color: Colors.white,
-      ),
+      child:
+          Icon(Icons.person_outline_rounded, size: 50.w, color: Colors.white),
     );
   }
 
-  String convertArabicToEnglishNumbers(String input) {
-    const arabic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-    const english = ['0','1','2','3','4','5','6','7','8','9'];
+  // ─────────────────────────────────────────────
+  // Selection helpers
+  // ─────────────────────────────────────────────
 
+  void _toggleSelectionMode() {
+    setState(() {
+      _isSelectionMode = !_isSelectionMode;
+      if (!_isSelectionMode) _selectedLesson = null;
+    });
+  }
+
+  void _toggleLessonSelection(Lesson lesson) {
+    final id = lesson.id?.toString() ?? lesson.hashCode.toString();
+    setState(() {
+      _selectedLesson = _selectedLesson == id ? null : id;
+    });
+  }
+
+  Lesson? getSelectedLesson(List<Lesson> lessons) {
+    if (_selectedLesson == null) return null;
+    try {
+      return lessons.firstWhere(
+        (l) => (l.id?.toString() ?? l.hashCode.toString()) == _selectedLesson,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // Time formatting helpers
+  // ─────────────────────────────────────────────
+
+  String _formatLessonTime(String? timeString) {
+    if (timeString == null || timeString.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(timeString);
+      final diff = dt.difference(DateTime.now());
+      if (diff.inDays > 0) {
+        return '${'during'.tr()} ${diff.inDays} ${'dayss'.tr()}';
+      }
+      if (diff.inHours > 0) {
+        return '${'during'.tr()} ${diff.inHours} ${'hourss'.tr()}';
+      }
+      if (diff.inMinutes > 0) {
+        return '${'during'.tr()} ${diff.inMinutes} ${'minutess'.tr()}';
+      }
+      return 'now'.tr();
+    } catch (_) {
+      return timeString;
+    }
+  }
+
+  String _formatTimeRange(LessonTime? time) {
+    if (time == null || time.startsAt == null || time.endsAt == null) {
+      return '';
+    }
+    final start = _formatProfessionalTime(time.startsAt!);
+    final end = _formatProfessionalTime(time.endsAt!);
+    return '$start – $end';
+  }
+
+  String _formatProfessionalTime(String t) {
+    try {
+      final dt = DateTime.parse('1970-01-01T$t');
+      final h = dt.hour;
+      final m = dt.minute.toString().padLeft(2, '0');
+      if (h == 0) return '12:$m AM';
+      if (h < 12) return '$h:$m AM';
+      if (h == 12) return '12:$m PM';
+      return '${h - 12}:$m PM';
+    } catch (_) {
+      return t;
+    }
+  }
+
+  String _calculateDuration(String startTime, String endTime) {
+    try {
+      final s = DateTime.parse('1970-01-01T$startTime');
+      final e = DateTime.parse('1970-01-01T$endTime');
+      final d = e.difference(s);
+      final h = d.inHours;
+      final m = d.inMinutes % 60;
+      if (h > 0 && m > 0) return '${h}h ${m}m';
+      if (h > 0) return '${h}h';
+      if (m > 0) return '${m}m';
+      return '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  String convertArabicToEnglishNumbers(String input) {
+    const arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     for (int i = 0; i < arabic.length; i++) {
       input = input.replaceAll(arabic[i], english[i]);
     }
@@ -1959,114 +1592,8 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
   }
 
   String formatDateToEnglish(String date) {
-    String englishDate = convertArabicToEnglishNumbers(date);
-    DateTime parsed = DateTime.parse(englishDate);
-    return "${parsed.year}-${parsed.month.toString().padLeft(2, '0')}-${parsed.day.toString().padLeft(2, '0')}";
-  }
-
-  void _onBookNowPressed(TeacherDetailsData teacher) {
-    HapticFeedback.mediumImpact();
-
-    ProfessionalBookingBottomSheet.show(
-      context,
-      teacher,
-      (String date, String timeFrom, String timeTo, String type) {
-        _handleBookingWithConsumer(
-          teacher: teacher,
-          date: formatDateToEnglish(date),
-          timeFrom: timeFrom,
-          timeTo: timeTo,
-          type: type,
-        );
-      },
-    );
-  }
-
-  Future<void> _handleBookingWithConsumer({
-    required TeacherDetailsData teacher,
-    required String date,
-    required String timeFrom,
-    required String timeTo,
-    required String type,
-  }) async {
-    SharedPrefService prefService = SharedPrefService();
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => BlocConsumer<Home2Cubit, Home2State>(
-        listener: (context, state) {
-          if (state is MakeBookSuccessState) {
-            // Navigator.of(dialogContext).pop();
-            //
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(
-            //     content: Text('Booking confirmed successfully!'),
-            //     backgroundColor: Colors.green,
-            //     duration: Duration(seconds: 2),
-            //   ),
-            // );
-            //
-            // Future.delayed(Duration(milliseconds: 500), () {});
-          } else if (state is MakeBookErrorState) {
-            Navigator.of(dialogContext).pop();
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    state.errorMessage ?? 'Booking failed. Please try again.'.tr()),
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Processing your booking...'.tr()),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-
-    final cubit = context.read<Home2Cubit>();
-    cubit.makeBook(
-      clientId: await prefService.getValue('user_id'),
-      date: formatDateToEnglish(date),
-      timeFrom: timeFrom,
-      timeTo: timeTo,
-      type: type,
-      teacherId: teacher.provider!.id.toString(),
-      context: context,
-    );
-    // print('-------------');
-    // print(date);
-    // print('-------------');
-
-    // print("date is ======== $date");
-    // print("timeFrom $timeFrom");
-    // print("timeTo $timeTo");
-    // print("type $type");
-    // print("teacherId ${teacher.provider!.id.toString()}");
-  }
-
-  Lesson? getSelectedLesson(List<Lesson> lessons) {
-    if (_selectedLesson == null) return null;
-
-    try {
-      return lessons.firstWhere((lesson) =>
-          (lesson.id?.toString() ?? lesson.hashCode.toString()) ==
-          _selectedLesson);
-    } catch (e) {
-      return null;
-    }
+    final d = DateTime.parse(convertArabicToEnglishNumbers(date));
+    return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
   }
 }
 
