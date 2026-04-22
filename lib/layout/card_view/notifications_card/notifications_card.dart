@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 
 import '../../../model/common/notifications/notification_model.dart';
 import '../../../res/value/color/color.dart';
-import '../../../res/value/style/textstyles.dart';
 import '../../activity/provider_screens/requests_sent/requests_sent_screen.dart';
 import '../../activity/user_screens/request/course_pay/pay_screen.dart';
 

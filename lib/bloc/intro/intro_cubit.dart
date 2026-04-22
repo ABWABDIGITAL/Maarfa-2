@@ -2,9 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:my_academy/model/guest/guest_data_model.dart';
-import 'package:my_academy/service/network/dio/dio_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../layout/activity/role/role_screen.dart';
 import '../../res/drawable/image/images.dart';

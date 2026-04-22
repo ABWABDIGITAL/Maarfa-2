@@ -205,6 +205,53 @@ class CourseFilterView extends StatelessWidget {
                 Space(
                   boxHeight: 20.h,
                 ),
+                type != 'course'
+                    ? Container()
+                    : ExpansionTile(
+                        title: Text(
+                          tr("course_category"),
+                          style: TextStyles.agreeStyle.copyWith(color: black),
+                        ),
+                        children: [
+                          Wrap(
+                            children: List.generate(
+                              bloc.courseCategoryList.length,
+                              (index) => Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 2.h, horizontal: 3.w),
+                                child: ChoiceChip(
+                                  backgroundColor: white,
+                                  shape: RoundedRectangleBorder(
+                                      side: const BorderSide(
+                                          color: textfieldColor),
+                                      borderRadius:
+                                          BorderRadius.circular(25.r)),
+                                  onSelected: (t) {
+                                    bloc.changeSelectedCategory(index);
+                                  },
+                                  selectedColor: mainColor,
+                                  label: Text(
+                                      bloc.courseCategoryList[index],
+                                      style: TextStyles.unselectedStyle
+                                          .copyWith(
+                                              color:
+                                                  bloc.selectedCategoryIndex ==
+                                                          index
+                                                      ? white
+                                                      : grey)),
+                                  selected:
+                                      bloc.selectedCategoryIndex == index
+                                          ? true
+                                          : false,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                Space(
+                  boxHeight: 20.h,
+                ),
                 ExpansionTile(
                   title: Text(
                     tr("price"),

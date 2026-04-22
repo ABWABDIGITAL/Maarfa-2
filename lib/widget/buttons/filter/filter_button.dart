@@ -30,7 +30,8 @@ class FilterButton extends StatelessWidget {
           width: 55.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: filterGradient,
+            // gradient: filterGradient,
+            color: primaryText,
           ),
           child: isAdd
               ? Icon(Icons.add, color: white, size: 30.h)

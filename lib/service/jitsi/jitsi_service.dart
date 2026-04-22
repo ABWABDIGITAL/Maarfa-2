@@ -57,10 +57,7 @@ class JitsiService {
             conferenceTerminated: (url, error) async {
               await DioService().get('/provider/time/end/$timeId');
               onConferenceEnded?.call();
-            },
-            participantLeft: (participantId) async => await DioService().get(
-                  '/provider/time/end/$timeId',
-                )),
+            }),
       );
     } catch (error) {
       debugPrint("error: $error");

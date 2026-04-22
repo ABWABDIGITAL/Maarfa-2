@@ -1,11 +1,7 @@
-import 'package:dartz/dartz.dart' show Either;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:my_academy/failure.dart';
-import 'package:my_academy/layout/activity/provider_screens/main/main_screen.dart';
-import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/service/local/share_prefs_service.dart';
 
 import '../../../../bloc/auth/user/auth_cubit.dart';

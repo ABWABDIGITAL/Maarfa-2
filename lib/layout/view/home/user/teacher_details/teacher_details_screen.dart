@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:my_academy/bloc/add_request/add_request_cubit.dart';
 import 'package:my_academy/layout/activity/user_screens/main/main_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_teacher_details_data_model.dart';
@@ -12,6 +13,7 @@ import 'package:my_academy/service/local/share_prefs_service.dart';
 import 'package:my_academy/res/value/color/color.dart';
 import 'package:my_academy/widget/toast/toast.dart';
 
+import '../../../../activity/user_screens/packages/packages_list_screen.dart';
 import '../data/cubit/home_cubit.dart';
 import '../data/cubit/home_state.dart';
 
@@ -208,6 +210,8 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
             SliverToBoxAdapter(child: _buildAboutSection(teacher)),
             SliverToBoxAdapter(child: SizedBox(height: 12.h)),
             SliverToBoxAdapter(child: _buildLessonsSection(teacher)),
+            SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+            SliverToBoxAdapter(child: _buildPackagesButton(teacher)),
             SliverToBoxAdapter(child: SizedBox(height: 110.h)),
           ],
         ),
@@ -648,6 +652,73 @@ class _TeacherDetailsScreenState extends State<TeacherDetailsScreen>
                 ],
               ],
             ),
+    );
+  }
+
+  Widget _buildPackagesButton(TeacherDetailsData teacher) {
+    final providerId = teacher.provider?.id;
+    if (providerId == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: InkWell(
+        onTap: () => Get.to(() => PackagesListScreen(providerId: providerId)),
+        borderRadius: BorderRadius.circular(14.r),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 18.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(color: mainColor.withValues(alpha: 0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.045),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.w),
+                decoration: BoxDecoration(
+                  color: mainColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Icon(Icons.inventory_2_rounded,
+                    size: 22.w, color: mainColor),
+              ),
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tr("monthly_packages"),
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700,
+                        color: primaryText,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      tr("view_packages_desc"),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios_rounded,
+                  size: 16.w, color: Colors.grey[400]),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

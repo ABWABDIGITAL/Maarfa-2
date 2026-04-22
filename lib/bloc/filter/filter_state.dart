@@ -41,3 +41,5 @@ class ChangeStatusState extends FilterState {}
 class DifferentStatusState extends FilterState {}
 
 class ClearFilterState extends FilterState {}
+
+class ChangeCategoryState extends FilterState {}

@@ -81,7 +81,7 @@ class DioService {
 
       if (200 <= response.statusCode! && response.statusCode! <= 299) {
         if (response.data['success'] == true) {
-          prefs.setInt("notification", response.data['notificationsCount']);
+          prefs.setInt("notification", response.data['notificationsCount'] ?? 0);
           return Right(response.data);
         } else {
           return Left(response.data["messages"].toString());
@@ -91,7 +91,7 @@ class DioService {
       debugPrint(e.response.toString());
 
       /// problem here when no internet "null check here"
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
       } else if (e.type == dio.DioExceptionType.connectionTimeout ||
@@ -151,7 +151,7 @@ class DioService {
 
       if (200 <= response.statusCode! && response.statusCode! <= 299) {
         if (response.data['success'] == true) {
-          prefs.setInt("notification", response.data['notificationsCount']);
+          prefs.setInt("notification", response.data['notificationsCount'] ?? 0);
           return Right(response.data);
         } else {
           return Left(response.data["messages"]?.toString() ?? "Unknown error");
@@ -163,7 +163,7 @@ class DioService {
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
         return Left("Unauthorized");
@@ -235,7 +235,7 @@ class DioService {
 
       final msg = e.response?.data["messages"]?.toString();
 
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
         return Left("Unauthorized");
       }
@@ -298,20 +298,22 @@ class DioService {
       // ✅ هنا نرجع دايمًا قيمة، سواء نجاح أو خطأ
       if (200 <= response.statusCode! && response.statusCode! <= 299) {
         if (response.data['success'] == true) {
-          prefs.setInt("notification", response.data['notificationsCount']);
+          final notifCount = response.data['notificationsCount'];
+          if (notifCount != null) {
+            prefs.setInt("notification", notifCount);
+          }
           return Right(response.data);
         } else {
           return Left(response.data["messages"].toString());
         }
       } else {
-        // 🔥 ده اللي كان ناقصك: لما يكون statusCode مش 200
         return Left(
             response.data["messages"]?.toString() ?? tr("unexpected_error"));
       }
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
       }
@@ -323,7 +325,7 @@ class DioService {
       }
 
       if (e.response?.data != null) {
-        return Left(e.response!.data["messages"].toString());
+        return Left(e.response!.data["messages"]?.toString() ?? tr("connection_error"));
       }
 
       if (e.error is SocketException) {
@@ -383,7 +385,7 @@ class DioService {
         }
 
         if (response.data['success'] == true) {
-          prefs.setInt("notification", response.data['notificationsCount']);
+          prefs.setInt("notification", response.data['notificationsCount'] ?? 0);
           return Right(response.data);
         } else {
           final errorMessage =
@@ -400,7 +402,7 @@ class DioService {
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
       }
@@ -476,7 +478,7 @@ class DioService {
       }
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
       } else if (e.type == dio.DioExceptionType.connectionTimeout ||
@@ -1002,7 +1004,7 @@ class DioService2 {
     } on dio.DioException catch (e) {
       debugPrint(e.response.toString());
 
-      if (e.response?.data["status"] == 401) {
+      if (e.response?.data != null && e.response?.data["status"] == 401) {
         debugPrint('response error 401');
         BlocProvider.of<AuthProviderCubit>(Get.context!).signout();
       } else if (e.type == dio.DioExceptionType.connectionTimeout ||

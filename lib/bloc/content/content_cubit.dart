@@ -87,6 +87,11 @@ class ContentCubit extends Cubit<ContentState> {
   int? typeValue = 1;
   int? systemValue = 1;
 
+  // Course category: 'regular', 'qudrat', 'tahsili'
+  String courseCategory = 'regular';
+  // Course sub type: null, 'foundation', 'training'
+  String? courseSubType;
+
   List<String> daysEn = [
     "Sunday",
     "Monday",
@@ -114,6 +119,8 @@ class ContentCubit extends Cubit<ContentState> {
     isShow = false;
     typeValue = 1;
     systemValue = 1;
+    courseCategory = 'regular';
+    courseSubType = null;
     name.clear();
     location.clear();
     description.clear();
@@ -375,6 +382,20 @@ class ContentCubit extends Cubit<ContentState> {
         break;
     }
     emit(SetCourseSystemState());
+  }
+
+  setCourseCategory(String category) {
+    courseCategory = category;
+    // Reset sub type when switching category
+    if (category == 'regular') {
+      courseSubType = null;
+    }
+    emit(SetCourseCategoryState());
+  }
+
+  setCourseSubType(String? subType) {
+    courseSubType = subType;
+    emit(SetCourseSubTypeState());
   }
 
   addSkills() {
@@ -663,6 +684,8 @@ class ContentCubit extends Cubit<ContentState> {
         Map<String, dynamic> data = {
           "name": name.text.trim(),
           "type": typeValue,
+          "course_category": courseCategory,
+          if (courseSubType != null) "course_sub_type": courseSubType,
           "location": "$lat, $lng",
           "educational_stage_id": gradeId,
           "educational_year_id": yearId,

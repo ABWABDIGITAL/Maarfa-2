@@ -20,6 +20,7 @@ import '../../../../res/value/color/color.dart';
 import '../../../../res/value/style/textstyles.dart';
 import '../../../../widget/alert/delete/delete_alert.dart';
 import '../../../activity/provider_screens/account_data/account_data_screen.dart';
+import '../../../activity/provider_screens/video_courses/my_video_courses_screen.dart';
 import '../../../activity/provider_screens/account_data/edit_account_information_screen.dart';
 import '../../../activity/provider_screens/bank_account/bank_account_screen.dart';
 import '../../../activity/static/about_us/about_us_screen.dart';
@@ -146,6 +147,14 @@ class _ProfileViewState extends State<ProfileView> {
                         child: PollScreen(),
                       )),
                     ),
+                    if (!widget.isUser)
+                      _MenuItem(
+                        icon: Icons.video_library_outlined,
+                        iconColor: accentColor,
+                        title: tr('my_video_courses'),
+                        onTap: () =>
+                            Get.to(() => const MyVideoCoursesScreen()),
+                      ),
                     _MenuItem(
                       icon: Icons.language_rounded,
                       iconColor: accentColor,

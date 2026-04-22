@@ -18,6 +18,7 @@ class RateCubit extends Cubit<RateState> {
   RoundedLoadingButtonController loadController =
       RoundedLoadingButtonController();
   double? rating;
+  double? sessionQualityRating;
   void validate(
     String val,
   ) {
@@ -42,6 +43,8 @@ class RateCubit extends Cubit<RateState> {
       "type": type,
       "id": id,
       "rate": rating ?? 0,
+      "session_quality": sessionQualityRating ?? 0,
+      "review": rateController.text,
     };
     RateRepository().addRate(data).whenComplete(() {
       Get.back();

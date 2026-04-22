@@ -19,6 +19,7 @@ import '../../../../widget/row_title/master_row.dart';
 import '../../../../widget/space/space.dart';
 import '../../../activity/provider_screens/all_course/all_courses_screen.dart';
 import '../../../activity/provider_screens/all_subject/all_subject_screen.dart';
+import '../../../activity/provider_screens/packages/my_packages_screen.dart';
 import '../../../activity/static/empty_screens/empty_screens.dart';
 import '../../../card_view/provider_course/provider_course_card.dart';
 import '../../../card_view/provider_current/provider_current_card.dart';
@@ -181,6 +182,13 @@ class _ProviderHomeViewState extends State<ProviderHomeView> {
                                 ),
                               ),
                             ),
+                      const Space(boxHeight: 10),
+                      MasterRow(
+                        title: tr("monthly_packages"),
+                        subTitle: tr("view_all"),
+                        onTap: () =>
+                            Get.to(() => const MyPackagesScreen()),
+                      ),
                       const Space(boxHeight: 50),
                     ],
                   ),

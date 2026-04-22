@@ -79,9 +79,7 @@ class SubscribeCubit extends Cubit<SubscribeState> {
   getSubscriptionCourseHome() {
     subscriptionsRepository.subscriptionsCourse(status).then((value) {
       subscribeCourseModel = value.data;
-      if (subscribeCourseModel?.liveSubscription?.isNotEmpty ?? false) {
-        emit(CourseSubscriptionLoadedState(data: value.data));
-      }
+      emit(CourseSubscriptionLoadedState(data: value.data));
     });
   }
 
@@ -103,9 +101,7 @@ class SubscribeCubit extends Cubit<SubscribeState> {
   getSubscriptionLessonHome() {
     subscriptionsRepository.subscriptionsSubject(status).then((value) {
       subscribeSubjectModel = value.data;
-      if (subscribeSubjectModel?.liveSubscription.isNotEmpty ?? false) {
-        emit(SubjectSubscriptionLoadedState(data: value.data));
-      }
+      emit(SubjectSubscriptionLoadedState(data: value.data));
     });
   }
 

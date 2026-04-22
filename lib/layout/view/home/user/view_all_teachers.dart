@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
-import 'package:my_academy/layout/view/home/user/view_all_specialization_screen.dart';
 
 import 'package:my_academy/res/value/color/color.dart';
 

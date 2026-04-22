@@ -31,33 +31,31 @@ class RateAlert extends StatelessWidget {
             builder: (context, state) {
               final bloc = RateCubit.get(context);
               return Dialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r)),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topCenter,
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r)),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
                     children: [
-                      SizedBox(
-                        height: 270.h,
-                        // width: 400.w,
+                      SingleChildScrollView(
+                        
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(10.w, 50.h, 10.w, 10.h),
+                          padding:
+                              EdgeInsets.fromLTRB(10.w, 50.h, 10.w, 10.h),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10.h),
+                              // Teacher Rating Section
                               Text(
-                                tr("rate_provider"),
+                                tr("rate_teacher"),
                                 style: TextStyles.headerStyle.copyWith(
                                     color: black,
-                                    fontSize: 20.sp,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 8.h),
                               RatingBar(
                                 initialRating: 0,
                                 direction: Axis.horizontal,
@@ -70,14 +68,82 @@ class RateAlert extends StatelessWidget {
                                   empty: Image.asset(starWhite),
                                 ),
                                 itemPadding:
-                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                    EdgeInsets.symmetric(horizontal: 4.w),
                                 onRatingUpdate: (rating) {
                                   bloc.rating = rating;
                                 },
                               ),
-                              const Space(
-                                boxHeight: 20,
+                              SizedBox(height: 20.h),
+                              // Session Quality Rating Section
+                              Text(
+                                tr("session_quality"),
+                                style: TextStyles.headerStyle.copyWith(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w600),
                               ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                tr("rate_session_quality"),
+                                style: TextStyles.hintStyle.copyWith(
+                                    fontSize: 12.sp),
+                              ),
+                              SizedBox(height: 8.h),
+                              RatingBar(
+                                initialRating: 0,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemSize: 25.sp,
+                                ratingWidget: RatingWidget(
+                                  full: Image.asset(starOrange),
+                                  half: Image.asset(starOrange),
+                                  empty: Image.asset(starWhite),
+                                ),
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.w),
+                                onRatingUpdate: (rating) {
+                                  bloc.sessionQualityRating = rating;
+                                },
+                              ),
+                              SizedBox(height: 20.h),
+                              // Review Text Field
+                              SidePadding(
+                                sidePadding: 10,
+                                child: TextField(
+                                  controller: bloc.rateController,
+                                  maxLines: 3,
+                                  decoration: InputDecoration(
+                                    hintText: tr("write_rate"),
+                                    hintStyle: TextStyles.hintStyle
+                                        .copyWith(fontSize: 12.sp),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12.w, vertical: 10.h),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(8.r),
+                                      borderSide:
+                                          const BorderSide(color: borderColor),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(8.r),
+                                      borderSide:
+                                          const BorderSide(color: borderColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(8.r),
+                                      borderSide:
+                                          const BorderSide(color: mainColor),
+                                    ),
+                                  ),
+                                  style: TextStyles.hintStyle
+                                      .copyWith(fontSize: 13.sp, color: black),
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
+                              // Buttons
                               SidePadding(
                                 sidePadding: 30,
                                 child: Row(
@@ -88,7 +154,7 @@ class RateAlert extends StatelessWidget {
                                       child: MasterLoadButton(
                                         buttonHeight: 55,
                                         onPressed: () => bloc.addRate(
-                                          type: 'provider',
+                                          type: type,
                                           id: id,
                                         ),
                                         buttonText: tr("rate"),
@@ -119,6 +185,7 @@ class RateAlert extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 10.h),
                             ],
                           ),
                         ),

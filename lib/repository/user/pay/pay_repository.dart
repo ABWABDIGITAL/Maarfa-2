@@ -78,7 +78,7 @@ class PayRepository {
       // ❌ متشيّكش على null هنا، سيب fold يتصرف
       return response.fold(
             (l) {
-          if (l is DioError) {
+          if (l is DioException) {
             final res = l.response;
             if (res != null && res.data != null) {
               final msg = res.data["messages"] ?? "حدث خطأ غير متوقع";

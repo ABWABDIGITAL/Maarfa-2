@@ -14,16 +14,21 @@ class GroupsCubit extends Cubit<GroupsState> {
   double? lng;
   String? address;
 
-  initAddress(int type, String location) async {
-    if (type == 1) {
-      // offline course
-      List<String> locationDetails = location.split(',');
-      lat = double.parse(locationDetails[0]);
-      lng = double.parse(locationDetails[1]);
-      List<Placemark> placeMark = await placemarkFromCoordinates(lat!, lng!);
-      Placemark place = placeMark[0];
-      address = "${place.locality} , ${place.name} ";
-      emit(InitAddressState());
+  initAddress(int type, String? location) async {
+    if (type == 1 && location != null && location.contains(',')) {
+      try {
+        List<String> locationDetails = location.split(',');
+        lat = double.tryParse(locationDetails[0].trim());
+        lng = double.tryParse(locationDetails[1].trim());
+        if (lat != null && lng != null) {
+          List<Placemark> placeMark = await placemarkFromCoordinates(lat!, lng!);
+          Placemark place = placeMark[0];
+          address = "${place.locality} , ${place.name} ";
+          emit(InitAddressState());
+        }
+      } catch (e) {
+        debugPrint('initAddress error: $e');
+      }
     }
   }
 

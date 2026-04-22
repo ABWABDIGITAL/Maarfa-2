@@ -21,7 +21,6 @@ import 'package:my_academy/bloc/lessons/lessons_cubit.dart';
 import 'package:my_academy/bloc/pay/pay_cubit.dart';
 import 'package:my_academy/bloc/search_bloc/search_bloc.dart';
 import 'package:my_academy/constants.dart';
-import 'package:my_academy/layout/activity/auth/forget/new_password.dart';
 import 'package:my_academy/layout/activity/splash/splash_screen.dart';
 import 'package:my_academy/layout/view/home/user/data/cubit/home_cubit.dart';
 
@@ -85,7 +84,7 @@ void main() async {
 
   final result = await prefService.getBool("has_bank_account");
 
-  result.fold((failure) => print("Error: $failure"), (value) {
+  result.fold((failure) => debugPrint("Error: $failure"), (value) {
     // print("has_bank_account: $value");
     hasBankAccount = value;
     // print("hasBankAccount: $hasBankAccount");

@@ -22,6 +22,7 @@ import '../../../../res/value/style/textstyles.dart';
 import '../../../../widget/bottom_sheet/week_bottom_sheet.dart';
 import '../../../../widget/buttons/master/master_button.dart';
 import '../../../../widget/buttons/master_load/master_load_button.dart';
+import '../../../../widget/course_category/course_category_selector.dart';
 import '../../../../widget/course_type/course_type.dart';
 import '../../../../widget/error/page/error_page.dart';
 import '../../../../widget/loader/loader.dart';
@@ -183,6 +184,26 @@ class _SpecializationViewState extends State<SpecializationView> {
               const Space(
                 boxHeight: 15,
               ),
+              CourseCategorySelector(
+                selectedCategory: bloc.courseCategory,
+                onCategoryChanged: (val) => bloc.setCourseCategory(val),
+              ),
+              const Space(
+                boxHeight: 15,
+              ),
+              if (bloc.courseCategory == 'qudrat' ||
+                  bloc.courseCategory == 'tahsili')
+                Column(
+                  children: [
+                    CourseSubTypeSelector(
+                      selectedSubType: bloc.courseSubType,
+                      onSubTypeChanged: (val) => bloc.setCourseSubType(val),
+                    ),
+                    const Space(
+                      boxHeight: 15,
+                    ),
+                  ],
+                ),
               MasterTextField(
                 controller: bloc.name,
                 hintText: tr("course_name"),

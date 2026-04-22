@@ -104,6 +104,23 @@ class FilterCubit extends Cubit<FilterState> {
   List<String> statusList = [tr("offline"), tr("online")];
   int? status;
 
+  // Course category filter
+  List<String> courseCategoryList = [tr("regular"), tr("qudrat"), tr("tahsili")];
+  List<String> courseCategoryValues = ['regular', 'qudrat', 'tahsili'];
+  int? selectedCategoryIndex;
+
+  changeSelectedCategory(int index) {
+    if (selectedCategoryIndex == index) {
+      selectedCategoryIndex = null;
+      filtersMap.remove('course_category');
+      emit(ChangeCategoryState());
+    } else {
+      selectedCategoryIndex = index;
+      getFiltersMap('course_category', courseCategoryValues[index]);
+      emit(ChangeCategoryState());
+    }
+  }
+
   changeSelectedStatus(int index) {
     if (status == index) {
       emit(SameStatusState());
@@ -126,6 +143,7 @@ class FilterCubit extends Cubit<FilterState> {
     selectedSpecialization = null;
     status = null;
     selectedRate = null;
+    selectedCategoryIndex = null;
     minPrice.clear();
     maxPrice.clear();
     filtersMap.clear();

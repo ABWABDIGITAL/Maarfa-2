@@ -8,6 +8,8 @@ class CourseModel {
       this.content,
       this.specialization,
       this.type,
+      this.courseCategory,
+      this.courseSubType,
       this.attendanceType,
       this.maxStudents,
       this.location,
@@ -29,6 +31,8 @@ class CourseModel {
   String? content;
   SpecializationsModel? specialization;
   int? type;
+  String? courseCategory;
+  String? courseSubType;
   int? attendanceType;
   int? maxStudents;
   int? requestsCount;
@@ -52,6 +56,8 @@ class CourseModel {
         content: json["content"],
         specialization: SpecializationsModel.fromJson(json["specialization"]),
         type: json["type"],
+        courseCategory: json["course_category"],
+        courseSubType: json["course_sub_type"],
         attendanceType: json["attendance_type"],
         maxStudents: json["max_students"],
         location: json["location"],

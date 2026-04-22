@@ -238,7 +238,7 @@ class _PollScreenState extends State<PollScreen> {
                               });
                             },
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   ),

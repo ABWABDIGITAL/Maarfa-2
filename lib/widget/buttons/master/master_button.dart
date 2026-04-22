@@ -41,9 +41,11 @@ class MasterButton extends StatelessWidget {
       child: SizedBox(
         height: buttonHeight == null ? 70.h : buttonHeight!.h,
         child: TextButton(
+          
           onPressed: onPressed,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           style: ElevatedButton.styleFrom(
+            
             foregroundColor: white, backgroundColor: buttonColor ?? mainColor,
             shape: RoundedRectangleBorder(
               side: BorderSide(color: borderColor ?? mainColor),

@@ -20,7 +20,7 @@ const Color enterColor = Color(0xffFF6B8F);
 const Color questionColor = Color(0xffD34B6C);
 const Color profileBackgroundColor = Color(0xffE67625);
 const Color borderColor = Color(0xffE8E8E8);
-const Color profileColor = Color(0xffE2EDFD);
+const Color profileColor = Color.fromARGB(255, 222, 222, 222);
 
 const Color filterColor = Color(0xff82ABE9);
 const Color textfieldColor = Color(0xffBFCCD6);

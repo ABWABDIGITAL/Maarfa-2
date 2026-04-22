@@ -67,7 +67,7 @@ class ProvidersMM {
   String? firstName;
   String? lastName;
   String? specialization;
-  int? rate;
+  double? rate;
   int? rateCount;
   String? imagePath;
 
@@ -89,7 +89,7 @@ class ProvidersMM {
     firstName = json['first_name'];
     lastName = json['last_name'];
     specialization = json['specialization'];
-    rate = json['rate'];
+    rate = (json['rate'] as num?)?.toDouble();
     rateCount = json['rate_count'];
     imagePath = json['image_path'];
   }

@@ -7,12 +7,8 @@ import '../../../../bloc/educational_stages_years/educational_stages_cubit.dart'
 import '../../../../model/common/educational_stages/educational_stages_model.dart';
 import '../../../../repository/common/educational_stages/educational_stages_repository.dart';
 import '../../../../res/value/color/color.dart';
-import '../../../../res/value/dimenssion/dimenssions.dart';
-import '../../../../res/value/style/textstyles.dart';
 import '../../../../widget/error/page/error_page.dart';
 import '../../../../widget/loader/loader.dart';
-import '../../../../widget/side_padding/side_padding.dart';
-import '../../../../widget/space/space.dart';
 import '../../../card_view/class/class_card.dart';
 import '../../../card_view/grade/grade_card.dart';
 
@@ -23,110 +19,130 @@ class YearsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) =>
-            EducationalStagesCubit(EducationalStagesRepository())
-              ..getEducationalYears(),
-        child: BlocConsumer<EducationalStagesCubit, EducationalStagesState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return BlocBuilder<EducationalStagesCubit,
-                  EducationalStagesState>(builder: (context, state) {
-                if (state is EducationalYearsLoadedState) {
-                  final data = (state).data;
-                  return yearsView(context, data);
-                } else if (state is EducationalYearsErrorState) {
-                  return const ErrorPage();
-                } else {
-                  return const Loading();
-                }
-              });
-            }));
+      create: (context) => EducationalStagesCubit(EducationalStagesRepository())
+        ..getEducationalYears(),
+      child: BlocBuilder<EducationalStagesCubit, EducationalStagesState>(
+        builder: (context, state) {
+          if (state is EducationalYearsLoadedState) {
+            return _YearsContent(stages: stages, fallbackYears: state.data);
+          } else if (state is EducationalYearsErrorState) {
+            return const ErrorPage();
+          }
+          return const Center(child: Loading());
+        },
+      ),
+    );
   }
+}
 
-  yearsView(context, data) {
+class _YearsContent extends StatelessWidget {
+  final List<EducationalStageModel> stages;
+  final dynamic fallbackYears;
+
+  const _YearsContent({required this.stages, required this.fallbackYears});
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) =>
+      create: (context) =>
           EducationalStagesCubit(EducationalStagesRepository()),
-      child: BlocConsumer<EducationalStagesCubit, EducationalStagesState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            final bloc = EducationalStagesCubit.get(context);
-            return SidePadding(
-              sidePadding: 15,
-              child: ListView(
-                children: [
-                  LimitedBox(
-                    maxHeight: 10000000000000000,
-                    maxWidth: screenWidth,
-                    child: ListView.builder(
-                      //scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: stages.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return GradeCard(
-                          title: stages[index].name,
-                          image: stages[index].image,
-                          id: stages[index].id!,
-                          onTap: () => bloc.selectStage(index, stages),
-                          isSelected: bloc.isSelect == index ? true : false,
-                        );
-                      },
+      child: BlocBuilder<EducationalStagesCubit, EducationalStagesState>(
+        builder: (context, state) {
+          final bloc = EducationalStagesCubit.get(context);
+
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // Section header: stages
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    tr("educational_stage"),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: primaryText,
                     ),
                   ),
-                  const Space(
-                    boxHeight: 25,
+                ),
+              ),
+
+              // Stages list
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => GradeCard(
+                      title: stages[index].name,
+                      image: stages[index].image,
+                      id: stages[index].id!,
+                      onTap: () => bloc.selectStage(index, stages),
+                      isSelected: bloc.isSelect == index,
+                    ),
+                    childCount: stages.length,
                   ),
-                  const Divider(),
-                  const Space(
-                    boxHeight: 25,
-                  ),
-                  Visibility(
-                    visible: bloc.yearsModel.isEmpty ? false : true,
+                ),
+              ),
+
+              // Divider + years section
+              if (bloc.yearsModel.isNotEmpty) ...[
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  sliver: SliverToBoxAdapter(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(tr("grade"),
-                            textAlign: TextAlign.start,
-                            style: TextStyles.agreeStyle
-                                .copyWith(color: blackColor)),
-                        const Space(
-                          boxHeight: 25,
-                        ),
-                        LimitedBox(
-                          maxHeight: 10000000000000000,
-                          maxWidth: screenWidth,
-                          child: GridView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: bloc.yearsModel.isEmpty
-                                  ? data.length
-                                  : bloc.yearsModel.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      childAspectRatio:
-                                          ((screenWidth - 80.w) / 2) / 75.h,
-                                      crossAxisCount: 2),
-                              itemBuilder: (context, index) {
-                                return ClassCard(
-                                  stageId: stages[bloc.isSelect!].id!,
-                                  name: bloc.yearsModel.isEmpty
-                                      ? data[index].name!
-                                      : bloc.yearsModel[index].name!,
-                                  id: bloc.yearsModel[index].id!,
-                                );
-                              }),
+                        Divider(color: Colors.grey[200], thickness: 1),
+                        SizedBox(height: 12.h),
+                        Text(
+                          tr("grade"),
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                            color: primaryText,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const Space(
-                    boxHeight: 40,
+                ),
+
+                // Years grid
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10.w,
+                      mainAxisSpacing: 10.h,
+                      childAspectRatio: 1.3,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final years = bloc.yearsModel.isNotEmpty
+                            ? bloc.yearsModel
+                            : fallbackYears;
+                        return ClassCard(
+                          stageId: stages[bloc.isSelect!].id!,
+                          name: years[index].name!,
+                          id: years[index].id!,
+                        );
+                      },
+                      childCount: bloc.yearsModel.isNotEmpty
+                          ? bloc.yearsModel.length
+                          : (fallbackYears is List ? fallbackYears.length : 0),
+                    ),
                   ),
-                ],
-              ),
-            );
-          }),
+                ),
+              ],
+
+              // Bottom padding
+              SliverToBoxAdapter(child: SizedBox(height: 40.h)),
+            ],
+          );
+        },
+      ),
     );
   }
 }

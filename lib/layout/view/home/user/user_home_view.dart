@@ -10,6 +10,7 @@ import 'package:my_academy/layout/view/home/user/data/cubit/home_state.dart';
 import 'package:my_academy/layout/view/home/user/data/models/get_all_best_teachers_data_model.dart';
 import 'package:my_academy/layout/view/home/user/teacher_details/teacher_details_screen.dart';
 import 'package:my_academy/layout/view/home/user/view_all_specialization_screen.dart';
+import 'package:my_academy/widget/alert/alert_rate.dart';
 import 'package:my_academy/widget/headers/home/home_header.dart';
 
 import '../../../../bloc/home/home_cubit.dart';
@@ -25,6 +26,8 @@ import '../../../../widget/image_handler/image_from_network/network_image.dart';
 import '../../../../widget/search_home_widget/search_home_widget.dart';
 import '../../../../widget/space/space.dart';
 import '../../../activity/user_screens/course/course_screen.dart';
+import '../../../activity/user_screens/video_courses/video_courses_list_screen.dart';
+import '../../../activity/user_screens/packages/packages_list_screen.dart';
 import '../../../activity/user_screens/grade/grade_screen.dart';
 import '../../../activity/user_screens/offers/offers_screen.dart';
 import '../../../card_view/current_subject/current_subject_card.dart';
@@ -116,6 +119,23 @@ class _UserHomeViewState extends State<UserHomeView> {
             subTitle: tr("course_available"),
             onTap: () => Get.to(() => const CourseScreen()),
           ),
+          const Space(boxHeight: 15),
+
+          // Video Courses section
+          RightHomeCard(
+            title: tr("video_courses"),
+            buttonText: tr("video_courses"),
+            image: course,
+            subTitle: tr("video_courses"),
+            onTap: () => Get.to(() => const VideoCoursesListScreen()),
+          ),
+          LeftHomeCard(
+            title: tr("monthly_packages"),
+            buttonText: tr("monthly_packages"),
+            image: onlineSubject,
+            subTitle: tr("monthly_packages"),
+            onTap: () => Get.to(() => const PackagesListScreen()),
+          ),
           const Space(boxHeight: 50),
         ],
       ),
@@ -180,6 +200,13 @@ class _LiveSubscriptionsSectionState extends State<_LiveSubscriptionsSection> {
                           onConferenceEnded: () {
                             bloc.getSubscriptionCourseHome();
                             bloc.getSubscriptionLessonHome();
+                            Get.dialog(
+                              RateAlert(
+                                id: sub.lesson.id,
+                                type: 'lesson',
+                              ),
+                              barrierDismissible: false,
+                            );
                           },
                         ),
                         const Space(boxHeight: 15),
@@ -211,6 +238,13 @@ class _LiveSubscriptionsSectionState extends State<_LiveSubscriptionsSection> {
                           onConferenceEnded: () {
                             bloc.getSubscriptionCourseHome();
                             bloc.getSubscriptionLessonHome();
+                            Get.dialog(
+                              RateAlert(
+                                id: sub.course.id!,
+                                type: 'course',
+                              ),
+                              barrierDismissible: false,
+                            );
                           },
                         ),
                         const Space(boxHeight: 15),

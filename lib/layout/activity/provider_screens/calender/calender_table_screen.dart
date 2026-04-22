@@ -10,6 +10,7 @@ import 'package:my_academy/widget/side_padding/side_padding.dart';
 
 import '../../../../bloc/add_request/add_request_cubit.dart';
 import '../../../../widget/app_bar/default_app_bar/default_app_bar.dart';
+import '../../../../widget/calender_table/calender_table.dart';
 import '../../../../widget/space/space.dart';
 
 class CalenderScreen extends StatelessWidget {
@@ -44,10 +45,10 @@ class CalenderScreen extends StatelessWidget {
                         const Space(
                           boxHeight: 30,
                         ),
-                        // ClanderTable(
-                        //     focusedDay: bloc.focusedDay,
-                        //     onTap: (selectedDay, focusedDay) =>
-                        //         bloc.setDate(focusedDay, lessonDetails!.times)),
+                        ClanderTable(
+                            focusedDay: bloc.focusedDay,
+                            onTap: (selectedDay, focusedDay) =>
+                                bloc.setDate(focusedDay, lessonDetails!.times)),
                         const Space(
                           boxHeight: 30,
                         ),

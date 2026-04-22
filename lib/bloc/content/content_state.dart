@@ -108,6 +108,10 @@ class DifferrentSystemState extends ContentState {}
 
 class SetCourseSystemState extends ContentState {}
 
+class SetCourseCategoryState extends ContentState {}
+
+class SetCourseSubTypeState extends ContentState {}
+
 class SameTypeState extends ContentState {}
 
 class DifferrentTypeState extends ContentState {}

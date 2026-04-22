@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../bloc/bottom_bar/bottom_bar_cubit.dart';
 import '../../../res/value/color/color.dart';
-import '../../../res/value/style/textstyles.dart';
 
 class MasterBottomBar extends StatelessWidget {
   const MasterBottomBar({super.key});
